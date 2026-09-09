@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Explore what neuroblastoma drugs target, how they work, and where the evidence stops. An educational drug-mechanism atlas, not a treatment planner.">
+  <title>Drug × Target — Molecular Teaching Atlas</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; background:var(--cp-bg); color:var(--cp-text); font:15px/1.6 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    h1,h2,h3,p { margin:0; }
+    a { color:var(--cp-link); text-underline-offset:4px; }
+    button,input,select { font:inherit; }
+    button,.button,select,input[type="search"] { min-height:44px; border:1px solid var(--cp-border); border-radius:10px; padding:9px 14px; color:var(--cp-text); background:var(--cp-surface); }
+    button,.button { cursor:pointer; }
+    .button { display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
+    button:hover,.button:hover { border-color:var(--cp-accent); background:var(--cp-accent-soft); }
+    button:disabled { opacity:.4; cursor:default; }
+    :focus-visible { outline:3px solid var(--cp-accent); outline-offset:4px; }
+    .skip { position:absolute; left:20px; top:-80px; z-index:10; }
+    .skip:focus { top:12px; }
+    .mono,.eyebrow { font-family:Consolas,"Courier New",Courier,monospace; }
+    .eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:.13em; color:var(--cp-text-soft); }
+    .accent { color:var(--cp-accent); }
+    .muted { color:var(--cp-text-soft); }
+    .small { font-size:12px; color:var(--cp-text-soft); }
+    /* Shared site bar: keep this standalone markup/style aligned across the four pages. */
+    .site-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px 20px; flex-shrink:0; padding:16px max(24px,calc((100vw - 1360px)/2)); border-bottom:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .site-brand { display:flex; gap:12px; align-items:center; min-width:0; color:var(--cp-text); text-decoration:none; line-height:1.3; }
+    .site-brand-mark { display:grid; place-items:center; width:40px; height:40px; flex-shrink:0; border:1px solid var(--cp-accent); color:var(--cp-accent); border-radius:10px; font-size:25px; }
+    .site-brand strong { display:block; font-size:15px; font-weight:650; }
+    .site-brand small { display:block; color:var(--cp-text-soft); font-size:11px; }
+    .site-nav { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .site-nav a { display:inline-flex; align-items:center; min-height:44px; color:var(--cp-text-soft); text-decoration:none; padding:9px 12px; font-size:13px; line-height:1.5; border-radius:10px; }
+    .site-nav a[aria-current="page"] { color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .site-nav a:hover { color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .site-nav button { font-size:12px; min-height:44px; }
+    .site-header :focus-visible { outline:2px solid var(--cp-accent); outline-offset:3px; }
+    .container { max-width:1408px; margin:auto; padding:0 24px; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:64px; padding:52px 0 32px; align-items:end; }
+    h1 { font-size:clamp(36px,4vw,60px); line-height:1.08; font-weight:620; letter-spacing:-.055em; margin:16px 0 20px; }
+    .hero .lead { font-size:16px; max-width:680px; color:var(--cp-text-soft); }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+    .primary { background:var(--cp-accent); border-color:var(--cp-accent); color:var(--cp-accent-fg); }
+    .primary:hover { background:var(--cp-accent-hover); color:var(--cp-accent-fg); }
+    .hero-aside { padding:24px; border:1px solid var(--cp-border); background:var(--cp-bg-elevated); border-radius:16px; }
+    .hero-aside strong { display:block; font-size:19px; font-weight:600; line-height:1.35; margin:10px 0; }
+    .hero-stats { display:flex; gap:24px; margin-top:20px; padding-top:16px; border-top:1px solid var(--cp-border); }
+    .hero-stats b { display:block; font:26px/1.3 Consolas,monospace; color:var(--cp-accent); }
+    .hero-stats span { font-size:11px; color:var(--cp-text-soft); }
+    .notice { display:flex; gap:12px; align-items:flex-start; padding:16px 20px; border:1px solid var(--cp-border); border-left:3px solid var(--cp-accent); border-radius:10px; background:var(--cp-bg-elevated); font-size:12px; }
+    .notice strong { white-space:nowrap; }
+    section.block { margin-top:44px; }
+    .section-head { display:flex; gap:20px; justify-content:space-between; align-items:end; margin-bottom:20px; }
+    h2 { font-size:28px; font-weight:600; letter-spacing:-.035em; line-height:1.25; margin-top:6px; }
+    .section-head>p { max-width:440px; font-size:13px; color:var(--cp-text-soft); }
+    .targets { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; }
+    .target-filter { padding:16px; text-align:left; border-radius:16px; }
+    .target-filter .symbol { display:block; color:var(--cp-accent); font:22px/1.3 Consolas,monospace; margin-bottom:12px; }
+    .target-filter b { display:block; font-size:13px; }
+    .target-filter small { display:block; color:var(--cp-text-soft); font-size:11px; margin-top:5px; line-height:1.5; }
+    [aria-pressed="true"] { border-color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .filter-bar { display:flex; align-items:end; flex-wrap:wrap; gap:12px; margin:20px 0 16px; }
+    .filter-bar label { display:grid; gap:5px; font-size:11px; color:var(--cp-text-soft); }
+    .search-label { flex:1; min-width:200px; }
+    #search { width:100%; }
+    .filter-bar select { max-width:100%; font-size:13px; }
+    .filter-bar button { font-size:12px; }
+    .explorer { display:grid; grid-template-columns:254px minmax(0,1fr); gap:20px; align-items:start; }
+    .catalog { border:1px solid var(--cp-border); border-radius:16px; background:var(--cp-bg-elevated); overflow:hidden; }
+    .catalog-head { padding:16px; border-bottom:1px solid var(--cp-border); }
+    .catalog-head p { margin-top:4px; }
+    .drug-list { display:grid; gap:4px; padding:8px; max-height:920px; overflow-y:auto; scrollbar-width:thin; }
+    .drug-pick { display:block; width:100%; text-align:left; padding:12px; border-color:var(--cp-bg-elevated); background:var(--cp-bg-elevated); }
+    .drug-pick strong { display:block; font-size:13px; font-weight:600; }
+    .drug-pick small { display:block; font-size:11px; color:var(--cp-text-soft); margin-top:3px; }
+    .drug-pick[aria-pressed="true"] { border-color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .empty { padding:24px; color:var(--cp-text-soft); }
+    .drug-detail { min-width:0; border:1px solid var(--cp-border); border-radius:16px; overflow:hidden; background:var(--cp-surface); }
+    .detail-header { padding:24px 28px 20px; display:flex; align-items:start; justify-content:space-between; gap:16px; }
+    #drugName { font-size:34px; margin-top:6px; }
+    #drugBrand { font-size:13px; color:var(--cp-text-soft); margin-top:6px; }
+    .badge { display:inline-block; border:1px solid var(--cp-border-strong); border-radius:6px; padding:4px 8px; font:10px/1.4 Consolas,monospace; color:var(--cp-text-soft); }
+    .detail-identity { padding:0 28px 22px; display:grid; grid-template-columns:1.1fr 1fr; gap:20px; }
+    .identity-label { display:block; text-transform:uppercase; letter-spacing:.09em; font-size:10px; color:var(--cp-text-soft); margin-bottom:5px; }
+    .identity-value { font-size:17px; font-weight:600; }
+    .mechanism { background:var(--cp-bg-elevated); padding:20px 28px; border-top:1px solid var(--cp-border); border-bottom:1px solid var(--cp-border); }
+    .mechanism-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .mechanism-toolbar button { font-size:12px; min-height:36px; }
+    #mechanismFigure { display:block; width:100%; height:auto; margin:12px auto 0; }
+    .svg-frame { fill:var(--cp-surface); stroke:var(--cp-border-strong); stroke-width:1.3; }
+    .svg-target { fill:var(--cp-accent-soft); stroke:var(--cp-accent); stroke-width:2; }
+    .svg-title { fill:var(--cp-text); font:600 16px "Segoe UI",sans-serif; text-anchor:middle; }
+    .svg-sub { fill:var(--cp-text-soft); font:12px "Segoe UI",sans-serif; text-anchor:middle; }
+    .svg-label { fill:var(--cp-text-soft); font:10px Consolas,monospace; letter-spacing:1px; }
+    .svg-line { stroke:var(--cp-border-strong); stroke-width:2; fill:none; }
+    .svg-ink { stroke:var(--cp-accent); stroke-width:2.5; fill:none; }
+    .svg-dot { fill:var(--cp-accent); }
+    .svg-drug { fill:var(--cp-accent); }
+    .svg-drug-text { fill:var(--cp-accent-fg); font:600 12px "Segoe UI",sans-serif; text-anchor:middle; }
+    [data-phase-node] { transition:opacity .25s; }
+    #mechanismFigure[data-stage="1"] [data-phase-node="2"],#mechanismFigure[data-stage="1"] [data-phase-node="3"],#mechanismFigure[data-stage="2"] [data-phase-node="3"] { opacity:.25; }
+    .mechanism-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .phase { min-height:68px; display:flex; align-items:flex-start; gap:10px; text-align:left; padding:12px; font-size:12px; }
+    .phase b { color:var(--cp-accent); font:14px Consolas,monospace; }
+    #phaseCaption { min-height:60px; margin:16px 0 6px; font-size:14px; }
+    .detail-body { padding:24px 28px 28px; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px 28px; }
+    .detail-grid h3,.reading-grid h3 { font-size:13px; font-weight:650; margin-bottom:8px; }
+    .detail-grid p { font-size:13px; color:var(--cp-text-soft); }
+    .evidence-box { border-top:1px solid var(--cp-border); padding-top:20px; margin-top:22px; }
+    .evidence-box h3 { font-size:13px; margin-bottom:8px; }
+    #evidenceText,#safetyText { font-size:13px; color:var(--cp-text-soft); }
+    .safety { margin-top:18px; padding:14px 16px; border-left:2px solid var(--cp-accent); border-radius:0 10px 10px 0; background:var(--cp-accent-soft); }
+    .safety h3 { font-size:12px; margin-bottom:5px; }
+    .sources { display:flex; gap:8px 18px; flex-wrap:wrap; margin-top:18px; }
+    .sources a { font-size:12px; }
+    .definition-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:24px; }
+    .definition-strip>div { padding:20px; border:1px solid var(--cp-border); border-radius:16px; background:var(--cp-bg-elevated); }
+    .definition-strip h3 { font-size:14px; margin-bottom:6px; }
+    .definition-strip p { font-size:12px; color:var(--cp-text-soft); }
+    .overview { border:1px solid var(--cp-border); border-radius:16px; background:var(--cp-bg-elevated); overflow:hidden; }
+    .overview summary { padding:20px 24px; cursor:pointer; font-weight:600; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:12px; min-width:720px; }
+    caption { text-align:left; padding:0 24px 16px; font-size:12px; color:var(--cp-text-soft); }
+    th,td { text-align:left; padding:14px 20px; border-top:1px solid var(--cp-border); vertical-align:top; }
+    th { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--cp-text-soft); }
+    td:first-child { min-width:155px; }
+    .chart-card { border:1px solid var(--cp-border); border-radius:16px; overflow:hidden; background:var(--cp-bg-elevated); }
+    .chart-controls { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid var(--cp-border); flex-wrap:wrap; }
+    .chart-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .chart-actions button,.chart-actions a { font-size:12px; }
+    .chart-viewport { width:100%; overflow:auto; max-height:620px; }
+    #chartViewport:not(.is-zoomed) { max-height:none; }
+    .chart-viewport img { display:block; width:100%; max-width:none; height:auto; }
+    figure { margin:0; }
+    figcaption { padding:18px 20px; border-top:1px solid var(--cp-border); font-size:12px; color:var(--cp-text-soft); }
+    .reading-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; padding:24px; border-top:1px solid var(--cp-border); }
+    .reading-grid p { color:var(--cp-text-soft); font-size:12px; }
+    .reading-grid ul { padding-left:17px; margin:8px 0 0; font-size:12px; color:var(--cp-text-soft); }
+    .related { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:40px 0; }
+    .related a { display:block; padding:24px; background:var(--cp-surface); border:1px solid var(--cp-border); border-radius:16px; text-decoration:none; color:var(--cp-text); }
+    .related strong { display:block; font-size:19px; font-weight:600; margin:8px 0; }
+    footer { border-top:1px solid var(--cp-border); padding:24px 0 32px; font-size:11px; color:var(--cp-text-soft); }
+    footer p+p { margin-top:8px; }
+    dialog { padding:0; width:calc(100% - 32px); max-width:1600px; max-height:94dvh; color:var(--cp-text); background:var(--cp-bg-elevated); border:1px solid var(--cp-border); border-radius:16px; }
+    dialog::backdrop { background:var(--cp-overlay); }
+    dialog .chart-viewport { max-height:70dvh; }
+    dialog .chart-controls { position:sticky; top:0; background:var(--cp-bg-elevated); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+    @media(max-width:1100px) { .hero { grid-template-columns:1fr 300px; gap:28px; } .targets { grid-template-columns:repeat(3,1fr); } .explorer { grid-template-columns:220px minmax(0,1fr); } .detail-header,.detail-body { padding:20px; } .detail-identity { padding:0 20px 20px; } .mechanism { padding:18px; } .site-header { flex-wrap:wrap; } }
+    @media(max-width:760px) { .hero { grid-template-columns:1fr; padding-top:32px; gap:24px; } .hero-aside { display:none; } .container { padding:0 16px; } .site-header { padding:16px; } .site-nav { gap:4px; } .site-nav a { padding:8px; font-size:12px; } .explorer { grid-template-columns:1fr; } .drug-list { max-height:220px; grid-template-columns:1fr 1fr; } .section-head { align-items:start; flex-direction:column; gap:10px; } .detail-grid,.definition-strip,.reading-grid,.related { grid-template-columns:1fr; } .notice { display:block; } .notice strong { display:block; margin-bottom:4px; } .detail-header { flex-direction:column; gap:10px; } .mechanism-steps { grid-template-columns:1fr; } .phase { min-height:44px; align-items:center; } #phaseCaption { min-height:80px; } .chart-controls { padding:12px; } }
+    @media(max-width:460px) { .targets { grid-template-columns:1fr 1fr; } .target-filter { padding:12px; } .target-filter .symbol { margin-bottom:6px; } .filter-bar>label { width:100%; } .detail-identity { grid-template-columns:1fr; gap:12px; } .drug-list { grid-template-columns:1fr; max-height:210px; } .diagram-scroll { overflow-x:auto; } #mechanismFigure { width:600px; max-width:none; } h2 { font-size:25px; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none !important; animation:none !important; } }
+    @media print { .site-header,.hero-actions,.targets,.filter-bar,.catalog,.mechanism-toolbar button,.chart-actions,.related,.skip { display:none; } .hero,.explorer { display:block; } .hero { padding:20px 0; } .hero-aside { display:none; } .drug-detail,.chart-card { break-inside:avoid; } .chart-viewport { max-height:none; overflow:visible; } .chart-viewport img { width:100% !important; } body { font-size:11px; } }
+  </style>
+</head>
+<body>
+  <a class="skip button" href="#explorer">Skip to drug explorer</a>
+  <header class="site-header">
+    <a class="site-brand" href="molecular-atlas.html" data-site-link><span class="site-brand-mark" aria-hidden="true">↬</span><span><strong>Molecular Teaching Atlas</strong><small>Understand the biology. Read the evidence.</small></span></a>
+    <nav class="site-nav" aria-label="Site navigation"><a href="molecular-atlas.html" data-site-link>Molecular atlas</a><a href="drug-atlas.html" data-site-link aria-current="page">Drugs &amp; targets</a><a href="immunotherapy-simulation.html" data-site-link>Immunotherapy</a><a href="cytotherapy-atlas.html" data-site-link>Inside the Paper</a><button id="theme" type="button">Theme</button></nav>
+  </header>
+  <main class="container">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div><p class="eyebrow accent">Neuroblastoma / Drug mechanism explorer</p><h1 id="pageTitle">Different drugs.<br>Different points of <span class="accent">attack.</span></h1><p class="lead">Some interrupt a growth signal. Others release a cell-death brake, damage DNA, or help immune cells recognize a tumor. Explore <strong>what each drug acts on</strong>—and what that does not prove.</p><div class="hero-actions"><a class="button primary" href="#explorer">Explore the drugs ↓</a><a class="button" href="#alterations">View alteration diagram ↗</a></div></div>
+      <aside class="hero-aside"><p class="eyebrow">The essential distinction</p><strong>A molecular target is not<br>a treatment guarantee.</strong><p class="small">A drug can bind a protein without controlling every tumor that contains it. Biology, tumor type, exposure, and resistance all matter.</p><div class="hero-stats"><div><b id="drugTotal">31</b><span>drug entries</span></div><div><b>06</b><span>biological systems</span></div><div><b>01</b><span>supplied chart</span></div></div></aside>
+    </section>
+    <div class="notice"><strong>Education, not a treatment plan.</strong><span>No doses, drug rankings, or combination recommendations. Evidence in adults, other diseases, or laboratory models is not proof of benefit or safety in a child. Decisions belong with a pediatric oncology team.</span></div>
+
+    <section class="block" id="explorer" aria-labelledby="explorerTitle">
+      <div class="section-head"><div><p class="eyebrow">01 / Find the point of action</p><h2 id="explorerTitle">Drug → target → biological effect</h2></div><p>Choose a biological system or search a drug, brand, gene, or target. This is a curated set—not every drug used in neuroblastoma.</p></div>
+      <div class="targets" role="group" aria-label="Filter drugs by biological system">
+        <button type="button" class="target-filter" data-system="receptors" aria-pressed="false"><span class="symbol" aria-hidden="true">↧</span><b>Growth receptors</b><small>FGFR · ALK · EGFR<br>Interrupt the incoming signal</small></button>
+        <button type="button" class="target-filter" data-system="survival" aria-pressed="false"><span class="symbol" aria-hidden="true">⊣</span><b>Signaling &amp; survival</b><small>PI3K · AKT · mTOR · MEK · BCL2<br>Interrupt an internal process</small></button>
+        <button type="button" class="target-filter" data-system="cycle" aria-pressed="false"><span class="symbol" aria-hidden="true">⟳</span><b>Cell-cycle control</b><small>CDK4 / CDK6 → RB<br>Hold the division checkpoint</small></button>
+        <button type="button" class="target-filter" data-system="immune" aria-pressed="false"><span class="symbol" aria-hidden="true">Y</span><b>Immune recognition</b><small>GD2 · GM-CSF receptor<br>Mark a cell or support effectors</small></button>
+        <button type="button" class="target-filter" data-system="dna" aria-pressed="false"><span class="symbol" aria-hidden="true">≋</span><b>DNA &amp; replication</b><small>Topoisomerase I · DNA<br>Disrupt copying and repair</small></button>
+        <button type="button" class="target-filter" data-system="other" aria-pressed="false"><span class="symbol" aria-hidden="true">⊙</span><b>Other vulnerabilities</b><small>Uptake · maturation · metabolism<br>More than growth signaling</small></button>
+      </div>
+      <div class="filter-bar"><label class="search-label" for="search">Search drugs, brands &amp; targets<input id="search" type="search" placeholder="Try alpelisib, FGFR, GD2, MYCN…" autocomplete="off"></label><label for="evidenceFilter">Neuroblastoma evidence<select id="evidenceFilter"><option value="all">All evidence contexts</option><option value="established">Established use in a defined setting</option><option value="clinical">Clinical studies / early evidence</option><option value="limited">Limited / extrapolated evidence</option></select></label><button id="reset" type="button">Reset filters</button></div>
+      <div class="explorer">
+        <aside class="catalog" aria-label="Drug catalog"><div class="catalog-head"><p class="eyebrow" id="resultCount" role="status" aria-live="polite">Loading drugs…</p><p class="small" id="filterDescription">All biological systems</p></div><div class="drug-list" id="drugList"></div></aside>
+        <article class="drug-detail" id="drugDetail" aria-labelledby="drugName">
+          <div class="detail-header"><div><p class="eyebrow accent" id="drugClass"></p><h2 id="drugName"></h2><p id="drugBrand"></p></div><span class="badge" id="evidenceBadge"></span></div>
+          <div class="detail-identity"><div><span class="identity-label">Direct target / point of action</span><p class="identity-value accent" id="drugTarget"></p></div><div><span class="identity-label">Where it acts</span><p class="identity-value" id="drugLocation"></p></div></div>
+          <section class="mechanism" aria-label="Step-by-step mechanism">
+            <div class="mechanism-toolbar"><p class="eyebrow">Mechanism in three steps</p><button id="play" type="button" aria-pressed="false">Play mechanism</button></div>
+            <div class="diagram-scroll" tabindex="0" role="region" aria-label="Mechanism diagram; scroll horizontally on narrow screens">
+              <svg id="mechanismFigure" viewBox="0 0 820 250" role="img" aria-labelledby="mechanismTitle mechanismDesc" data-stage="3">
+                <title id="mechanismTitle">Drug mechanism</title><desc id="mechanismDesc"></desc>
+                <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" class="svg-line"/></marker></defs>
+                <text x="18" y="26" class="svg-label">SCHEMATIC · NOT A RESPONSE SIMULATION</text>
+                <g data-phase-node="2"><rect x="301" y="43" width="218" height="34" rx="17" class="svg-drug"/><text x="410" y="65" class="svg-drug-text" id="svgDrug"></text><path d="M410 77 V113" class="svg-ink"/><path id="actionMark" d="M396 113 H424" class="svg-ink"/><text x="464" y="105" class="svg-sub" id="svgAction"></text></g>
+                <g data-phase-node="1"><rect x="18" y="132" width="230" height="84" rx="14" class="svg-frame"/><text x="133" y="168" class="svg-title" id="svgBefore"></text><text x="133" y="191" class="svg-sub" id="svgBeforeSub"></text></g>
+                <path d="M254 174 H284" class="svg-line" marker-end="url(#arrow)"/>
+                <g data-phase-node="2"><rect x="294" y="132" width="232" height="84" rx="14" class="svg-target"/><text x="410" y="168" class="svg-title" id="svgTarget"></text><text x="410" y="191" class="svg-sub" id="svgTargetSub"></text></g>
+                <path d="M533 174 H563" class="svg-line" marker-end="url(#arrow)"/>
+                <g data-phase-node="3"><rect x="572" y="132" width="230" height="84" rx="14" class="svg-frame"/><text x="687" y="168" class="svg-title" id="svgAfter"></text><text x="687" y="191" class="svg-sub" id="svgAfterSub"></text></g>
+                <text x="410" y="242" class="svg-sub">Arrows describe the mechanism—not measured tumor shrinkage or guaranteed benefit.</text>
+              </svg>
+            </div>
+            <div class="mechanism-steps" role="group" aria-label="Mechanism steps"><button class="phase" type="button" data-phase="1" aria-pressed="false"><b>01</b><span>The biological target</span></button><button class="phase" type="button" data-phase="2" aria-pressed="false"><b>02</b><span>What the drug does</span></button><button class="phase" type="button" data-phase="3" aria-pressed="true"><b>03</b><span>The intended consequence</span></button></div>
+            <p id="phaseCaption" role="status" aria-live="polite" aria-atomic="true"></p><p class="small">Select a step to read at your own pace. Playback only reveals these steps; it does not model dose, timing, or efficacy.</p>
+          </section>
+          <div class="detail-body"><div class="detail-grid"><section><h3>How it works, in plain language</h3><p id="drugMechanism"></p></section><section><h3>Against what biology?</h3><p id="drugAgainst"></p></section><section><h3>Connection to MYCN / FGFR1</h3><p id="drugConnection"></p></section><section><h3>What it does not do</h3><p id="drugLimit"></p></section></div><section class="evidence-box"><h3>What has actually been shown in neuroblastoma?</h3><p id="evidenceText"></p></section><aside class="safety"><h3>Important safety boundary · not an exhaustive list</h3><p id="safetyText"></p></aside><div class="sources" id="drugSources" aria-label="Drug sources"></div></div>
+        </article>
+        <div id="noResults" class="drug-detail empty" hidden><h2>No matching drugs</h2><p>Try a generic name, a target such as ALK, or reset the filters.</p></div>
+      </div>
+      <noscript><p class="notice">JavaScript is needed for the interactive drug catalog. The supplied chart and its interpretation remain available below. For a clinical overview, see <a href="https://www.cancer.gov/types/neuroblastoma/hp/neuroblastoma-treatment-pdq">NCI’s Neuroblastoma Treatment PDQ</a>.</p></noscript>
+      <div class="definition-strip"><div><h3>Direct target ≠ downstream effect</h3><p>Alpelisib directly inhibits PI3Kα. A later change in AKT signaling or protein abundance does not make it an AKT, ALK, or N-Myc-binding drug.</p></div><div><h3>MYCN amplification ≠ one drug match</h3><p>Extra MYCN DNA copies can support an oncogenic program. None of the drugs here directly deletes those copies. Related vulnerabilities need their own evidence.</p></div><div><h3>Separate drugs ≠ a safe combination</h3><p>Blocking two nodes does not prove synergy. Overlapping toxicity and drug interactions can outweigh a plausible pathway diagram.</p></div></div>
+    </section>
+
+    <section class="block" aria-label="Drug overview table"><details class="overview"><summary>All drugs at a glance · direct targets &amp; evidence</summary><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable drug overview"><table><caption>All catalog entries, independent of filters. Evidence labels describe context, not a ranking of efficacy or safety. Select a name to explore its mechanism.</caption><thead><tr><th scope="col">Drug</th><th scope="col">Direct target / action</th><th scope="col">Biological system</th><th scope="col">NB evidence context</th></tr></thead><tbody id="overviewBody"></tbody></table></div></details></section>
+
+    <section class="block" id="alterations" aria-labelledby="chartTitle"><div class="section-head"><div><p class="eyebrow">02 / The supplied diagram</p><h2 id="chartTitle">Alteration frequency across cancer types</h2></div><p>Genomic frequency answers a different question from drug mechanism. The original image is preserved, not re-estimated or redrawn.</p></div>
+      <div class="chart-card"><div class="chart-controls"><span class="badge">User-supplied image · source unverified</span><div class="chart-actions"><button id="chartZoomOut" type="button" aria-label="Zoom out chart">−</button><output id="chartZoomLabel" aria-live="polite">Fit</output><button id="chartZoomIn" type="button" aria-label="Zoom in chart">+</button><button id="chartFit" type="button">Fit</button><button id="chartExpand" type="button">Expand ↗</button><a class="button" href="assets/alteration-frequency-supplied.png" target="_blank" rel="noopener noreferrer">Original image ↗</a></div></div>
+        <figure><div class="chart-viewport" id="chartViewport" tabindex="0" role="region" aria-label="Supplied alteration chart. Zoom in and scroll to read cancer labels."><img id="alterationChart" src="assets/alteration-frequency-supplied.png" width="1378" height="768" loading="lazy" alt="Stacked bar chart labeled Alteration Frequency across many cancer types, with a vertical scale up to 20 percent. Mutation is green, structural variant purple, amplification red, deep deletion blue, and multiple alterations gray. Gene name and cohort information are not shown." aria-describedby="chartCaption"></div><figcaption id="chartCaption"><strong>Provenance pending.</strong> Supplied by the site contributor on 9 September 2026. No gene name, study/cohort, sample counts, portal query, or original citation is visible. It is therefore <strong>not labeled as an FGFR1 or MYCN chart</strong> and is not used to assign drug sensitivity. Zoom enlarges pixels; it cannot recover missing source data.</figcaption></figure>
+        <div class="reading-grid"><section><h3>How to read it</h3><p>The horizontal labels are cancer categories. Each stacked bar shows a reported alteration frequency; the colors distinguish alteration classes. “CNA” means copy-number alteration. The + rows refer to data availability, not positive drug responses.</p><ul><li>Green: mutation</li><li>Purple: structural variant</li><li>Red: amplification</li><li>Blue: deep deletion</li><li>Gray: multiple alterations</li></ul></section><section><h3>What the colors do not establish</h3><p>Amplification means extra copies; it is not the same as an activating point mutation or a fusion. A deletion may remove a gene rather than create an inhibitor target. Different changes in the same gene can have different—or unknown—functional effects.</p></section><section><h3>Before connecting it to a drug</h3><p>Recover the gene and original query, cohort denominators, and profiling definitions. Then establish the specific alteration’s function and the evidence for the exact drug in the exact tumor type. A higher bar is not a higher chance of response, and these are not an individual tumor’s variant allele fractions.</p></section></div>
+      </div>
+    </section>
+    <section class="related" aria-label="Continue learning"><a href="molecular-atlas.html" data-site-link><p class="eyebrow accent">Explore the underlying biology ↗</p><strong>MYCN × FGFR1 molecular atlas</strong><p class="small">From DNA dosage to receptor structure, signaling, and gene expression.</p></a><a href="immunotherapy-simulation.html" data-site-link><p class="eyebrow accent">See a different kind of therapy ↗</p><strong>CAR-T vs CAR-NK</strong><p class="small">Engineered cell therapies, not anti-GD2 antibody drugs. The GD2-directed cells in this teaching illustration are distinct from the antibodies in the catalog; CAR-NK remains investigational in neuroblastoma.</p></a></section>
+    <footer><p>Educational synthesis assembled 9 September 2026 from linked public literature and regulatory sources. “Established” means a defined neuroblastoma setting, not suitability for every patient. “Clinical” includes small or negative studies. “Limited” includes preclinical, other-disease, and sparse clinical evidence.</p><p>No patient records, laboratory results, treatment histories, or private documents are embedded. The mechanism drawings are conceptual, not molecular structures. Source links open externally. Brand names identify products, not interchangeable formulations or local availability.</p><p>Reliability note: the historical 2006 PI3K–N-Myc paper has a <a href="https://doi.org/10.1158/0008-5472.CAN-24-2888" target="_blank" rel="noopener noreferrer">2024 Editor’s Note</a> concerning a protein-stability figure. This page does not use it as evidence that alpelisib will destabilize N-Myc or control neuroblastoma.</p></footer>
+  </main>
+  <dialog id="chartDialog" aria-labelledby="expandedTitle"><div class="chart-controls"><div><h2 id="expandedTitle">Supplied alteration-frequency chart</h2><p class="small">Gene and cohort unverified · not a treatment-response chart</p></div><div class="chart-actions"><button id="expandedZoom" type="button" aria-pressed="false">Enlarge 2×</button><button id="chartClose" type="button" autofocus>Close ✕</button></div></div><div class="chart-viewport" id="expandedViewport" tabindex="0" role="region" aria-label="Expanded chart; scroll to inspect labels"><img id="expandedChart" src="assets/alteration-frequency-supplied.png" width="1378" height="768" alt="Original supplied pan-cancer alteration-frequency diagram. Gene name, source and denominators are absent."></div></dialog>
+  <script>
+    'use strict';
+    // All content below is generic public-source synthesis. Never import the private dossier.
+    const SOURCES = {
+      pdq: ['NCI · Neuroblastoma Treatment PDQ', 'https://www.cancer.gov/types/neuroblastoma/hp/neuroblastoma-treatment-pdq'],
+      werr: ['Werr 2026 · FGFR1 in NB', 'https://www.jci.org/articles/view/189152'],
+      futi: ['NCI · Futibatinib', 'https://www.cancer.gov/about-cancer/treatment/drugs/futibatinib'],
+      erda: ['Pediatric MATCH · erdafitinib (abstract)', 'https://doi.org/10.1200/JCO.2023.41.16_suppl.10007'],
+      pemi: ['FIGHT-207 · adult FGFR-altered tumors', 'https://doi.org/10.1038/s41591-024-02934-7'],
+      lorla: ['Goldsmith 2023 · lorlatinib in NB', 'https://doi.org/10.1038/s41591-023-02297-5'],
+      lorlabel: ['Lorlatinib · prescribing information', 'https://labeling.pfizer.com/ShowLabeling.aspx?id=11140'],
+      pulmonary: ['Wei 2025 · lorlatinib + anti-GD2 safety', 'https://doi.org/10.1002/pbc.31845'],
+      crizo: ['Foster 2021 · crizotinib in NB', 'https://doi.org/10.1158/1078-0432.CCR-20-4224'],
+      guo: ['Guo 2022 · alpelisib in NB models', 'https://doi.org/10.1186/s13578-022-00946-9'],
+      alpel: ['NCI · Alpelisib', 'https://www.cancer.gov/about-cancer/treatment/drugs/alpelisib'],
+      alpelhuman: ['Rieke 2026 · adult NB case', 'https://doi.org/10.1093/oncolo/oyag132'],
+      capi: ['EMA · Capivasertib / Truqap', 'https://www.ema.europa.eu/en/medicines/human/EPAR/truqap'],
+      ever: ['PNOC001 · everolimus in pediatric glioma', 'https://doi.org/10.1200/JCO.23.01838'],
+      everlabel: ['NCI · Everolimus', 'https://www.cancer.gov/about-cancer/treatment/drugs/everolimus'],
+      rist: ['RIST · randomized NB combination trial', 'https://doi.org/10.1016/S1470-2045(24)00202-X'],
+      sirolabel: ['Sirolimus · prescribing information', 'https://labeling.pfizer.com/showlabeling.aspx?id=139'],
+      temsilabel: ['Temsirolimus · prescribing information', 'https://labeling.pfizer.com/showlabeling.aspx?id=490'],
+      trame: ['Bouffet · trametinib in pediatric glioma', 'https://doi.org/10.1200/JCO.22.01000'],
+      tramelabel: ['NCI · Trametinib', 'https://www.cancer.gov/about-cancer/treatment/drugs/trametinib'],
+      selu: ['Pediatric MATCH · selumetinib', 'https://doi.org/10.1200/JCO.21.02840'],
+      selulabel: ['EMA · Selumetinib / Koselugo', 'https://www.ema.europa.eu/en/medicines/human/EPAR/koselugo'],
+      ribo: ['Geoerger 2017 · pediatric ribociclib', 'https://doi.org/10.1158/1078-0432.CCR-16-2898'],
+      palbo: ['Pediatric MATCH · palbociclib', 'https://doi.org/10.1200/PO-24-00418'],
+      abema: ['Abemaciclib · pediatric trial results', 'https://clinicaltrials.gov/study/NCT04238819?tab=results'],
+      abemalabel: ['Abemaciclib · prescribing information', 'https://pi.lilly.com/us/verzenio-uspi.pdf'],
+      vene: ['Morgenstern 2026 · pediatric venetoclax', 'https://doi.org/10.1002/1545-5017.70178'],
+      venelabel: ['Venetoclax · prescribing information', 'https://www.rxabbvie.com/pdf/venclexta.pdf'],
+      erlo: ['Jakacki 2008 · pediatric erlotinib', 'https://doi.org/10.1200/JCO.2007.15.2306'],
+      afa: ['Geoerger 2023 · pediatric afatinib', 'https://doi.org/10.1016/j.ejca.2023.04.007'],
+      dasa: ['NCI · Dasatinib', 'https://www.cancer.gov/about-cancer/treatment/drugs/dasatinib'],
+      beva: ['BEACON · bevacizumab in NB', 'https://doi.org/10.1200/JCO.23.00458'],
+      dinu: ['NCI · Dinutuximab', 'https://www.cancer.gov/about-cancer/treatment/drugs/dinutuximab'],
+      beta: ['EMA · Dinutuximab beta / Qarziba', 'https://www.ema.europa.eu/en/medicines/human/EPAR/qarziba'],
+      naxi: ['NCI · Naxitamab-gqgk', 'https://www.cancer.gov/about-cancer/treatment/drugs/naxitamab-gqgk'],
+      irino: ['NCI · Irinotecan', 'https://www.cancer.gov/about-cancer/treatment/drugs/irinotecanhydrochloride'],
+      topo: ['NCI · Topotecan', 'https://www.cancer.gov/about-cancer/treatment/drugs/topotecanhydrochloride'],
+      temo: ['NCI · Temozolomide', 'https://www.cancer.gov/about-cancer/treatment/drugs/temozolomide'],
+      cyclo: ['NCI · Cyclophosphamide', 'https://www.cancer.gov/about-cancer/treatment/drugs/cyclophosphamide'],
+      eflo: ['NCI · Eflornithine evidence / postconsolidation', 'https://www.cancer.gov/types/neuroblastoma/hp/neuroblastoma-treatment-pdq#_214'],
+      sar: ['NCI · Sargramostim drug dictionary', 'https://www.cancer.gov/publications/dictionaries/cancer-drug/def/sargramostim']
+    };
+    const SYSTEMS = {receptors:'Growth receptors',survival:'Signaling & survival',cycle:'Cell-cycle control',immune:'Immune recognition',dna:'DNA & replication',other:'Other vulnerabilities'};
+    const EVIDENCE = {established:'Established · defined NB setting',clinical:'Clinical · read study limits',limited:'Limited · not established in NB'};
+    // Shared diagrams describe class pharmacology; evidence and limitations remain drug-specific.
+    const MECHANISMS = {
+      fgfr:{location:'Intracellular receptor kinase',target:'FGFR kinase',before:['FGF / altered FGFR','Receptor growth signaling'],after:['Less downstream signal','MAPK / PI3K–AKT outputs'],action:'inhibits',steps:['FGFR receptors transmit signals from the cell surface. Certain activating alterations can make signaling abnormal.','The inhibitor binds the intracellular FGFR kinase region and interferes with its catalytic activity.','FGFR-dependent signaling can decrease. Other pathways, resistance, or lack of dependency may allow tumor growth to continue.']},
+      alk:{location:'Intracellular receptor kinase',target:'ALK kinase',before:['Activated ALK','Receptor-driven signaling'],after:['Less ALK signaling','Growth / survival outputs'],action:'inhibits',steps:['An activating ALK alteration can sustain a growth and survival signal in an ALK-dependent tumor.','The drug occupies the ATP-binding region of ALK and reduces kinase signaling.','ALK-dependent outputs can decline; an FGFR, RAS, or other bypass is not automatically controlled.']},
+      pi3k:{location:'Cytoplasm / inner membrane',target:'PI3Kα lipid kinase',before:['PI3K recruitment','PIP2 → PIP3 lipid signal'],after:['Less AKT recruitment','Survival / growth signaling'],action:'inhibits',steps:['PI3Kα produces the membrane lipid PIP3, which helps recruit proteins including AKT. PI3K does not directly phosphorylate AKT.','Alpelisib inhibits p110α, the catalytic subunit encoded by PIK3CA.','Less PI3Kα-derived PIP3 can reduce downstream signaling. This is not direct blockade of FGFR1, ALK, AKT, or N-Myc.']},
+      akt:{location:'Intracellular signaling network',target:'AKT1 / AKT2 / AKT3',before:['Activated AKT','Signals to many substrates'],after:['Less AKT output','Metabolism / survival'],action:'inhibits',steps:['AKT integrates signals from PI3K and upstream activating kinases, and acts on multiple downstream proteins.','Capivasertib competes at the AKT ATP-binding site.','AKT substrate phosphorylation can decrease. This does not turn off every pathway downstream of a receptor.']},
+      mtor:{location:'Intracellular mTORC1 complex',target:'FKBP12 → mTORC1',before:['Nutrient / growth cues','Support protein synthesis'],after:['Less mTORC1 output','Translation / cell growth'],action:'inhibits',steps:['mTORC1 integrates growth and nutrient signals to help regulate protein synthesis and cell growth.','The drug binds FKBP12; the drug–FKBP12 complex allosterically inhibits mTORC1.','Some translation and growth outputs decrease. Acute mTORC2 inhibition and complete shutdown of AKT signaling are not implied.']},
+      mek:{location:'Intracellular MAPK pathway',target:'MEK1 / MEK2',before:['RAS → RAF → MEK','A growth-signaling relay'],after:['Less ERK activation','MAPK pathway output'],action:'inhibits',steps:['MEK normally activates ERK in the RAS–RAF–MEK–ERK signaling pathway.','An allosteric MEK inhibitor suppresses MEK activity at a site distinct from the ATP-binding site.','ERK phosphorylation can fall. PI3K–AKT and other survival pathways may remain active.']},
+      cdk:{location:'Cell-cycle machinery / nucleus',target:'CDK4 / CDK6',before:['Cyclin D–CDK4/6','Phosphorylates RB'],after:['RB retains its brake','G1 → S entry restrained'],action:'inhibits',steps:['Cyclin D–CDK4/6 normally phosphorylates RB, helping release E2F-mediated entry into DNA synthesis.','A CDK4/6 inhibitor reduces that phosphorylation.','Functional RB can retain its cell-cycle brake. RB loss or alternative cell-cycle routes can undermine this mechanism.']},
+      bcl:{location:'Mitochondrial apoptosis control',target:'BCL2 protein',before:['BCL2 survival brake','Sequesters death signals'],after:['Apoptosis permitted','If death machinery is intact'],action:'inhibits',steps:['BCL2 can hold pro-apoptotic proteins and prevent mitochondrial cell-death signaling.','Venetoclax binds the BH3-binding groove of BCL2 and displaces pro-apoptotic partners.','BAX/BAK-mediated mitochondrial permeabilization and apoptosis can follow if the cell is BCL2-dependent. MCL1 or BCL-XL can provide alternative protection.']},
+      egfr:{location:'Intracellular receptor kinase',target:'EGFR / ErbB kinase',before:['EGFR / ErbB signal','Receptor growth signaling'],after:['Less receptor output','Only if ErbB-dependent'],action:'inhibits',steps:['EGFR-family receptors can feed growth and survival pathways. Expression alone is not proof of dependency.','The inhibitor binds the receptor kinase. Its exact receptor coverage and reversibility depend on the drug.','Sensitive receptor-driven signaling can decrease. EGFR bypass after FGFR therapy must be demonstrated, not assumed.']},
+      multi:{location:'Multiple intracellular kinases',target:'SRC / ABL & others',before:['Kinase networks','Multiple signaling inputs'],after:['Altered kinase outputs','Context-dependent effects'],action:'inhibits',steps:['SRC, ABL and other kinases participate in multiple cellular signaling networks.','Dasatinib inhibits several kinases, rather than a single neuroblastoma-specific target.','Clinical effects observed in a multi-drug regimen cannot be attributed to dasatinib alone.']},
+      vegf:{location:'Outside cells / tumor vessels',target:'VEGF-A ligand',before:['VEGF-A ligand','Stimulates vessel receptors'],after:['Less vessel signaling','Angiogenesis restrained'],action:'binds',steps:['VEGF-A is a secreted signal that can stimulate vascular endothelial cells to form and maintain blood vessels.','Bevacizumab binds VEGF-A outside cells and prevents its interaction with VEGF receptors.','Angiogenic signaling is reduced. It does not directly inhibit a tumor cell’s FGFR1 or MYCN.']},
+      gd2:{location:'Outer surface of GD2+ cells',target:'GD2 surface glycolipid',before:['GD2 on cell surface','An antibody-recognition site'],after:['Immune effector action','ADCC / complement'],action:'binds',steps:['GD2 is a glycolipid exposed on many neuroblastoma cells. It is not a mutated kinase or a DNA sequence.','An anti-GD2 antibody binds GD2, and its Fc region can engage immune effectors and complement.','Immune-mediated killing can follow, depending on antigen density, effectors and tumor context. GD2 on normal tissues also contributes to toxicity.']},
+      topo:{location:'Nuclear DNA–enzyme complex',target:'Topoisomerase I–DNA',before:['DNA unwinding','Temporary single-strand cuts'],after:['Replication-associated damage','Can trigger cell death'],action:'traps',steps:['Topoisomerase I temporarily cuts and reseals DNA to relieve twisting during replication and transcription.','The active drug stabilizes the cleaved topoisomerase I–DNA complex, interfering with resealing.','Replication encounters can convert these lesions into damaging breaks. Healthy dividing cells are also vulnerable.']},
+      methyl:{location:'DNA in the cell nucleus',target:'DNA bases',before:['DNA methylation','Chemical lesions introduced'],after:['Replication / repair stress','Can trigger cell death'],action:'modifies',steps:['Temozolomide converts to a reactive methylating species without requiring a particular tumor mutation.','It methylates DNA bases, including guanine at O6.','Cytotoxic effects depend on lesion processing, including MGMT and mismatch-repair biology; they are not guaranteed by MYCN or FGFR1 status.']},
+      crosslink:{location:'DNA after metabolic activation',target:'DNA strands',before:['Activated metabolite','Phosphoramide mustard'],after:['DNA crosslinks','Copying / transcription impaired'],action:'modifies',steps:['Cyclophosphamide is a prodrug that undergoes metabolic activation, largely in the liver.','Its active metabolite forms covalent DNA crosslinks.','Crosslinks impair DNA replication and transcription. This broad action also affects normal tissues, including marrow.']},
+      mibg:{location:'Uptake into NET-expressing cells',target:'NET-mediated uptake',before:['¹³¹I-MIBG uptake','Norepinephrine transporter'],after:['Local ionizing radiation','DNA damage / crossfire'],action:'enters',steps:['MIBG resembles norepinephrine and can enter neuroblastoma cells through the norepinephrine transporter, NET.','Therapeutic iodine-131 carried by MIBG emits radiation; NET is an uptake route, not a kinase being inhibited.','Radiation damages cells, including nearby cells through crossfire. MIBG avidity and dosimetry matter; marrow and other tissues can also be injured.']},
+      retinoid:{location:'Retinoid-responsive gene programs',target:'Retinoid signaling',before:['Immature cell state','Differentiation program'],after:['More differentiated state','Growth restrained in some cells'],action:'modulates',steps:['Retinoid-responsive transcriptional programs help regulate cell maturation.','Isotretinoin (13-cis-retinoic acid), including through its metabolites and isomerization, modulates retinoid signaling.','Differentiation and reduced proliferation can follow in responsive cells. This is not direct removal of MYCN amplification.']},
+      odc:{location:'Intracellular polyamine synthesis',target:'Ornithine decarboxylase',before:['Ornithine → putrescine','Polyamine production'],after:['Reduced polyamines','Growth support restrained'],action:'inhibits',steps:['Ornithine decarboxylase, encoded by ODC1, starts a key step in polyamine synthesis. Polyamines support cell growth.','Eflornithine irreversibly inhibits ornithine decarboxylase.','Polyamine production decreases. A relapse-risk-reduction indication is not proof of efficacy against actively progressing disease.']},
+      gmcsf:{location:'Myeloid immune cells / progenitors',target:'GM-CSF receptor',before:['Myeloid immune cells','Effector / progenitor support'],after:['Myeloid cell support','Not direct tumor targeting'],action:'activates',steps:['Myeloid progenitors and mature myeloid cells express the GM-CSF receptor.','Sargramostim is recombinant GM-CSF and activates this receptor rather than blocking a tumor kinase.','It supports myeloid cell production and function, and is used in defined anti-GD2 regimens. Its contribution is not a stand-alone tumor response rate.']}
+    };
+    const DRUGS = [
+      {id:'futibatinib',name:'Futibatinib',brand:'Lytgobi · TAS-120',system:'receptors',kind:'Irreversible FGFR inhibitor',mode:'fgfr',target:'FGFR1–4',level:'clinical',mechanism:'Forms a covalent bond in the FGFR kinase ATP-binding region, reducing receptor phosphorylation and downstream signaling.',against:'FGFR-dependent signaling, including FGFR1 N546K in studied neuroblastoma models. An activating mutation, amplification and a fusion are not interchangeable biomarkers.',connection:'Directly targets FGFR kinases—not MYCN DNA or N-Myc. MYCN co-amplification does not by itself establish FGFR dependence.',limit:'Does not repair the N546K mutation, remove extra MYCN copies, or guarantee control of bypass signaling.',evidence:'NB cell, organoid and mouse evidence plus one published pediatric case treated with futibatinib AND cyclophosphamide/topotecan. Temporary lesion regression does not establish single-drug efficacy or combination safety.',safety:'Hyperphosphatemia, retinal toxicity, mouth/nail/skin effects and drug interactions. Irreversible binding does not mean permanent tumor control.',sources:['werr','futi']},
+      {id:'erdafitinib',name:'Erdafitinib',brand:'Balversa',system:'receptors',kind:'Reversible FGFR inhibitor',mode:'fgfr',target:'FGFR1–4',level:'clinical',mechanism:'Reversibly competes at the FGFR ATP-binding site, suppressing receptor kinase activity.',against:'Selected FGFR-driven tumors. Sensitivity depends on the exact alteration, tumor context and drug exposure.',connection:'Inhibits FGFR directly; FGFR1 N546K NB models have shown context-dependent activity. Not a direct MYCN therapy.',limit:'Cannot be assumed to overcome progression on futibatinib simply because it is a different FGFR inhibitor.',evidence:'Pediatric MATCH conference report: 2 responses among 20 mixed pediatric tumors, both in brain tumors. The included NB patient was not among the reported responders. Laboratory NB activity is a separate evidence layer.',safety:'Phosphate disturbances, retinal toxicity, mucosal/skin effects and pediatric skeletal concerns require specialist oversight.',sources:['erda','werr']},
+      {id:'pemigatinib',name:'Pemigatinib',brand:'Pemazyre',system:'receptors',kind:'Reversible FGFR inhibitor',mode:'fgfr',target:'FGFR1–3',level:'limited',mechanism:'Reversibly inhibits FGFR1–3 kinase activity at the ATP-binding region.',against:'Certain FGFR-driven cancers; clinical sensitivity varies substantially by alteration class.',connection:'Targets FGFR signaling but evidence from FGFR2 fusions or FGFR1 rearrangements cannot be relabeled as FGFR1 N546K neuroblastoma evidence.',limit:'An FGFR1 point mutation does not inherit the evidence for an FGFR1 fusion. Not validated as post-futibatinib rescue in NB.',evidence:'Human activity has been reported in other FGFR-altered tumor types. No established pediatric NB efficacy in the sources reviewed; adult basket results are not a pediatric NB response estimate.',safety:'Hyperphosphatemia, retinal effects, mouth/skin/nail toxicity and interactions. Similar target coverage does not make FGFR inhibitors interchangeable.',sources:['pemi','werr']},
+      {id:'lorlatinib',name:'Lorlatinib',brand:'Lorbrena / Lorviqua',system:'receptors',kind:'ATP-competitive ALK inhibitor',mode:'alk',target:'ALK; also ROS1',level:'clinical',mechanism:'A brain-penetrant, reversible ATP-competitive inhibitor of ALK and ROS1; it reduces signaling from susceptible ALK variants.',against:'ALK-driven tumors, including certain activating ALK mutations in neuroblastoma. The specific variant and tumor dependence matter.',connection:'ALK and FGFR1 can feed overlapping pathways, but lorlatinib is not an FGFR1 inhibitor. MYCN amplification is not an ALK biomarker.',limit:'Does not directly inhibit MYCN or guarantee coverage of a separate FGFR1-driven clone.',evidence:'A phase I ALK-driven NB trial reported complete/partial responses in 3/23 children receiving monotherapy and 2/8 with chemotherapy. Larger percentages that include minor responses use a different endpoint.',safety:'CNS effects, lipid/metabolic changes, pulmonary toxicity and important CYP3A interactions. A retrospective report describes severe pulmonary toxicity with overlapping anti-GD2 therapy; no safe scheduling rule follows from this page.',sources:['lorla','lorlabel','pulmonary']},
+      {id:'crizotinib',name:'Crizotinib',brand:'Xalkori',system:'receptors',kind:'ATP-competitive multikinase inhibitor',mode:'alk',target:'ALK, ROS1 and MET',level:'clinical',mechanism:'Reversibly inhibits ALK, ROS1 and MET kinase activity; ALK is the relevant target in ALK-selected NB studies.',against:'Susceptible ALK-driven neuroblastoma. Different ALK hotspot variants have different drug sensitivities.',connection:'May reduce ALK-dependent growth signaling, not FGFR1 activity or MYCN copy number.',limit:'Does not cover every ALK variant equally and is not interchangeable with later-generation ALK inhibitors.',evidence:'A COG ALK-aberrant NB study reported 3 responses among 20 patients; all responders had ALK R1275Q. This is not a general response rate for unselected NB.',safety:'Gastrointestinal and visual effects, liver injury, QT/heart-rate effects and pulmonary toxicity; interactions matter.',sources:['crizo','pdq']},
+      {id:'alpelisib',name:'Alpelisib',brand:'Piqray / Vijoice · BYL719',system:'survival',kind:'PI3Kα-selective inhibitor',mode:'pi3k',target:'PI3Kα / p110α (PIK3CA)',level:'limited',mechanism:'Inhibits a lipid kinase: PI3Kα normally converts PIP2 into PIP3 at the membrane. Less PIP3 can reduce recruitment and activation of downstream signaling proteins.',against:'PI3Kα-dependent biology. A PIK3CA mutation is one possible driver, but activity in NB models was not restricted to mutation-selected cells.',connection:'PI3K can sit downstream of FGFR1 or ALK. Neither FGFR1 activation nor MYCN amplification alone proves dependence on PI3Kα.',limit:'Not a direct FGFR, ALK, AKT or N-Myc inhibitor. Laboratory pathway effects do not demonstrate rescue after futibatinib.',evidence:'Drug-specific NB cell and KELLY xenograft growth-inhibition evidence exists. Published pediatric NB efficacy was not found in the reviewed sources. An adult NB case progressed on alpelisib. Pediatric PROS experience is non-cancer evidence.',safety:'Severe hyperglycemia, skin reactions, diarrhea/colitis, pneumonitis and laboratory abnormalities. PROS experience does not establish safety of an oncology combination.',sources:['guo','alpel','alpelhuman']},
+      {id:'capivasertib',name:'Capivasertib',brand:'Truqap',system:'survival',kind:'Pan-AKT inhibitor',mode:'akt',target:'AKT1, AKT2 and AKT3',level:'limited',mechanism:'ATP-competitive inhibition of the three AKT isoforms reduces their activity toward downstream substrates.',against:'Tumors dependent on AKT signaling. Adult biomarker-defined breast-cancer evidence is a different disease setting.',connection:'Acts below PI3K, potentially affecting a branch fed by FGFR1 or ALK. It does not directly bind those receptors or MYCN.',limit:'Does not block the parallel RAS–MAPK branch. Pathway activation does not prove drug dependence.',evidence:'No established pediatric NB efficacy in the reviewed sources. It must not inherit the results of a different experimental AKT inhibitor.',safety:'Hyperglycemia, diarrhea and cutaneous toxicity; pediatric oncology combinations require their own safety evidence.',sources:['capi']},
+      {id:'everolimus',name:'Everolimus',brand:'Afinitor / Afinitor Disperz / Votubia',system:'survival',kind:'FKBP12-dependent mTORC1 inhibitor',mode:'mtor',target:'mTORC1 via FKBP12',level:'limited',mechanism:'Binds FKBP12; this complex inhibits mTORC1 and affects translation and growth signaling.',against:'mTORC1-dependent biology. TSC-associated disease and other approved settings are not equivalent to NB.',connection:'Can affect one downstream growth branch of PI3K–AKT. It is not a direct N-Myc inhibitor and does not remove MYCN amplification.',limit:'Does not reliably shut down all AKT or mTOR signaling; feedback can persist or reactivate pathways.',evidence:'Pediatric studies in low-grade glioma and other diseases provide clinical experience, not established FGFR1-mutant NB efficacy. Progression-free survival in glioma is not a NB tumor-response rate.',safety:'Mouth sores, infections/immunosuppression, cytopenias, metabolic effects, pneumonitis and interactions.',sources:['ever','everlabel']},
+      {id:'sirolimus',name:'Sirolimus',brand:'Rapamune · rapamycin',system:'survival',kind:'FKBP12-dependent mTORC1 inhibitor',mode:'mtor',target:'mTORC1 via FKBP12',level:'clinical',mechanism:'Forms a complex with FKBP12 to allosterically inhibit mTORC1-dependent growth and translation signals.',against:'mTORC1-associated growth biology; also has substantial immune-system effects.',connection:'Intervenes downstream of growth receptors. The MYCN subgroup signal in RIST is a regimen-level observation, not direct MYCN inhibition.',limit:'Cannot be credited with the benefit of the entire four-drug RIST regimen or treated as a proven anti-GD2 add-on.',evidence:'RIST compared sirolimus + dasatinib + irinotecan + temozolomide with irinotecan + temozolomide. The randomized phase II trial found longer median PFS with the combination; it did not isolate sirolimus’s contribution.',safety:'Immunosuppression, infection, cytopenias, mucosal/metabolic effects and interactions. Combination myelotoxicity is important.',sources:['rist','sirolabel']},
+      {id:'temsirolimus',name:'Temsirolimus',brand:'Torisel',system:'survival',kind:'FKBP12-dependent mTOR inhibitor',mode:'mtor',target:'mTORC1 via FKBP12',level:'clinical',mechanism:'Binds FKBP12 to inhibit mTOR signaling; its metabolite sirolimus also has activity.',against:'mTOR-dependent growth processes, not a specific FGFR1 variant.',connection:'Downstream pathway intervention; neither a MYCN-binding drug nor a replacement for receptor inhibition.',limit:'mTOR expression or phosphorylation is not by itself a validated NB response biomarker.',evidence:'In COG ANBL1221, irinotecan/temozolomide with temsirolimus produced 1 response among 18 patients, versus 9/17 for the dinutuximab-containing arm. These are regimen results, not monotherapy rates.',safety:'Infusion reactions, infection, cytopenias, metabolic effects and pneumonitis. Clinical testing does not mean favorable evidence.',sources:['pdq','temsilabel']},
+      {id:'trametinib',name:'Trametinib',brand:'Mekinist / Spexotras',system:'survival',kind:'Allosteric MEK inhibitor',mode:'mek',target:'MEK1 and MEK2',level:'limited',mechanism:'Allosterically inhibits MEK1/2, reducing ERK phosphorylation in the MAPK signaling relay.',against:'MAPK-dependent biology. The strongest pediatric clinical examples are specific BRAF-driven gliomas, often in combination.',connection:'Can interrupt the MAPK branch downstream of FGFR1; does not inhibit FGFR1 itself or the PI3K branch.',limit:'An arrow from FGFR1 to MEK does not establish that MEK inhibition will control FGFR1-mutant NB.',evidence:'Pediatric glioma experience and NB preclinical research must be distinguished. Neither establishes a safe or effective post-FGFR-inhibitor NB combination.',safety:'Cardiac dysfunction, eye/retinal toxicity, rash, diarrhea and pulmonary effects. Overlapping toxicity can limit kinase-inhibitor combinations.',sources:['trame','tramelabel']},
+      {id:'selumetinib',name:'Selumetinib',brand:'Koselugo',system:'survival',kind:'Allosteric MEK inhibitor',mode:'mek',target:'MEK1 and MEK2',level:'clinical',mechanism:'Suppresses MEK1/2 through allosteric inhibition, reducing downstream ERK activity.',against:'MAPK-dependent disease. NF1 plexiform neurofibromas are a different, generally benign tumor setting.',connection:'Downstream of RAS/RAF, not a direct FGFR1 or MYCN inhibitor.',limit:'Successful treatment of NF1-associated tumors cannot be translated into proven efficacy for neuroblastoma.',evidence:'Pediatric MATCH reported no objective responses among 20 children with mixed MAPK-altered refractory tumors. This was not a cohort of 20 NB patients, but it illustrates the limits of pathway-only matching.',safety:'Cardiac and ocular effects, rash, diarrhea and creatine-kinase elevations; formulations and age indications are product-specific.',sources:['selu','selulabel']},
+      {id:'venetoclax',name:'Venetoclax',brand:'Venclexta / Venclyxto',system:'survival',kind:'Selective BCL2 / BH3-mimetic inhibitor',mode:'bcl',target:'BCL2 anti-apoptotic protein',level:'clinical',mechanism:'Releases pro-death proteins held by BCL2, allowing the mitochondrial apoptosis machinery to act when the cell depends on that brake.',against:'Functional BCL2 dependence—not merely BCL2 staining or high expression.',connection:'Some FGFR1/MYCN NB models show altered apoptosis and increased BCL2. That is a hypothesis-generating observation, not proof of venetoclax sensitivity.',limit:'Does not directly inhibit FGFR1, MYCN, MCL1 or BCL-XL. Alternative survival proteins can preserve resistance.',evidence:'A phase I study included 36 NB patients; 35 received cyclophosphamide/topotecan with venetoclax. The approximately 31% overall response rate is not a venetoclax-alone rate. Exploratory BCL2 staining did not predict efficacy.',safety:'Tumor lysis syndrome, substantial cytopenias/infections and major CYP3A interactions. Selectivity for BCL2 does not mean marrow safety.',sources:['vene','venelabel']},
+      {id:'ribociclib',name:'Ribociclib',brand:'Kisqali',system:'cycle',kind:'CDK4/6 inhibitor',mode:'cdk',target:'CDK4 and CDK6',level:'clinical',mechanism:'Reduces CDK4/6-mediated RB phosphorylation, helping RB restrain the G1-to-S transition.',against:'RB-functional tumors with genuine CDK4/6 dependence. Loss of a regulator such as CDKN2C is a rationale to investigate, not a proven match.',connection:'Can intersect with MYCN-associated cell-cycle programs but does not directly block N-Myc or restore a deleted suppressor.',limit:'RB protein presence alone does not guarantee pathway dependence or response.',evidence:'A 32-patient pediatric phase I study reported no objective responses; stable disease occurred, including in NB. Cytostasis and tumor shrinkage are different outcomes.',safety:'Neutropenia/thrombocytopenia, liver effects, QT prolongation and interactions; tested combinations can be poorly tolerated.',sources:['ribo']},
+      {id:'palbociclib',name:'Palbociclib',brand:'Ibrance',system:'cycle',kind:'CDK4/6 inhibitor',mode:'cdk',target:'CDK4 and CDK6',level:'clinical',mechanism:'Inhibits the CDK4/6 enzymes that normally help release RB-mediated cell-cycle restraint.',against:'CDK4/6-dependent, RB-functional proliferation.',connection:'MYCN amplification or CDKN2C loss does not establish that this is the controlling bottleneck.',limit:'Does not replace a missing RB protein and does not remove MYCN amplification.',evidence:'Biomarker-selected Pediatric MATCH reported 0/20 objective responses in mixed pediatric tumors. Temporary stable disease in a NB patient with CDK4 amplification is not a response signal for every cell-cycle alteration.',safety:'Myelosuppression, infections, pulmonary toxicity and drug interactions.',sources:['palbo']},
+      {id:'abemaciclib',name:'Abemaciclib',brand:'Verzenio / Verzenios',system:'cycle',kind:'CDK4/6 inhibitor',mode:'cdk',target:'CDK4 and CDK6',level:'limited',mechanism:'Inhibits CDK4/6 and reduces RB phosphorylation. Its pharmacology differs from other members of the class.',against:'CDK4/6-dependent cell-cycle entry in an appropriate RB context.',connection:'A downstream cell-cycle approach, not direct MYCN blockade or a validated CDKN2C-loss therapy in NB.',limit:'Class membership cannot substitute for drug-specific pediatric evidence or imply lower overall risk.',evidence:'Pediatric trial registry data include a very small NB combination cohort with chemotherapy and anti-GD2 therapy. This does not establish stand-alone NB efficacy.',safety:'Diarrhea, cytopenias/infections, liver effects, thromboembolism and pneumonitis; adult risk profiles cannot simply be transferred to children.',sources:['abema','abemalabel']},
+      {id:'erlotinib',name:'Erlotinib',brand:'Tarceva',system:'receptors',kind:'Reversible EGFR inhibitor',mode:'egfr',target:'EGFR / ERBB1',level:'limited',mechanism:'Reversibly competes at the ATP-binding site of EGFR to inhibit kinase signaling.',against:'Sensitive EGFR-dependent signaling. Proposed EGFR bypass requires tumor-specific evidence.',connection:'EGFR can feed pathways also used by FGFR1, but this does not make EGFR a proven resistance driver in a given NB.',limit:'Does not directly inhibit FGFR1 or MYCN and is not a general remedy for FGFR-inhibitor resistance.',evidence:'A pediatric phase I report described a NB complete response after erlotinib monotherapy progression, when temozolomide was added. It is not proof of erlotinib monotherapy efficacy.',safety:'Rash, diarrhea, hepatic effects and pneumonitis; metabolic and acid-suppressing drug interactions may affect exposure.',sources:['erlo']},
+      {id:'afatinib',name:'Afatinib',brand:'Gilotrif / Giotrif',system:'receptors',kind:'Irreversible ErbB-family inhibitor',mode:'egfr',target:'EGFR, HER2 and HER4 kinases',level:'limited',mechanism:'Covalently inhibits several active ErbB-family kinases, impairing signaling from susceptible receptor complexes.',against:'Specific ErbB-dependent biology, rather than any tumor with activated growth pathways.',connection:'An alternative receptor-family target; not a direct FGFR1 or MYCN drug.',limit:'EGFR-fusion responses in a brain tumor cannot be presented as evidence for FGFR1-mutant NB.',evidence:'A pediatric phase I/expansion study reported a durable confirmed response in a CLIP2::EGFR fusion glioneuronal tumor. No established NB efficacy follows from that finding.',safety:'Diarrhea, skin/mucosal toxicity, liver injury and pulmonary toxicity.',sources:['afa']},
+      {id:'dasatinib',name:'Dasatinib',brand:'Sprycel',system:'receptors',kind:'Multikinase inhibitor',mode:'multi',target:'SRC-family, ABL, KIT, PDGFR and others',level:'clinical',mechanism:'Inhibits multiple intracellular kinases, including SRC and ABL-family enzymes.',against:'Selected kinase-dependent processes. BCR–ABL evidence in leukemia is not an NB biomarker.',connection:'Used within the RIST platform, which had a MYCN-amplified subgroup signal. This does not make it a direct MYCN inhibitor.',limit:'Cannot isolate the benefit of dasatinib from the other RIST drugs; it is not a validated single-agent FGFR1 strategy.',evidence:'Randomized phase II RIST evidence applies to dasatinib + sirolimus + irinotecan + temozolomide, not dasatinib alone or an anti-GD2 combination.',safety:'Cytopenias, bleeding, fluid retention/pleural effusions, pulmonary vascular effects and interactions.',sources:['rist','dasa']},
+      {id:'bevacizumab',name:'Bevacizumab',brand:'Avastin · biosimilars exist',system:'other',kind:'Anti-angiogenic monoclonal antibody',mode:'vegf',target:'VEGF-A (not the VEGF receptor)',level:'clinical',mechanism:'Binds extracellular VEGF-A, reducing ligand-driven signaling to endothelial VEGF receptors.',against:'Tumor-associated blood-vessel signaling, not a tumor-specific DNA mutation.',connection:'Acts on vascular support rather than directly inhibiting FGFR1 or MYCN.',limit:'Is not an anti-GD2 antibody, and an angiogenic pathway diagram does not establish an individual response.',evidence:'The randomized phase II BEACON NB trial tested addition to chemotherapy and found a response-rate signal. It was not bevacizumab monotherapy or a FGFR1-selected study.',safety:'Bleeding, hypertension, proteinuria, impaired wound healing, thrombosis and gastrointestinal perforation.',sources:['beva','pdq']},
+      {id:'dinutuximab',name:'Dinutuximab',brand:'Unituxin',system:'immune',kind:'Anti-GD2 monoclonal antibody',mode:'gd2',target:'GD2 surface glycolipid',level:'established',mechanism:'Coats GD2-expressing cells and recruits Fc-receptor-bearing immune effectors and complement.',against:'GD2-positive tumor cells; this is antigen recognition, not inhibition of an oncogenic kinase.',connection:'Does not depend on directly binding FGFR1 or MYCN. Surface antigen and immune context are distinct from genomic drivers.',limit:'Not a CAR-T or CAR-NK product. GD2 positivity alone does not guarantee response or exclude normal-tissue toxicity.',evidence:'Established in defined high-risk NB postconsolidation regimens; also studied with chemotherapy in relapse. Clinical benefit must be interpreted within the specific regimen and setting.',safety:'Severe pain, infusion reactions, neuropathy, hypotension and capillary leak. Pulmonary toxicity has been reported with overlapping lorlatinib therapy.',sources:['dinu','pdq','pulmonary']},
+      {id:'dinutuximab-beta',name:'Dinutuximab beta',brand:'Qarziba',system:'immune',kind:'Anti-GD2 monoclonal antibody',mode:'gd2',target:'GD2 surface glycolipid',level:'established',mechanism:'Binds GD2 and engages immune-mediated cytotoxicity. Its production process and clinical product differ from dinutuximab.',against:'GD2-expressing neuroblastoma in defined treatment contexts.',connection:'Targets a surface antigen, not FGFR1 signaling or MYCN amplification.',limit:'Not automatically interchangeable with dinutuximab or naxitamab. The different product name does not establish safety in a new combination.',evidence:'European clinical use and studies support specified high-risk NB settings. Regimen, disease status and product labeling matter.',safety:'Pain, allergic/infusion reactions, neuropathy and capillary leak. Adding immune stimulants or kinase inhibitors can increase toxicity.',sources:['beta','pdq']},
+      {id:'naxitamab',name:'Naxitamab',brand:'Danyelza · naxitamab-gqgk',system:'immune',kind:'Humanized anti-GD2 monoclonal antibody',mode:'gd2',target:'GD2 surface glycolipid',level:'established',mechanism:'Binds GD2 and recruits immune effectors; it is used with GM-CSF in its defined US indication.',against:'A specific relapsed/refractory high-risk NB bone/bone-marrow setting after an appropriate response or stability to prior therapy.',connection:'Targets GD2 independently of directly blocking FGFR1 or MYCN.',limit:'Its indication is not all relapsed NB, every disease site, or every level of disease activity.',evidence:'US approval is for a specified clinical population and combination. It is not evidence that all anti-GD2 products have the same efficacy or can be exchanged.',safety:'Serious infusion reactions and neurotoxicity, including severe pain; specialist infusion support is essential.',sources:['naxi','pdq','pulmonary']},
+      {id:'sargramostim',name:'Sargramostim',brand:'Leukine · recombinant GM-CSF',system:'immune',kind:'Immune-supporting cytokine',mode:'gmcsf',target:'GM-CSF receptor on myeloid cells',level:'established',mechanism:'Stimulates myeloid-cell production and function through the GM-CSF receptor. It does not recognize the tumor itself.',against:'Supports immune effectors and hematopoiesis in specified contexts, including some anti-GD2 regimens.',connection:'No direct FGFR1 or MYCN targeting. Its purpose is different from inhibiting tumor-cell proliferation.',limit:'GM-CSF is not G-CSF or IL-2; these cytokines are not interchangeable. Immune stimulation is not necessarily better in every regimen.',evidence:'A component of defined anti-GD2 NB regimens, not a stand-alone NB antitumor drug. IL-2 has been removed from several standard regimens because added toxicity did not improve outcomes.',safety:'Fever, fluid retention, capillary leak, respiratory and infusion-related effects.',sources:['sar','pdq']},
+      {id:'irinotecan',name:'Irinotecan',brand:'Camptosar · CPT-11',system:'dna',kind:'Topoisomerase I poison / chemotherapy',mode:'topo',target:'Topoisomerase I–DNA complex (via SN-38)',level:'established',mechanism:'Its active metabolite SN-38 traps topoisomerase I on cut DNA, interfering with resealing and causing replication-associated damage.',against:'DNA replication in susceptible tumor cells; not selected by a single FGFR1 or MYCN alteration.',connection:'Can act on proliferating NB independently of directly inhibiting its oncogenic driver.',limit:'Not a receptor inhibitor, and response to a multi-drug regimen cannot be assigned to irinotecan alone.',evidence:'Used in relapsed NB regimens, including with temozolomide and in studied chemoimmunotherapy combinations. This does not endorse adding it to any arbitrary targeted combination.',safety:'Diarrhea, neutropenia/infection and acute cholinergic effects; metabolism and interactions can strongly influence toxicity.',sources:['irino','pdq']},
+      {id:'topotecan',name:'Topotecan',brand:'Hycamtin',system:'dna',kind:'Topoisomerase I poison / chemotherapy',mode:'topo',target:'Topoisomerase I–DNA complex',level:'established',mechanism:'Stabilizes the topoisomerase I–DNA cleavage complex, producing replication-associated DNA damage.',against:'Susceptible replicating cells rather than a specific activating mutation.',connection:'A chemotherapy mechanism separate from FGFR1 or ALK inhibition; used in multiple NB study backbones.',limit:'Does not selectively spare normal proliferating marrow cells and is not the same drug as irinotecan.',evidence:'Clinical NB evidence includes single-agent and cyclophosphamide-combination studies. Results of regimens containing an additional targeted drug are not isolated targeted-drug response rates.',safety:'Marked myelosuppression, infections and gastrointestinal toxicity; renal function influences exposure.',sources:['topo','pdq']},
+      {id:'temozolomide',name:'Temozolomide',brand:'Temodar / Temodal',system:'dna',kind:'DNA-methylating chemotherapy',mode:'methyl',target:'DNA bases, including O6-guanine',level:'established',mechanism:'Converts to a reactive methylating compound that creates DNA lesions; replication and DNA-repair processing determine cytotoxic effects.',against:'Tumor-cell replication and repair vulnerabilities, not a defined receptor mutation.',connection:'Can be part of NB chemotherapy without directly inhibiting FGFR1 or N-Myc.',limit:'MGMT and mismatch-repair biology matter; a biomarker rule from glioma is not automatically validated for NB.',evidence:'Used in studied relapsed NB regimens, notably with irinotecan and in chemoimmunotherapy. This is regimen-level evidence, not universal single-agent efficacy.',safety:'Cytopenias, infection, nausea and liver toxicity; cumulative and combination effects are important.',sources:['temo','pdq']},
+      {id:'cyclophosphamide',name:'Cyclophosphamide',brand:'Cytoxan / Endoxan',system:'dna',kind:'DNA-crosslinking chemotherapy prodrug',mode:'crosslink',target:'DNA (via activated metabolites)',level:'established',mechanism:'Metabolic activation generates phosphoramide mustard, which crosslinks DNA and interferes with replication and transcription.',against:'Broad cellular DNA processes; it is not selected by FGFR1 N546K or MYCN amplification.',connection:'Used in NB chemotherapy backbones, including studies with FGFR- and ALK-directed agents. It remains a separate cytotoxic mechanism.',limit:'Does not specifically correct a mutation or selectively target only neuroblastoma cells.',evidence:'An established component of multiple NB chemotherapy regimens. In the published futibatinib case it was given together with topotecan and futibatinib.',safety:'Myelosuppression/infections, bladder toxicity, fertility effects, cardiac toxicity in some settings and later malignancy risk.',sources:['cyclo','pdq','werr']},
+      {id:'mibg',name:'Iodine-131 MIBG',brand:'¹³¹I-metaiodobenzylguanidine · radiopharmaceutical',system:'other',kind:'Targeted radiopharmaceutical',mode:'mibg',target:'NET uptake → radiation-mediated DNA damage',level:'clinical',mechanism:'Uses norepinephrine-transporter uptake to deliver iodine-131 radiation to MIBG-avid tissue. It is not a NET-blocking therapy.',against:'MIBG-avid neuroblastoma; uptake and retained radioactivity, rather than a kinase mutation, determine delivery.',connection:'Does not directly block MYCN or FGFR1. Its route of delivery is neuroendocrine uptake biology.',limit:'Diagnostic iodine-123 MIBG is not the same treatment. Uptake does not guarantee sufficient tumor dose or a response.',evidence:'Clinical NB studies support activity in relapsed/refractory disease and investigate combinations. Access, dosimetry and stem-cell-support requirements are specialized.',safety:'Substantial marrow toxicity, thyroid/radiation exposure and later malignancy risk; requires a specialized nuclear-medicine protocol.',sources:['pdq']},
+      {id:'isotretinoin',name:'Isotretinoin',brand:'13-cis-retinoic acid · brands vary',system:'other',kind:'Differentiation-promoting retinoid',mode:'retinoid',target:'Retinoid-responsive transcriptional programs',level:'established',mechanism:'Modulates retinoid signaling and differentiation programs, including through metabolites and isomerization; it can push responsive NB cells toward maturation.',against:'Residual disease in defined postconsolidation settings, rather than a single mutated kinase.',connection:'Affects cell state and gene programs, but is not a direct N-Myc-binding drug or a method of deleting MYCN copies.',limit:'Maintenance/postconsolidation evidence is not proof of control of bulky, actively progressing disease.',evidence:'Included in high-risk NB postconsolidation therapy based on clinical studies. The disease setting and accompanying treatment are crucial.',safety:'Severe fetal toxicity, skin/mucosal effects, lipid/liver abnormalities and skeletal effects; formulation and exposure matter.',sources:['pdq']},
+      {id:'eflornithine',name:'Eflornithine',brand:'Iwilfin · DFMO',system:'other',kind:'Irreversible ornithine decarboxylase inhibitor',mode:'odc',target:'Ornithine decarboxylase / ODC1',level:'established',mechanism:'Inhibits ornithine decarboxylase, lowering production of polyamines that support cellular growth.',against:'Polyamine-synthesis biology; its defined NB use is reduction of relapse risk after response to prior multiagent treatment.',connection:'ODC1 is linked to MYCN-regulated growth programs. Eflornithine inhibits the enzyme, not MYCN itself.',limit:'Not established here as salvage for active progression, and not restricted simply by MYCN amplification status.',evidence:'US approval addresses relapse-risk reduction after at least a partial response to prior multiagent, multimodality therapy including anti-GD2 immunotherapy. Supporting externally controlled comparisons are not randomized salvage trials.',safety:'Hearing loss, myelosuppression, liver abnormalities and other adverse effects require monitoring.',sources:['eflo','pdq']}
+    ];
+    const $ = id => document.getElementById(id);
+    const escapeHtml = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    let selected = DRUGS[0], system = 'all', phase = 3, timer = null, chartZoom = 1;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    function stopPlayback() { clearInterval(timer); timer = null; $('play').textContent='Play mechanism'; $('play').setAttribute('aria-pressed','false'); }
+    function setPhase(value) {
+      phase=value;
+      $('mechanismFigure').dataset.stage=String(value);
+      document.querySelectorAll('[data-phase]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.phase)===value)));
+      const steps=[MECHANISMS[selected.mode].steps[0], selected.mechanism, MECHANISMS[selected.mode].steps[2]];
+      $('phaseCaption').textContent=`${String(value).padStart(2,'0')} / ${steps[value-1]}`;
+    }
+    function selectDrug(drug, updateUrl=true) {
+      stopPlayback(); selected=drug;
+      const m=MECHANISMS[drug.mode];
+      const fields={drugClass:drug.kind,drugName:drug.name,drugBrand:drug.brand,drugTarget:drug.target,drugLocation:m.location,evidenceBadge:EVIDENCE[drug.level],drugMechanism:drug.mechanism,drugAgainst:drug.against,drugConnection:drug.connection,drugLimit:drug.limit,evidenceText:drug.evidence,safetyText:drug.safety,svgDrug:drug.name,svgBefore:m.before[0],svgBeforeSub:m.before[1],svgTarget:m.target,svgTargetSub:'Direct point of action',svgAfter:m.after[0],svgAfterSub:m.after[1],svgAction:m.action,mechanismTitle:`${drug.name}: ${drug.target}`,mechanismDesc:`${drug.mechanism} ${m.steps[2]}`};
+      Object.entries(fields).forEach(([id,text])=>$(id).textContent=text);
+      $('actionMark').setAttribute('d', m.action==='inhibits'?'M396 113 H424':'M401 103 L410 113 L419 103');
+      $('drugSources').innerHTML=drug.sources.map(id=>{const [title,url]=SOURCES[id];return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)} ↗</a>`;}).join('');
+      document.querySelectorAll('[data-drug]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.drug===drug.id)));
+      $('drugDetail').hidden=false; $('noResults').hidden=true; setPhase(3);
+      if(updateUrl) { const url=new URL(location.href); url.hash=`drug=${drug.id}`; history.replaceState(null,'',url); }
+    }
+    function renderList(preserve=true) {
+      const terms=$('search').value.trim().toLowerCase().split(/\s+/).filter(Boolean), evidence=$('evidenceFilter').value;
+      const drugs=DRUGS.filter(d=>(system==='all'||system===d.system)&&(evidence==='all'||evidence===d.level)&&terms.every(term=>[d.name,d.brand,d.target,d.kind,d.against,d.connection,SYSTEMS[d.system]].join(' ').toLowerCase().includes(term)));
+      $('resultCount').textContent=`${drugs.length} of ${DRUGS.length} drugs`;
+      $('filterDescription').textContent=system==='all'?'All biological systems':SYSTEMS[system];
+      $('drugList').innerHTML=drugs.map(d=>`<button type="button" class="drug-pick" data-drug="${d.id}" aria-pressed="${d.id===selected.id}" aria-controls="drugDetail"><strong>${escapeHtml(d.name)}</strong><small>${escapeHtml(d.target)}</small></button>`).join('')||'<p class="empty small">No matching entries.</p>';
+      stopPlayback(); $('drugDetail').hidden=!drugs.length; $('noResults').hidden=Boolean(drugs.length);
+      if(drugs.length) selectDrug(preserve&&drugs.includes(selected)?selected:drugs[0],false);
+    }
+    function resetFilters(render=true) { system='all'; $('search').value=''; $('evidenceFilter').value='all'; document.querySelectorAll('[data-system]').forEach(b=>b.setAttribute('aria-pressed','false')); if(render)renderList(); }
+    function openDrugHash(scroll=false) {
+      const drug=DRUGS.find(d=>location.hash===`#drug=${d.id}`); if(!drug)return;
+      resetFilters(false); selected=drug; renderList(); selectDrug(drug,false);
+      if(scroll) { $('drugName').setAttribute('tabindex','-1'); $('drugName').focus({preventScroll:true}); $('drugDetail').scrollIntoView({block:'start'}); }
+    }
+    $('drugTotal').textContent=String(DRUGS.length);
+    $('overviewBody').innerHTML=DRUGS.map(d=>`<tr><td><a href="#drug=${d.id}" data-overview-drug="${d.id}">${escapeHtml(d.name)}</a></td><td>${escapeHtml(d.target)}</td><td>${escapeHtml(SYSTEMS[d.system])}</td><td>${escapeHtml(EVIDENCE[d.level])}</td></tr>`).join('');
+    $('drugList').addEventListener('click',e=>{const button=e.target.closest('[data-drug]');if(button) { selectDrug(DRUGS.find(d=>d.id===button.dataset.drug)); if(matchMedia('(max-width:760px)').matches)$('drugDetail').scrollIntoView({block:'start'}); }});
+    $('overviewBody').addEventListener('click',e=>{const link=e.target.closest('[data-overview-drug]');if(!link)return;e.preventDefault();resetFilters(false);selected=DRUGS.find(d=>d.id===link.dataset.overviewDrug);renderList();selectDrug(selected);$('drugName').setAttribute('tabindex','-1');$('drugName').focus({preventScroll:true});$('drugDetail').scrollIntoView({block:'start'});});
+    document.querySelectorAll('[data-system]').forEach(button=>button.addEventListener('click',()=>{system=system===button.dataset.system?'all':button.dataset.system;document.querySelectorAll('[data-system]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.system===system)));renderList();}));
+    $('search').addEventListener('input',()=>renderList()); $('evidenceFilter').addEventListener('change',()=>renderList()); $('reset').addEventListener('click',()=>resetFilters());
+    document.querySelectorAll('[data-phase]').forEach(button=>button.addEventListener('click',()=>{stopPlayback();setPhase(Number(button.dataset.phase));}));
+    $('play').addEventListener('click',()=>{if(timer){stopPlayback();return;}setPhase(1);$('play').textContent='Pause';$('play').setAttribute('aria-pressed','true');timer=setInterval(()=>{setPhase(phase+1);if(phase===3)stopPlayback();},3000);});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPlayback();}); window.addEventListener('pagehide',stopPlayback); reducedMotion.addEventListener('change',()=>{stopPlayback();setPhase(3);});
+    function updateSiteLinks() { document.querySelectorAll('[data-site-link]').forEach(link=>{const url=new URL(link.getAttribute('href'),location.href);url.searchParams.set('clawpilotTheme',document.documentElement.dataset.theme);link.href=url.href;}); }
+    function updateTheme() { const dark=document.documentElement.dataset.theme==='dark';$('theme').textContent=dark?'Light UI':'Dark UI';$('theme').setAttribute('aria-label',`Switch to ${dark?'light':'dark'} theme`);updateSiteLinks(); }
+    $('theme').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';updateTheme();});updateTheme();
+    function setChartZoom(value) { chartZoom=Math.max(1,Math.min(3,value));$('chartViewport').classList.toggle('is-zoomed',chartZoom>1);$('alterationChart').style.width=`${chartZoom*100}%`;$('chartZoomLabel').textContent=chartZoom===1?'Fit':`${Math.round(chartZoom*100)}%`;$('chartZoomOut').disabled=chartZoom===1;$('chartZoomIn').disabled=chartZoom===3;if(chartZoom===1){$('chartViewport').scrollLeft=0;$('chartViewport').scrollTop=0;} }
+    $('chartZoomIn').addEventListener('click',()=>setChartZoom(chartZoom+.5));$('chartZoomOut').addEventListener('click',()=>setChartZoom(chartZoom-.5));$('chartFit').addEventListener('click',()=>setChartZoom(1));
+    $('chartExpand').addEventListener('click',()=>{stopPlayback();$('expandedChart').style.width='100%';$('expandedZoom').textContent='Enlarge 2×';$('expandedZoom').setAttribute('aria-pressed','false');$('chartDialog').showModal();$('expandedViewport').scrollTo(0,0);});
+    $('chartClose').addEventListener('click',()=>$('chartDialog').close());$('expandedZoom').addEventListener('click',()=>{const enlarged=$('expandedZoom').getAttribute('aria-pressed')!=='true';$('expandedChart').style.width=enlarged?'200%':'100%';$('expandedZoom').setAttribute('aria-pressed',String(enlarged));$('expandedZoom').textContent=enlarged?'Fit image':'Enlarge 2×';});
+    window.addEventListener('hashchange',()=>openDrugHash(true));renderList();openDrugHash();setChartZoom(1);
+  </script>
+</body>
+</html>

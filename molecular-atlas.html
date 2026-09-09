@@ -87,7 +87,7 @@
     }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 14px/1.55 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { margin: 0; display:flex; flex-direction:column; height:100vh; height:100dvh; background: var(--cp-bg); color: var(--cp-text); font: 14px/1.55 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
     h1,h2,h3,p { margin: 0; }
     a { color: var(--cp-link); text-underline-offset: 3px; }
     button, select, input, textarea { font: inherit; }
@@ -98,7 +98,7 @@
     :focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 3px; }
     code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
     code { font-size: .91em; overflow-wrap: anywhere; }
-    .app { display: grid; grid-template-rows: auto minmax(0,1fr); height: 100vh; height: 100dvh; min-height: 660px; }
+    .app { display: grid; grid-template-columns:minmax(0,1fr); grid-template-rows: auto minmax(0,1fr); width:100%; flex:1; min-height: 860px; }
     .header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:18px 24px; border-bottom:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
     .brand { display:flex; align-items:center; gap:14px; }
     .brandmark { width:38px; height:38px; display:grid; place-items:center; color:var(--cp-accent); background:var(--cp-accent-soft); border:1px solid var(--cp-accent); border-radius:10px; font-size:23px; }
@@ -107,8 +107,22 @@
     .header .eyebrow { margin-top:5px; }
     .toolbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .toolbar button { font-size:12px; }
-    .workspace { display:grid; grid-template-columns:226px minmax(0,1fr) 348px; min-height:0; }
-    .sidebar { padding:22px 16px; overflow-y:auto; border-right:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    /* Shared site bar: keep this standalone markup/style aligned across the four pages. */
+    .site-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px 20px; flex-shrink:0; padding:16px max(24px,calc((100vw - 1360px)/2)); border-bottom:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .site-brand { display:flex; gap:12px; align-items:center; min-width:0; color:var(--cp-text); text-decoration:none; line-height:1.3; }
+    .site-brand-mark { display:grid; place-items:center; width:40px; height:40px; flex-shrink:0; border:1px solid var(--cp-accent); color:var(--cp-accent); border-radius:10px; font-size:25px; }
+    .site-brand strong { display:block; font-size:15px; font-weight:650; }
+    .site-brand small { display:block; color:var(--cp-text-soft); font-size:11px; }
+    .site-nav { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .site-nav a { display:inline-flex; align-items:center; min-height:44px; color:var(--cp-text-soft); text-decoration:none; padding:9px 12px; font-size:13px; line-height:1.5; border-radius:10px; }
+    .site-nav a[aria-current="page"] { color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .site-nav a:hover { color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .site-nav button { font-size:12px; min-height:44px; }
+    .site-header :focus-visible { outline:2px solid var(--cp-accent); outline-offset:3px; }
+    .toolbar a { font-size:12px; }
+    @media(max-width:760px) { .site-header { padding:16px; } .site-nav { gap:4px; } .site-nav a { padding:8px; font-size:12px; } }
+    .workspace { display:grid; grid-template-columns:226px minmax(0,1fr) 348px; min-height:0; min-width:0; }
+    .sidebar { min-width:0; padding:22px 16px; overflow-y:auto; border-right:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
     .sidebar>.eyebrow { margin:0 8px 14px; }
     .chapters { display:grid; gap:6px; }
     .chapter { display:grid; grid-template-columns:26px 1fr; gap:8px; align-items:center; text-align:left; border-color:var(--cp-clear); background:var(--cp-clear); padding:10px 8px; }
@@ -188,10 +202,36 @@
     .glossary { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .glossary dt { color:var(--cp-accent); font-weight:600; }
     .glossary dd { margin:4px 0 0; font-size:12px; }
+    .learning-mode { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--cp-text-soft); }
+    .learning-mode select { font-size:12px; min-height:36px; }
+    .live-caption { padding:14px 22px; color:var(--cp-stage-text); background:var(--cp-stage); border-top:1px solid var(--cp-border); min-height:108px; }
+    .live-caption .eyebrow { color:var(--cp-rna); margin-bottom:5px; }
+    #captionText { font-size:14px; line-height:1.5; max-width:80ch; }
+    .scale-route { display:flex; flex-wrap:wrap; gap:4px 12px; padding:0 22px 10px; color:var(--cp-stage-muted); font:10px/1.5 Consolas,monospace; }
+    .scale-route span[aria-current="step"] { color:var(--cp-rna); text-decoration:underline; text-underline-offset:4px; }
+    .term-list { display:grid; gap:10px; margin:16px 0; }
+    .term-card { padding:12px; border:1px solid var(--cp-border); border-radius:10px; background:var(--cp-surface); }
+    .term-card dt { font-weight:650; color:var(--cp-accent); font-size:13px; }
+    .term-card dd { margin:4px 0 0; font-size:12px; color:var(--cp-text-soft); }
+    .lesson details { margin-top:20px; }
+    .lesson summary { cursor:pointer; color:var(--cp-link); font-size:12px; padding:10px 0; }
+    .lesson details h3 { margin-top:12px; }
+    .check-question { margin-top:16px; padding:12px; background:var(--cp-surface-soft); border-radius:10px; font-size:12px; }
+    .check-question summary { padding:0; }
+    .check-question p { padding-top:10px; }
+    .timeline-row { display:flex; gap:10px; align-items:center; }
+    .timeline-row input { margin:4px 0 0; }
+    .timeline-row output { min-width:40px; font:10px Consolas,monospace; color:var(--cp-text-soft); }
+    .timeline-label { display:block; font-size:10px; color:var(--cp-text-soft); margin-top:8px; }
+    .continue-chapter { margin-top:12px; width:100%; text-align:left; }
+    .scene-heading,.live-caption,.scene-options,.scale-route,.transport { flex-shrink:0; }
+    @media (max-width:1000px) { .scene-column { height:auto; min-height:0; } .stage-wrap { flex:0 0 420px; } }
+    @media (max-width:640px) { .brand,.brand>div { min-width:0; } .brandmark { flex-shrink:0; } .toolbar { max-width:100%; } .scene-column { height:auto; min-height:0; } .stage-wrap { flex:0 0 380px; } .live-caption { padding:12px 16px; min-height:126px; } #captionText { font-size:13px; } .scale-route { padding:0 16px 10px; } .transport-top { align-items:flex-start; } .step-label { max-width:115px; } .scene-label { max-width:155px; white-space:normal; } .canvas-note { font-size:9px; } }
     @media (max-width:1250px) { .workspace{grid-template-columns:190px minmax(0,1fr) 306px;} .lesson{padding:20px;} .chapter{padding:9px 4px;gap:4px;} .sidebar{padding:18px 10px;} }
     @media (max-width:1000px) {
+      body { height:auto; }
       .app{height:auto;min-height:100vh;} .workspace{grid-template-columns:190px minmax(0,1fr);}
-      .sidebar{grid-row:1/3;overflow:visible;} .scene-column{height:660px;} .lesson{grid-column:2;overflow:visible;border-top:1px solid var(--cp-border);}
+      .sidebar{grid-row:1/3;overflow:visible;} .scene-column{height:auto;min-height:0;} .lesson{grid-column:2;overflow:visible;border-top:1px solid var(--cp-border);}
       .header{padding:16px;gap:12px;}.header .eyebrow{font-size:9px;}h1{font-size:21px;}
     }
     @media (max-width:640px) {
@@ -199,34 +239,63 @@
       .toolbar{gap:6px;} .toolbar button{font-size:11px;padding:6px 9px;min-height:36px;}
       .workspace{display:flex;flex-direction:column;} .sidebar{padding:12px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--cp-border);}
       .sidebar>.eyebrow,.sidebar-note{display:none;} .chapters{display:flex;gap:8px;} .chapter{flex:0 0 160px;padding:8px;}
-      .scene-column{height:580px;min-height:580px;} .scene-heading{padding:14px 16px 8px;}.scene-heading h2{font-size:18px;}
+      .scene-column{height:auto;min-height:0;} .scene-heading{padding:14px 16px 8px;}.scene-heading h2{font-size:18px;}
       .scene-options{padding:0 16px 10px;}.transport{padding:12px 16px;}.lesson{padding:22px;border-left:0;}
       .seq-meta,.glossary{grid-template-columns:1fr;}.dialog-head,.dialog-body{padding:16px;}.scene-label{font-size:10px;padding:2px 4px;}
     }
+    .journey-controls { padding:12px 20px 16px; background:var(--cp-bg-elevated); border-top:1px solid var(--cp-border); flex-shrink:0; }
+    .journey-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .journey-row label { font-size:11px; display:flex; align-items:center; gap:6px; }
+    .journey-row button,.journey-row select { min-height:34px; padding:5px 9px; font-size:11px; }
+    #zoomReadout { margin-left:auto; font:11px Consolas,monospace; color:var(--cp-text-soft); }
+    .journey-stops { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+    .journey-stops button { min-height:28px; font-size:10px; padding:3px 7px; }
+    .zoom-hud { position:absolute; left:14px; top:12px; z-index:3; color:var(--cp-stage-text); background:var(--cp-stage-panel); border:1px solid var(--cp-border); border-radius:10px; padding:8px 12px; max-width:calc(100% - 28px); pointer-events:none; font-size:11px; }
+    .zoom-hud strong { color:var(--cp-rna); font-weight:500; }
+    .sequence-strip { font:12px/1.9 Consolas,monospace; overflow-wrap:anywhere; padding:12px; border:1px solid var(--cp-border); border-radius:10px; margin:12px 0; }
+    .sequence-strip mark { background:var(--cp-accent-soft); color:var(--cp-accent); font-weight:bold; }
+    .layer-toggles { margin-top:10px; display:flex; flex-wrap:wrap; gap:4px 12px; }
+    .layer-toggles label { display:flex; gap:4px; align-items:center; font-size:11px; }
+    .layer-toggles input { width:14px; height:14px; }
+    body[data-chapter="orientation"] #scaleRoute { display:none; }
+    @media (max-width:640px) { .journey-controls { padding:12px; } #zoomReadout { margin-left:0; width:100%; } .zoom-hud { font-size:10px; } }
     @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <a class="site-brand" href="molecular-atlas.html" data-site-link><span class="site-brand-mark" aria-hidden="true">↬</span><span><strong>Molecular Teaching Atlas</strong><small>Understand the biology. Read the evidence.</small></span></a>
+    <nav class="site-nav" aria-label="Site navigation"><a href="molecular-atlas.html" data-site-link aria-current="page">Molecular atlas</a><a href="drug-atlas.html" data-site-link>Drugs &amp; targets</a><a href="immunotherapy-simulation.html" data-site-link>Immunotherapy</a><a href="cytotherapy-atlas.html" data-site-link>Inside the Paper</a><button id="theme" type="button">Theme</button></nav>
+  </header>
   <main class="app">
     <header class="header">
       <div class="brand"><div class="brandmark" aria-hidden="true">↬</div><div><h1>MYCN × FGFR1</h1><p class="eyebrow">Molecular teaching atlas · Neuroblastoma · Evidence checked 09 Sep 2026</p></div></div>
-      <div class="toolbar"><button id="sequenceOpen" type="button">Sequence workbench</button><button id="referencesOpen" type="button">Sources &amp; evidence</button><button id="glossaryOpen" type="button">Glossary</button><button id="theme" type="button">Theme</button></div>
+      <div class="toolbar"><label class="learning-mode">Reading level <select id="learningMode"><option value="beginner">Start here · plain language</option><option value="academic">Academic detail</option></select></label><button id="sequenceOpen" type="button">Sequence workbench</button><button id="referencesOpen" type="button">Sources &amp; evidence</button><button id="glossaryOpen" type="button">Glossary</button><a href="drug-atlas.html#alterations" data-site-link>Alteration diagram ↗</a></div>
     </header>
     <div class="workspace">
-      <nav class="sidebar" aria-label="Teaching chapters"><p class="eyebrow">From information to phenotype</p><div id="chapters" class="chapters"></div><div class="sidebar-note"><p><strong>Two distinct alterations</strong><br>MYCN: DNA dosage.<br>FGFR1 N546K: kinase regulation.</p><p>Chapters 01–07 are molecular cartoons. Chapter 08 uses experimental PDB coordinates with construct limitations.</p><p>Not a patient-specific model, treatment recommendation, or accredited course. No private clinical measurements are embedded.</p><p>This HTML is separate from the private research dossier. If distributing it, share this file alone—not the workspace folder.</p></div></nav>
+      <nav class="sidebar" aria-label="Teaching chapters"><p class="eyebrow">Body → cell → mechanism</p><div id="chapters" class="chapters"></div><div class="sidebar-note"><p><strong>Two distinct alterations</strong><br>MYCN: DNA dosage.<br>FGFR1 N546K: kinase regulation.</p><p>Start with the body-to-molecule tour. Teaching scenes are cartoons; the final lab uses experimental PDB coordinates with construct limitations.</p><p>Not a patient-specific model, treatment recommendation, or accredited course. No private clinical measurements are embedded.</p><p>This HTML is separate from the private research dossier. If distributing it, share this file alone—not the workspace folder.</p></div></nav>
       <section class="scene-column" aria-label="Three-dimensional lesson">
         <div class="scene-heading"><div><p id="sceneBadge" class="eyebrow">Schematic · not to scale</p><h2 id="sceneTitle">Loading the atlas…</h2></div><button id="fit" type="button">Reset view</button></div>
         <div class="stage-wrap" id="stageWrap">
           <canvas id="scene" tabindex="0" aria-label="Interactive schematic molecular model" aria-describedby="canvasHelp"></canvas>
           <div id="molecule" tabindex="0" role="img" aria-label="Experimental molecular structure" hidden></div>
           <div id="labels"></div>
+          <div id="zoomHud" class="zoom-hud" hidden><strong id="zoomLocation">Whole body</strong><br><span id="zoomScale">Illustrative spatial model</span></div>
           <div class="scene-message" id="sceneMessage" role="status"><p id="sceneMessageText">Preparing the 3D teaching environment…</p><button id="retry" type="button" hidden>Reload</button></div>
           <p id="canvasHelp" class="canvas-note">Drag to orbit · right-drag to pan · wheel/pinch to zoom · +/− zoom · arrows orbit · click a labeled molecule</p>
         </div>
+        <div id="scaleRoute" class="scale-route" aria-label="Current level of organization" hidden></div>
+        <div id="liveCaption" class="live-caption"><p id="captionPhase" class="eyebrow"></p><p id="captionText" role="status" aria-live="polite" aria-atomic="true"></p></div>
+        <div id="journeyControls" class="journey-controls" hidden>
+          <div class="journey-row"><label>Explore <select id="journeyBranch"><option value="dna">Nuclear DNA → A T G C</option><option value="protein">Membrane → FGFR1 protein atoms</option></select></label><button id="zoomOut" type="button" aria-label="Zoom outward">−</button><button id="zoomIn" type="button" aria-label="Zoom inward">+</button><button id="zoomTour" type="button" aria-pressed="false">Auto zoom</button><output id="zoomReadout">Whole person</output></div>
+          <label class="timeline-label" for="journeyZoom">Continuous depth · wheel over the model, pinch, or drag this slider</label><input id="journeyZoom" type="range" min="0" max="1000" step="1" value="0" aria-label="Body to molecular zoom depth">
+          <div id="journeyStops" class="journey-stops" aria-label="Zoom landmarks"></div>
+          <div class="layer-toggles" id="anatomyLayers"><label><input type="checkbox" value="wall" checked>Body wall</label><label><input type="checkbox" value="skeleton" checked>Skeleton</label><label><input type="checkbox" value="nerves" checked>Sympathetic tissue</label><label><input type="checkbox" value="vessels" checked>Vessels</label><label><input type="checkbox" value="organs" checked>Organs</label></div>
+        </div>
         <div class="scene-options" id="sceneOptions"></div>
-        <div class="transport" id="transport"><div class="transport-top"><div class="transport-buttons"><button id="previous" type="button" aria-label="Previous teaching step">←</button><button id="play" type="button" aria-pressed="false">Play steps</button><button id="next" type="button" aria-label="Next teaching step">→</button></div><span id="stepLabel" class="step-label"></span></div><input id="progress" type="range" min="0" max="4" value="0" step="1" aria-label="Teaching step"></div>
+        <div class="transport" id="transport"><div class="transport-top"><div class="transport-buttons"><button id="previous" type="button" aria-label="Previous teaching step">←</button><button id="play" type="button" aria-pressed="false">Play lesson</button><button id="replay" type="button" aria-label="Replay this teaching step">↺</button><button id="next" type="button" aria-label="Next teaching step">→</button></div><span id="stepLabel" class="step-label"></span></div><label class="timeline-label" for="animationProgress">Animation within this step · drag to inspect</label><div class="timeline-row"><input id="animationProgress" type="range" min="0" max="1000" value="0" step="1"><output id="animationTime" for="animationProgress">0:00</output></div><label class="timeline-label" for="progress">Jump to a teaching step</label><input id="progress" type="range" min="0" max="4" value="0" step="1" aria-label="Teaching step"></div>
       </section>
-      <aside class="lesson" id="lesson" aria-label="Academic explanation">
+      <aside class="lesson" id="lesson" aria-label="Teaching explanation and evidence">
         <div id="lessonContent"></div>
         <div id="labControls" class="lab-controls" hidden>
           <label>Experimental entry<select id="structureSelect"><option value="1FGK">1FGK · FGFR1 autoinhibited kinase</option><option value="3GQI">3GQI · active FGFR1 + PLCγ fragment</option><option value="1FQ9">1FQ9 · classical FGF2 / FGFR1 / heparin</option><option value="7YSH">7YSH · asymmetric FGF23 / FGFR1 / Klotho</option><option value="5G1X">5G1X · N-Myc peptide + Aurora-A</option><option value="1NKP">1NKP · c-Myc / MAX / DNA — analogy only</option></select></label>
@@ -289,10 +358,29 @@
         M23:['Bae et al. 2009 · FGFR1 / PLCγ recognition','https://www.rcsb.org/structure/3GQI','Experimental structure · X-ray 2.50 Å','Phosphorylated human FGFR1 with rat PLCγ tandem-SH2 fragment and ATP analog. Engineered C488A/Y583F/C584S/Y585F. Not full PLCγ or mutant N546K.'],
         M24:['Nair & Burley 2003 · c-Myc / MAX / DNA','https://www.rcsb.org/structure/1NKP','Experimental homolog example · X-ray 1.80 Å','c-Myc (MYC), NOT N-Myc (MYCN). A related-family DNA-recognition example with author-specific numbering; no N-Myc-specific contacts claimed.'],
         M25:['Malumbres 2014 · Cyclin-dependent kinases','https://doi.org/10.1186/gb4184','Review · full-text sections verified','Cyclins, CDK4/6, RB/E2F, INK4 and Cip/Kip inhibitors. p21 usually restrains cell-cycle progression; bypass routes and cell context matter.'],
-        M26:['Chesler et al. 2006 · PI3K / N-Myc stability — caution','https://doi.org/10.1158/0008-5472.CAN-05-2769','Historical primary paper · editorial concern','2024 Editor’s Note, DOI 10.1158/0008-5472.CAN-24-2888, flags similar Figure 7B β-tubulin controls. Not used for quantitative predictions. Historical T50/S54 construct labels must not silently become human T58/S62.']
+        M26:['Chesler et al. 2006 · PI3K / N-Myc stability — caution','https://doi.org/10.1158/0008-5472.CAN-05-2769','Historical primary paper · editorial concern','2024 Editor’s Note, DOI 10.1158/0008-5472.CAN-24-2888, flags similar Figure 7B β-tubulin controls. Not used for quantitative predictions. Historical T50/S54 construct labels must not silently become human T58/S62.'],
+        M27:['NCI · Neuroblastoma treatment, professional PDQ','https://www.cancer.gov/types/neuroblastoma/hp/neuroblastoma-treatment-pdq','Clinical reference · anatomy sections','Adrenal-medullary, paraspinal and periaortic sympathetic tissue; possible sites from neck to pelvis. Paraspinal origin is not primary origin inside the spinal cord. Original schematic anatomy only; no NCI artwork reused.'],
+        M28:['NCI · What is cancer?','https://www.cancer.gov/about-cancer/understanding/what-is-cancer','Public educational reference','Tumor microenvironment includes blood vessels, immune cells, fibroblasts and molecules. The illustrated neighborhood is generic, not measured tumor composition.'],
+        M29:['NCI · Neuroblastoma treatment, patient PDQ','https://www.cancer.gov/types/neuroblastoma/patient/neuroblastoma-treatment-pdq','Public educational reference · anatomy','Adrenal glands lie above the kidneys. Primary and metastatic sites differ; bone and marrow are not the same compartment. The professional PDQ supplies the more precise paraspinal-origin wording.'],
+        M30:['GRCh38 · MYCN contiguous genomic anchor','https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_000002.12&seq_start=15942065&seq_stop=15942100&strand=1&rettype=fasta&retmode=text','Exact chromosome sequence independently retrieved','NC_000002.12:15942065–15942100, plus strand; 36 nt, matching NM_005378.6 transcript312–347 / c.1–36. This short segment is contiguous genomic DNA; the complete spliced CDS is not. No patient sequence.'],
+        M31:['GRCh38 · FGFR1 N546 genomic anchor','https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_000008.11&seq_start=38417316&seq_stop=38417348&strand=2&rettype=fasta&retmode=text','Exact chromosome sequence independently retrieved','NC_000008.11:38417316–38417348, minus/coding orientation; 33 nt matching NM_023110.3 c.1621–1653. Display base18 is c.1638C, opposite genomic g.38417331G. Not patient-derived DNA.'],
+        M32:['Alberts · Chromosomal DNA and its packaging','https://www.ncbi.nlm.nih.gov/books/NBK26834/','Foundational textbook · chromosome organization','Interphase chromosome territories differ from condensed mitotic chromosomes. An X represents replicated sister chromatids, not the two homologous chromosomes. Higher-order chromatin is heterogeneous; a regular 30-nm fiber is not imposed here.'],
+        M33:['Hou et al. 2023 · Nucleosome structural context','https://doi.org/10.1038/s41467-023-42072-1','Primary structural literature · canonical core description','Approximately147bp wrap1.65 turns around the histone octamer. The zoom uses generic packaging cartoons, not mapped nucleosome positions at MYCN or an experimentally solved chromosome.'],
+        M34:['OpenStax Biology · DNA structure','https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing','Foundational open textbook','A–T and G–C pairing, antiparallel strands, approximately2nm B-DNA diameter and0.34nm rise per base pair. Display geometry is idealized, not sequence-specific coordinates.'],
+        M35:['TeachMeAnatomy · Adrenal glands','https://teachmeanatomy.info/abdomen/viscera/adrenal-glands/','Anatomical reference','Retroperitoneal suprarenal location and side-specific neighboring organs. Transparency/cutaways are teaching devices, not a surgical route through every system.']
       };
       // Each step: title, core mechanism, molecular detail, evidence boundary, references.
       const CHAPTERS = [
+        {id:'orientation',title:'Body → cell → molecule',subtitle:'Continuous zoom · start here',view:'orientation',steps:[
+          ['Begin with the whole person','Neuroblastoma develops from an immature sympathetic-lineage cell population. The sympathetic system helps control involuntary functions such as responses to stress.','This original front-facing, transparent anatomy cartoon locates sympathetic tissue beside the spine and in the adrenal region. It is a developmental lineage and location guide, not a map of a particular patient, a mature neuron transforming on camera, or a brain-tumor model.','Body proportions, organ geometry and distances are schematic. No medical scan or patient-specific primary site is used.',['M27','M29']],
+          ['Find the sympathetic system','The paired sympathetic chains lie alongside the spine. Neuroblastoma can arise in associated tissue from the neck down to the pelvis.','The spinal cord belongs to the central nervous system. Sympathetic ganglia and associated tissue outside it belong to the peripheral autonomic system. A paraspinal tumor may extend through neural foramina and compress the cord; that is different from originating inside the cord.','The highlighted dots mark schematic ganglia, not tumors. The nervous system is a location guide, not a route taken by the camera.',['M27']],
+          ['An adrenal gland is above a kidney—not part of it','For this teaching route, select an adrenal region. The gland has an outer cortex and an inner medulla; neuroblastoma can originate in the medullary sympathetic lineage.','The adrenal glands lie in the posterior upper abdomen, in the retroperitoneal region. Skin and the body wall are superficial; abdominal viscera provide surrounding context, not a universal sequence of organs one must cross. The endocrine adrenal cortex and medulla have different lineages and functions.','An adrenal primary is an example, not the site of every neuroblastoma. The cutaway separates cortex from medulla; it does not show a measured tumor boundary.',['M27','M29']],
+          ['Enter a tissue neighborhood','A tumor is more than cancer cells. Blood vessels, support cells, immune cells and material between cells form its local neighborhood.','The extracellular matrix is a network of molecules outside cells. Fibroblasts help make and remodel it; vessels exchange oxygen, nutrients and waste. Cell proportions and vascular organization vary greatly between tumors. A larger tumor can result from extra divisions, fewer cell deaths, or both.','The magnification changes here. Cell counts, vessel layout and immune behavior are illustrative—not histology or a perfusion model.',['M28']],
+          ['Choose one cell','The cell membrane is the boundary. Inside are the cytoplasm, the nucleus and specialized structures that build and process molecules.','The nucleus contains most cellular DNA. Ribosomes synthesize proteins; membrane/secreted proteins such as FGFR1 enter the ER/Golgi trafficking pathway. The cytoplasm includes many other organelles that this selected cutaway omits. No membrane is literally this transparent.','A membrane, a nucleus and a ribosome are different structures. This cutaway and enlarged organelles teach location, not measured ultrastructure.',['M20','M21']],
+          ['Inside the nucleus: MYCN is DNA','A gene is a stretch of DNA containing information used to make a functional product. MYCN is one such gene. Amplified means extra copies of its DNA region.','DNA remains in the nucleus while RNA transcripts can be processed and exported. MYCN mRNA is translated into N-Myc protein, which can return to the nucleus and regulate transcription. The compact chromosome symbol only orients the locus; most interphase DNA is chromatin rather than visible X-shaped chromosomes.','The DNA helix is enlarged and simplified. Extra MYCN copies do not guarantee a fixed increase in RNA or N-Myc protein.',['M02','M04','M12']],
+          ['At the membrane: FGFR1 receives and relays signals','FGFR1 is a protein spanning the cell membrane. Its outside region interacts with FGF and cofactors; its inside enzyme region helps start signaling reactions.','The receptor’s intracellular kinase transfers phosphate from ATP to suitable protein sites. Adaptors connect to branches that influence transcription, metabolism and survival. Reactions—not a single particle traveling all the way to DNA—carry the signal.','This is a second location within the same cell, not a step in DNA moving outward. A kinase cartoon is not an atomic folding trajectory.',['M01','M06']],
+          ['Connect the two locations','MYCN amplification changes how much DNA template is available. FGFR1 N546K changes a protein’s regulation. They are different changes that can cooperate in models.','Cell-surface signaling and nuclear transcription influence overlapping programs, with feedback, turnover, cell-state constraints and competing pathways. Increased biomass, completed cell division and reduced cell death are distinct outcomes. Continue to the individual chapters for each causal step.','This connection is not a patient-specific dependency map or a prediction of treatment response. Experimental structures are available separately.',['M12','M17']]
+        ]},
         {id:'genome',title:'MYCN amplification',subtitle:'Gene dosage & chromatin',view:'genome',steps:[
           ['A gene is not its protein','MYCN is a DNA locus at 2p24.3. Its product, N-Myc, is a nuclear transcription factor; it is not FGFR and is not a kinase.','An ordinary diploid G1 cell has two homologous chromosome-2 copies. A tumor can have altered ploidy. MYCN amplification is a focal increase relative to genomic background, not merely “more than two signals.” DNA, mRNA, protein abundance and biochemical activity are four separate measurements. The compact chromosome glyphs here orient the locus; interphase chromatin is not literally X-shaped.','Copy number alone neither establishes the physical amplicon architecture nor predicts active protein abundance.',['M02','M04','M12']],
           ['Extra DNA templates','An amplified region contains many copies of MYCN, often together with regulatory DNA and other genes. The encoded N-Myc sequence need not change.','Genomic rearrangement and selection can generate and maintain high-copy amplicons. This is different from a missense mutation changing a codon, and from an entire chromosome gain. Greater template dosage can increase expression, but transcription, RNA turnover, translation and protein degradation all intervene. The circles and repeated bands are alternative architectures—not a measured copy count.','An “amplified” result does not mean more copies in every normal cell or prove a germline alteration.',['M12','M13','M04']],
@@ -349,7 +437,7 @@
         '1FGK':{title:'FGFR1 · autoinhibited kinase',ref:'M22',resolution:'X-ray · 2.00 Å',chains:{A:['FGFR1 kinase','molecule']},focus:{brake:{chain:'A',resi:[546,562,638]},loop:{chain:'A',resi:[653,654]},atp:{chain:'A',resi:[484,485,486,487,488,489,490,514,562,563,564,641]}},note:'Chain A only, a representative kinase fragment. Asn546 is the reference residue, NOT Lys546. The deposit includes sequence differences C488A/C584S (and L457V outside observed chain-A coordinates). Missing loops are not rebuilt. The crystallographic dimer is not rendered as a full membrane receptor.'},
         '3GQI':{title:'FGFR1 · active kinase / PLCγ interface',ref:'M23',resolution:'X-ray · 2.50 Å',chains:{A:['Human FGFR1','molecule'],B:['Rat PLCγ1 SH2 fragment','cofactor']},focus:{brake:{chain:'A',resi:[546,562,638]},loop:{chain:'A',resi:[653,654]},atp:{chain:'A',resn:'ACP'}},note:'Human FGFR1 A contains C488A/Y583F/C584S/Y585F. Its Y653/Y654/Y766 are deposited as PTR (phosphotyrosine). Rat PLCγ1 B is a tandem-SH2 fragment, not full lipase. ACP is an ATP analog, not a simulated ATP→ADP reaction. No N546K mutant or measured transition is shown.'},
         '1FQ9':{title:'Classical FGF2 / FGFR1 / heparin',ref:'M10',resolution:'X-ray · 3.00 Å',chains:{A:['FGF2','rna'],B:['FGF2','rna'],C:['FGFR1 D2–D3','molecule'],D:['FGFR1 D2–D3','molecule'],E:['Heparin','cofactor'],F:['Heparin','cofactor']},focus:{},note:'Classical 2:2:2 assembly using engineered FGF2 fragments (Cys→Ser at author 69/87), FGFR1 D2–D3 (N185Q), and heparin surrogate. Resolved sugar coverage is incomplete. D1, membrane, full glycans and kinase are absent. This is not the only supported receptor assembly model.'},
-        '7YSH':{title:'Asymmetric FGF23 / FGFR1 / αKlotho / HS',ref:'M11',resolution:'Cryo-EM · 2.74 Å',chains:{A:['αKlotho','protein'],B:['FGF23','rna'],D:['FGFR1c','molecule'],E:['FGFR1c','molecule'],F:['HS','cofactor']},focus:{},note:'One endocrine FGF23, two FGFR1c ligand-binding fragments and one αKlotho with HS: asymmetric 1:2:1:1 assembly. FGF23 construct includes R176Q/R179Q; tags, missing segments and deposited glycans are retained as deposited. Do not interpret this as FGF2, a full-length receptor, or evidence of FGF23/αKlotho expression in a tumor. Paracrine extension comes from separate cell experiments.'},
+        '7YSH':{title:'Asymmetric FGF23 / FGFR1 / αKlotho / HS',ref:'M11',resolution:'Cryo-EM · 2.74 Å',chains:{A:['αKlotho','protein'],B:['FGF23','rna'],D:['FGFR1c','molecule'],E:['FGFR1c','molecule'],F:['HS','cofactor']},focus:{},note:'One endocrine FGF23, two FGFR1c ligand-binding fragments and one αKlotho with HS: asymmetric 1:2:1:1 assembly. FGF23 R176Q/R179Q are recorded as VARIANT. The paper says linker 172–182 lacked interpretable density, although the current deposit includes coordinates there: do not treat their geometry as securely resolved. Tags, missing segments and glycans remain as deposited. Not FGF2, a full receptor, or evidence of tumor FGF23/αKlotho expression. Paracrine extension comes from separate cell experiments.'},
         '5G1X':{title:'N-Myc peptide bound to Aurora-A',ref:'M15',resolution:'X-ray · 1.72 Å',chains:{A:['Aurora-A','dna'],B:['N-Myc residues 61–89','molecule']},focus:{peptide:{chain:'B',resi:Array.from({length:29},(_,i)=>61+i)}},note:'N-Myc peptide construct 28–89; only 61–89 is resolved. T58 and 28–60 are absent; do not infer their positions. Aurora-A contains C290A/C393A. This is not full N-Myc or N-Myc/MAX. ADP/Mg belong to Aurora-A; N-Myc is not an ATP-dependent kinase.'},
         '1NKP':{title:'c-Myc / MAX / DNA — homolog example',ref:'M24',resolution:'X-ray · 1.80 Å',chains:{A:['c-Myc, NOT N-Myc','molecule'],B:['MAX','cofactor'],F:['DNA','dna'],G:['DNA','dna']},focus:{dna:{chain:['F','G']}},note:'Displayed A/B/F/G pair from the crystallographic entry. c-Myc is encoded by MYC, NOT MYCN. This is a family-level structural analogy only. PDB author A900–981 maps to c-Myc reference 353–434; B202–281 maps to MAX23–102. Engineered terminal residues and author numbering are retained.'}
       };
@@ -370,6 +458,149 @@
         'Phosphodegron':'A phosphorylation-regulated protein region recognized by degradation machinery. Protein turnover is distinct from gene dosage.',
         'Growth / proliferation / survival':'More biomass; more cells; less cell loss. A larger tumor can reflect several of these processes.'
       };
+      // Plain-language teaching layer. Three timed captions per step; academic
+      // mechanism, provenance and uncertainties stay available in both modes.
+      const TERMS = {
+        'Sympathetic system':'The part of the automatic nervous system involved in responses such as stress, heart-rate changes and sweating.',
+        'Ganglion':'A cluster of nerve-cell bodies outside the brain and spinal cord. The plural is ganglia.',
+        'Adrenal gland':'A small hormone-producing gland above a kidney. It is a separate organ, not part of the kidney.',
+        'Medulla / cortex':'The inner and outer regions of an organ. In the adrenal gland these regions have different functions and developmental origins.',
+        'Retroperitoneal':'Behind the lining of the main abdominal cavity. This describes a region, not a separate organ.',
+        'Tissue':'A community of cells and the material around them, organized to carry out functions.',
+        'Microenvironment':'The local neighborhood around cells, including support cells, immune cells, vessels and extracellular molecules.',
+        'Cell membrane':'A thin lipid-and-protein boundary that separates the cell interior from its surroundings.',
+        'Nucleus':'A membrane-bounded cell compartment containing most of the cell’s DNA.',
+        'Cytoplasm':'The cell contents outside the nucleus, including fluid and many specialized structures.',
+        'DNA':'A long molecule whose sequence stores biological information. A gene is a particular region of DNA.',
+        'Gene':'A stretch of DNA used to produce an RNA; many RNAs provide instructions for making a protein.',
+        'Chromosome':'A long DNA molecule packaged with proteins. Its familiar X shape is a compact duplicated form, not its everyday appearance.',
+        'Amplification':'Extra copies of a particular DNA region relative to the rest of the genome—not automatically a changed protein sequence.',
+        'ecDNA':'Extrachromosomal DNA: DNA outside the main chromosomes but still inside the nucleus in this example.',
+        'HSR':'A homogeneously staining region: a chromosome segment containing amplified DNA.',
+        'Enhancer':'A DNA region where regulatory proteins can help control transcription of a gene, sometimes from far away along the DNA.',
+        'mRNA':'Messenger RNA: a working RNA copy that a ribosome can read to make a protein. The DNA template is not consumed.',
+        'Transcription':'Making an RNA copy using a DNA template. This is not the same as copying all DNA before cell division.',
+        'Splicing':'Removing selected RNA segments and joining the remaining segments. The genomic DNA is not cut up by this RNA-processing step.',
+        'Ribosome':'A molecular machine made of RNA and proteins that joins amino acids in the order specified by mRNA.',
+        'Codon':'A group of three RNA letters specifying an amino acid or a stop signal during translation.',
+        'Amino acid':'One of the chemical building blocks joined together in a protein chain.',
+        'Protein':'A chain of amino acids that can fold or remain partly flexible and perform cellular work.',
+        'Domain':'A region of a protein with a particular structural organization or function; not a separate cell.',
+        'Folding':'The way a protein chain acquires structural organization. Flexible proteins can occupy many conformations.',
+        'ER':'Endoplasmic reticulum: a membrane system where many membrane and secreted proteins are made and processed.',
+        'Glycan':'A carbohydrate chain that can be attached to a protein and influence its maturation or interactions.',
+        'Ligand':'A molecule that binds a particular partner, such as a growth factor binding its receptor.',
+        'Receptor':'A protein that recognizes a signal and helps the cell respond. FGFR1 crosses the cell membrane.',
+        'FGF / FGFR1':'FGF is a family of signaling proteins. FGFR1 is one of their receptor proteins; the two are not the same molecule.',
+        'Heparan sulfate':'A sulfated carbohydrate chain outside cells that can help organize FGF–receptor interactions.',
+        'Kinase':'An enzyme that transfers a phosphate group, often from ATP, onto a suitable target.',
+        'ATP / ADP':'Related small molecules. In kinase reactions ATP donates its terminal phosphate and becomes ADP.',
+        'Phosphorylation':'Covalently attaching a phosphate group. Depending on the site, this can change activity or create a binding site.',
+        'Allostery':'A change at one part of a protein influencing behavior elsewhere through linked structural interactions.',
+        'N546K':'At position 546 in the specified FGFR1 reference, asparagine (N) is replaced by lysine (K). It is not 546 copies of a gene.',
+        'Adaptor':'A protein that connects other proteins in a signaling complex. It need not catalyze a reaction itself.',
+        'Pathway':'A connected set of interactions and chemical reactions—not a physical pipe through which one signal particle travels.',
+        'RAS / GTP':'RAS is a switch-like protein. Binding GTP supports its active state; returning to GDP helps turn it off.',
+        'PI3K / PIP₃':'PI3K is an enzyme that modifies a membrane lipid. Its product PIP₃ helps recruit proteins at that membrane.',
+        'PLCγ / IP₃ / DAG':'PLCγ cuts a membrane lipid. IP₃ can move through the cytosol; DAG stays in the membrane.',
+        'Feedback':'A later output changes an earlier part of the system. Negative feedback can restrain or shorten a response.',
+        'N-Myc / MAX':'N-Myc is the protein made from MYCN. MAX is a binding partner involved in its DNA recognition.',
+        'Transcription factor':'A protein that helps regulate which genes are transcribed; it is not the DNA sequence it binds.',
+        'Cell cycle':'The regulated sequence of growth, DNA replication, chromosome segregation and cell division.',
+        'Protein turnover':'The balance between making and removing a protein. DNA copy count is only one influence on the amount of protein.',
+        'Apoptosis':'A regulated form of cell death. Fewer cell deaths can increase tumor cell numbers even without faster division.',
+        'Experimental structure':'A coordinate model supported by methods such as X-ray crystallography or cryo-EM—not a movie of a living protein.'
+      };
+      // Entry: plain explanation, what to notice, takeaway, just-in-time terms.
+      const GUIDE = {
+        orientation:[
+          ['Start with a person, not a protein. We first locate the body regions relevant to neuroblastoma.','The transparent body reveals the spine and paired sympathetic chains. The dots represent normal ganglia—not separate tumors.','This is an example body map. We will change magnification several times, not fly through an actual patient.',['Sympathetic system','Ganglion']],
+          ['The sympathetic nervous system runs alongside the spine and connects to many organs.','Follow the two highlighted chains outside the central spine. Neuroblastoma can arise in sympathetic tissue from the neck to the pelvis.','Beside the spinal cord is not the same as inside it. Neuroblastoma is not automatically a brain or spinal-cord cancer.',['Sympathetic system','Ganglion']],
+          ['An adrenal gland sits above each kidney. Here we zoom into one example adrenal region.','The cutaway separates the outer cortex from the inner medulla. Body wall and abdominal organs fade away only to make the location visible.','The adrenal medullary lineage is one possible origin. The kidney, surrounding organs and cortex are not interchangeable with it.',['Adrenal gland','Medulla / cortex','Retroperitoneal']],
+          ['At higher magnification, an organ region becomes a neighborhood of cells.','The vessel, matrix strands, support cells and immune-cell examples surround the selected cell. Their positions and numbers are illustrative.','A tumor includes its local environment, not only cancer cells. The camera is not traveling through the bloodstream.',['Tissue','Microenvironment']],
+          ['Now choose one cell. Its boundary, nucleus and protein-making structures do different jobs.','The outer boundary is the cell membrane. The inner round compartment is the nucleus. The folded sheets represent the ER, with ribosomes nearby.','This is a cutaway. Real cells are crowded and their membranes are not see-through.',['Cell membrane','Nucleus','Cytoplasm','ER']],
+          ['MYCN is a gene: part of the DNA in the nucleus. Extra copies are called amplification.','The DNA helix is enlarged independently of the cell. RNA can be made from it without using up the original DNA.','DNA is the template; mRNA is a working copy; N-Myc is a protein product. They are three different molecules.',['Gene','DNA','Amplification','mRNA']],
+          ['We switch to a different location in the same cell: its outer membrane. FGFR1 spans that boundary.','The receptor has an outside ligand-binding region and an inside kinase. The small yellow symbols represent phosphate groups, not electrical impulses.','A chain of reactions can affect the nucleus. The receptor and its ligand do not simply travel down a pipe into the DNA.',['Receptor','FGF / FGFR1','Kinase']],
+          ['The two stories meet in one cell: DNA dosage in the nucleus and signal regulation at the membrane.','The overview reconnects the locations. Later chapters examine each reaction separately rather than claiming one direct, inevitable growth switch.','More growth, more completed divisions and fewer cell deaths are different outcomes. This lesson does not predict an individual tumor’s behavior.',['Amplification','N546K','Pathway','Apoptosis']]
+        ],
+        genome:[
+          ['MYCN is a gene, not a protein. N-Myc is the protein made using its information.','The chromosome symbols locate MYCN. A typical non-dividing diploid cell has two chromosome-2 copies, but tumors can have different chromosome numbers.','Amplification means extra copies relative to the surrounding genome—not simply any result above two.',['Gene','Chromosome','Amplification']],
+          ['Amplification gives a cell extra DNA templates. The letters of the encoded protein can stay unchanged.','Compare the repeated MYCN regions with the chromosome background. The number drawn is not a laboratory result.','Extra templates can increase output, but RNA production and protein removal also matter.',['Amplification','DNA','Protein turnover']],
+          ['Sometimes amplified DNA is packaged separately from the main chromosomes, inside the nucleus.','The small rings represent one possible architecture called ecDNA; they are not outside the cell.','A report saying amplified does not by itself tell you that the extra DNA is ecDNA.',['ecDNA','Nucleus']],
+          ['Amplified DNA can instead be incorporated into a chromosome.','The repeated colored bands show a simplified HSR. Real amplified regions can be much more rearranged.','ecDNA and HSR describe where copies are organized, not two guaranteed levels of drug response.',['HSR','Chromosome']],
+          ['DNA control regions help determine how often a gene is copied into RNA.','The loop indicates contact between an enhancer and the gene’s regulatory machinery. It is not a measured chromosome shape.','More gene copies and altered regulatory contacts are related but distinct influences.',['Enhancer','Transcription']]
+        ],
+        expression:[
+          ['A cell can copy information from DNA into RNA while keeping the original DNA intact.','RNA polymerase moves along the template. The transcript grows from its 5′ end toward its growing 3′ end.','Transcription makes RNA. It is not translation into protein or duplication of the whole genome.',['DNA','Transcription','mRNA']],
+          ['New RNA needs processing before it can serve as a mature message.','The cap, splicing example and poly(A) tail mark different processing steps; their overlap is simplified into a teaching sequence.','Splicing removes segments from RNA, not from the original genomic DNA.',['Splicing','mRNA']],
+          ['A ribosome reads the RNA message three letters at a time and builds a protein.','The ribosome advances toward the RNA’s 3′ end. The protein’s N end emerges first; its C end keeps growing at the ribosome.','The motion is one slow educational pass, not a measured synthesis rate. A ribosome does not run backward to undo a protein.',['Ribosome','Codon','Amino acid']],
+          ['One changed DNA letter can change one amino acid in a protein.','AAC becomes AAA in codon 546 of this FGFR1 reference. That changes asparagine to lysine.','N546K names an amino-acid replacement. Always specify the reference sequence because numbering can differ.',['Codon','N546K']],
+          ['Exact sequence names keep scientists from comparing the wrong versions.','The sequence workbench shows complete reference messages and their translated proteins, with coordinate labels.','A public reference is not a measured patient sequence or a solved RNA shape.',['mRNA','Protein']]
+        ],
+        folding:[
+          ['A protein is a chemical chain with constrained movements—not a loose string that can bend any way.','The chain illustrates connectivity and flexibility. It does not recreate a known folding path.','Sequence, environment and molecular helpers influence the structures the chain can occupy.',['Protein','Folding']],
+          ['Short parts of proteins can organize into helices or sheets.','The coiled motif is a right-handed alpha helix. Neighboring strands form a sheet. They are shown separately, not as one turning into the other.','These are structural motifs; their arrangement into a real protein is sequence-specific.',['Folding','Domain']],
+          ['The cell must put FGFR1 into a membrane with the correct side facing outward.','The ER membrane separates the future outside-facing domains from the kinase, which stays on the cytoplasmic side.','The ER lumen and the eventual outside-facing surface correspond during transport; DNA does not move into the receptor.',['ER','Domain','Kinase']],
+          ['Making a receptor correctly is different from activating it later.','The branched carbohydrate symbols represent glycans added and processed during maturation. Quality-control systems help manage faulty proteins.','Folding, transport and activation are different processes. N546K is not a claim that every receptor is globally misfolded.',['Glycan','Folding','N546K']],
+          ['Not every useful protein has one rigid, compact shape. N-Myc has large flexible regions.','The extended regulatory region and organized partner-binding region illustrate that contrast. Neither is a full experimental N-Myc model.','The lab can show a small measured N-Myc segment bound to Aurora-A—not the whole protein folding.',['N-Myc / MAX','Experimental structure']]
+        ],
+        activation:[
+          ['FGF is a signaling molecule. FGFR1 is a receptor protein that can recognize it with help from cofactors.','Locate the outside domains, membrane crossing and inside kinase. They are connected parts of one protein.','Normal FGF signaling has many roles; receptor presence alone does not mean cancer depends on it.',['FGF / FGFR1','Ligand','Receptor']],
+          ['FGF and heparan sulfate help organize productive interactions between receptors.','The receptor cartoons come closer while the ligand and carbohydrate are shown outside the membrane.','This is one teaching arrangement. Real receptors may already associate, and different ligands produce different assemblies.',['Ligand','Heparan sulfate']],
+          ['One receptor’s kinase can attach a phosphate to a tyrosine on its partner.','Follow the schematic phosphate from an ATP donor toward the partner’s intracellular site. ATP becomes ADP.','Phosphorylation changes a molecule chemically. It is not an electric spark jumping between proteins.',['ATP / ADP','Kinase','Phosphorylation']],
+          ['Not every receptor site becomes phosphorylated at the same time.','The highlighted sites appear in a favored order observed in purified FGFR1 experiments. Their true time intervals are not reproduced.','N546K changed both the initial rate and early order in experiments—not simply every process by the same multiplier.',['Phosphorylation','N546K']],
+          ['The activated receptor provides several ways to assemble downstream partners.','FRS2 sits near the inside membrane face. PLCγ has a different interaction at the pY766-containing region and additional contacts.','Different docking interactions lead to different chemistries. The next chapter’s pathways are networks, not wires.',['Adaptor','Pathway','PLCγ / IP₃ / DAG']]
+        ],
+        kinase:[
+          ['The kinase is the receptor’s inside enzyme region. Its two lobes help position molecules for a reaction.','Find the ATP cleft between the lobes and the nearby activation loop. These shapes are only topology.','The ligand-binding site outside the cell is not the ATP-binding site inside it.',['Kinase','ATP / ADP','Domain']],
+          ['Several local interactions help restrain kinase activity—a molecular brake.','N546, E562 and K638 label part of that regulatory network. Connecting rods do not claim measured hydrogen-bond geometry.','Changing one site can affect distant motions without unfolding the entire protein.',['Allostery','N546K']],
+          ['N546K replaces one neutral side chain with a longer, usually positively charged one.','Compare the asparagine amide group with the lysine side chain. Hydrogens are omitted from these chemical cartoons.','The comparison explains chemistry, not an experimentally solved mutant position inside FGFR1.',['Amino acid','N546K','Allostery']],
+          ['Experiments can measure an enzyme reaction without measuring how fast a tumor grows.','The approximately 25-fold result describes the initial autophosphorylation assay, not cell division.','Biochemistry, cultured cells, animal models and patient outcomes answer different questions.',['Phosphorylation','Cell cycle']],
+          ['Experimental coordinates let us inspect real structural evidence, with limits.','The lab compares different FGFR1 fragments and constructs, not a matched before-and-after N546K movie.','Missing coordinates stay missing. The software does not invent an experimentally solved mutant fold.',['Experimental structure','Allostery']]
+        ],
+        network:[
+          ['A receptor can connect to several branches at once through docking proteins.','The highlighted arrows reveal the diagram in teaching order. Dots mark reaction relationships—not molecules carried unchanged between nodes.','Real branches overlap in time. A straight arrow may summarize several intermediate interactions.',['Adaptor','Pathway']],
+          ['RAS acts like a nucleotide-controlled switch; the following proteins relay reactions.','Read SOS/RAS → RAF → MEK → ERK. RAS loads GTP; the kinase relay then involves protein phosphorylation.','RAS activation is not phosphorylation of RAS. ERK activity alone does not prove a completed cell division.',['RAS / GTP','Kinase','Phosphorylation']],
+          ['This branch begins by changing a lipid at the inner cell membrane.','PI3K makes PIP₃, helping recruit proteins. The detail view separates PDK1, mTORC2, AKT, TSC, RHEB and mTORC1.','A stop bar means inhibition. Two inhibitory steps can remove a restraint; not every connection is an activating kinase step.',['PI3K / PIP₃','Pathway']],
+          ['PLCγ cuts a membrane lipid into two products with different destinations.','IP₃ can travel inside the cell and release calcium from the ER. DAG remains in the membrane.','PI3K adding a phosphate and PLCγ cutting a lipid are different reactions even though both involve PIP₂.',['PLCγ / IP₃ / DAG','ER']],
+          ['Cells also have ways to limit or reverse signaling.','DUSP acts on ERK phosphorylation; PTEN acts on the PIP₃ lipid signal. Stop bars show negative regulation.','A mutation can weaken some regulation without removing every brake. Feedback can change responses over time.',['Feedback','Phosphorylation']],
+          ['A simplified pathway picture can accidentally make every arrow look growth-promoting.','The STAT/p21 branch from the supplied picture is not drawn as an obligatory growth relay here. p21 commonly restrains cell-cycle machinery.','The original figure’s context is unknown. This atlas does not turn that picture into a universal tumor mechanism.',['Pathway','Cell cycle']]
+        ],
+        nmyc:[
+          ['N-Myc is a protein that helps regulate genes, often with the partner MAX.','The basic regions are near DNA; the zipper helps hold the partners together away from the DNA interface.','The DNA sequence shown is an E-box example. Its presence alone does not guarantee N-Myc binding.',['N-Myc / MAX','Transcription factor']],
+          ['N-Myc affects programs involving many genes—not a single reproduction button.','Its position at regulatory DNA illustrates control of transcription. It does not show creation of extra MYCN DNA copies.','Amplification is a DNA event; altered transcription is an output that also depends on the cell’s context.',['Transcription','Amplification']],
+          ['To divide, a cell must prepare, copy its DNA and separate it into daughter cells.','G1, S, G2 and M name stages of the cell cycle. S is DNA synthesis; M includes chromosome segregation and division.','Growing larger is not the same as making another cell. Checkpoints can interrupt progression.',['Cell cycle','DNA']],
+          ['Protein amount depends on both production and removal.','Aurora-A is shown as a binding partner that can help stabilize N-Myc. Its catalytic activity and binding role are not identical.','The experimental peptide does not include resolved Thr58, an important limit when discussing degradation control.',['Protein turnover','Experimental structure']],
+          ['Tumor cell number can rise through more divisions, fewer deaths, or both.','The two labeled outcomes separate cell birth from cell loss; their symbol counts are not measured rates.','Model cooperation does not prove what an individual tumor needs or which treatment will work.',['Apoptosis','Cell cycle','Protein turnover']]
+        ]
+      };
+      Object.assign(GLOSSARY,TERMS);
+      const STEP_SECONDS=18;
+      const GENOMIC_ANCHORS={
+        mycn:{gene:'MYCN',sequence:'ATGCCGAGCTGCTCCACGTCCACCATGCCGGGCATG',chromosome:'NC_000002.12',start:15942065,end:15942100,strand:1,transcript:'NM_005378.6',transcriptStart:312,cdsStart:1,source:'M30'},
+        fgfr:{gene:'FGFR1',sequence:'CATAAGAATATCATCAACCTGCTGGGGGCCTGC',chromosome:'NC_000008.11',start:38417316,end:38417348,strand:-1,transcript:'NM_023110.3',transcriptStart:2364,cdsStart:1621,source:'M31'}
+      };
+      const JOURNEY_COMMON=[
+        ['Whole person','Organ systems in context','The body wall, skeleton, sympathetic tissue, vessels and organs share space. Zoom toward the marked adrenal region; the nearby kidney is a separate organ.','These are original stylized anatomical landmarks, not a CT reconstruction. No patient-specific site, body size or tumor boundary is inferred.',['M27','M29','M35']],
+        ['Adrenal region','Posterior upper abdomen','Above the kidney, an adrenal gland sits behind the main abdominal-cavity lining. Its inner medullary sympathetic lineage is one possible origin of neuroblastoma.','The selected mass is a representative adrenal-region tumor. Real tumors can distort or replace normal anatomy; the displayed cortex/medulla boundary is not a clinical finding.',['M27','M35']],
+        ['Tumor example','Mass → tissue neighborhood','The lobulated mass represents a solid tumor. Zoom into the marked tissue region; cancer cells coexist with vessels, matrix, support cells and immune cells.','Gross appearance, vascular layout and tissue composition are schematic. A visible capsule or lobule in this drawing is not a diagnostic feature or a measured growth pattern.',['M28']],
+        ['Tissue','Cells, matrix and vessels','Here individual cells become distinguishable. The outlined cell is the zoom target. Blood cells remain inside the example vessel; surrounding cells are not all cancer cells.','Cell identities are teaching examples, not a biopsy interpretation. The relative numbers and sizes are illustrative.',['M28']],
+        ['One cell','Membrane, cytoplasm and organelles','The thin outer membrane encloses cytoplasm. The nucleus holds most DNA. ER, ribosomes, Golgi and mitochondria occupy the surrounding cytoplasm. Choose nuclear DNA or membrane protein as the next destination.','This is a cutaway of an interphase cell, not a measured neuroblastoma cell. DNA → RNA → protein is a process, not another inward spatial zoom.',['M20','M21','M32']]
+      ];
+      const JOURNEY_DNA=[
+        ['Nucleus','Interphase chromosome territories','Chromosomes are long DNA molecules packaged with proteins. During interphase they occupy overlapping, dynamic territories—not a collection of compact X shapes. MYCN belongs to chromosome2.','The territory positions are illustrative. The actual MYCN location and amplified DNA architecture are not mapped here. An X-shaped replicated chromosome belongs to a different cell-cycle state.',['M04','M12','M32']],
+        ['Chromatin','DNA packaged with proteins','Follow the highlighted chromatin region into a looser, irregular arrangement of nucleosomes. Histones organize DNA without replacing its sequence.','No obligatory regular 30-nm fiber is shown. The chromatin path and nucleosome positions are not experimentally mapped at the MYCN locus.',['M32','M33']],
+        ['Nucleosome','DNA around a histone core','About147 DNA base pairs wrap approximately1.65 turns around a canonical histone octamer. Linker DNA connects neighboring nucleosomes. Continue into the DNA double helix.','The DNA centerline and histone bodies are generic topology. This does not reconstruct a MYCN nucleosome or prove which bases are accessible in a tumor.',['M33']],
+        ['DNA helix','Two antiparallel strands','DNA has A, T, G and C bases. A pairs with T; G pairs with C. The two strands run in opposite5′→3′ directions. Each displayed pair comes from a verified reference fragment.','An idealized B-DNA helix illustrates approximately2nm diameter and0.34nm rise per pair, with about10.5 pairs per turn. Atomic contacts and groove geometry are not reconstructed.',['M30','M31','M34']],
+        ['A · T · G · C','Reference letters and coordinates','Select a base to inspect its genomic coordinate, paired base and coding position. MYCN amplification means more copies of a DNA region—not new letters by definition.','Letters are conventional symbols for chemical bases, not visible printing inside a cell. These are reference DNA fragments, not patient sequencing or experimental DNA coordinates.',['M30','M31','M34']]
+      ];
+      const JOURNEY_PROTEIN=[
+        ['Membrane patch','The cell boundary','The membrane is a lipid bilayer. FGFR1 spans it once; ligand-binding regions face outside and the kinase-containing region faces the cytoplasm.','Lipids and receptor counts are illustrative. The full-length receptor is a topology cartoon, not an experimental full-length structure.',['M01','M06']],
+        ['FGFR1 receptor','Outside recognition / inside catalysis','FGF and heparan sulfate interact with extracellular receptor regions. The intracellular kinase uses ATP in phosphate-transfer reactions. The next view isolates that kinase domain.','This spatial close-up does not itself activate the protein. Ligand assembly, folding, trafficking and phosphorylation are distinct events.',['M01','M06','M08']],
+        ['Kinase domain','A change of evidence type','We now replace the schematic kinase shape with deposited coordinates of the FGFR1 kinase fragment1FGK, if the public download succeeds.','This is an evidence handoff, not a continuous experimental body-to-protein scan. The fragment contains construct differences and missing residues; it retains Asn546, not N546K.',['M22']],
+        ['Experimental fold','Deposited Cα trace','The trace joins consecutive resolved alpha-carbon positions only; unresolved gaps are left open. It is a structural model, not the protein folding over time.','1FGK is an autoinhibited kinase fragment at2.00Å X-ray resolution, chainA only. C488A/C584S are construct differences. No full receptor or mutant conformation is inferred.',['M22']],
+        ['Residue / atoms','Asn546 and neighboring chemistry','The spheres at Asn546 use deposited heavy-atom positions. Keep zooming or rotate to inspect the residue; open the full lab for chain, residue and atom tools.','These colored spheres indicate atom centers, not electron clouds at measured radii. Nearby positions alone do not prove a hydrogen bond. N546 remains asparagine.',['M22']]
+      ];
       let app;
       function openDialog(id) { app?.setPlaying(false); const dialog=$(id); if(!dialog.open) dialog.showModal(); }
       function showSources(id='') {
@@ -386,7 +617,10 @@
       $('glossary').innerHTML=Object.entries(GLOSSARY).map(([term,definition])=>`<div><dt>${esc(term)}</dt><dd>${esc(definition)}</dd></div>`).join('');
       $('glossaryOpen').addEventListener('click',()=>openDialog('glossaryDialog'));
       $('sequenceOpen').addEventListener('click',()=>{updateSequence();openDialog('sequenceDialog');});
-      const updateTheme=()=>{$('theme').textContent=document.documentElement.dataset.theme==='dark'?'Light UI':'Dark UI';};
+      const updateTheme=()=>{
+        $('theme').textContent=document.documentElement.dataset.theme==='dark'?'Light UI':'Dark UI';
+        document.querySelectorAll('[data-site-link]').forEach(link=>{const url=new URL(link.getAttribute('href'),location.href);url.searchParams.set('clawpilotTheme',document.documentElement.dataset.theme);link.href=url.href;});
+      };
       $('theme').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';updateTheme();}); updateTheme();
       $('retry').addEventListener('click',()=>location.reload());
       function message(text,retry=false) {$('sceneMessage').hidden=false;$('sceneMessageText').textContent=text;$('retry').hidden=!retry;}
@@ -503,6 +737,7 @@ AAA`}
         ref.protein=translate(ref.cds).replace(/\*$/,'');
         if(ref.sequence.length!==ref.length||ref.protein.length!==ref.aa||/[?*]/.test(ref.protein))throw new Error('Reference sequence integrity check failed: '+ref.rna);
       }
+      for(const [key,anchor] of Object.entries(GENOMIC_ANCHORS))if(SEQUENCES[key].sequence.slice(anchor.transcriptStart-1,anchor.transcriptStart-1+anchor.sequence.length)!==anchor.sequence)throw new Error('Genomic/transcript anchor mismatch: '+anchor.gene);
       function updateSequence() {
         const ref=SEQUENCES[$('sequenceGene').value],isFGFR=ref.gene==='FGFR1';
         $('sequenceMutation').disabled=!isFGFR;
@@ -545,10 +780,11 @@ AAA`}
           this.camera=new THREE.PerspectiveCamera(40,1,.1,300);
           this.camera.position.set(0,2,23);
           this.controls=new THREE.OrbitControls(this.camera,canvas);this.controls.enableDamping=true;this.controls.dampingFactor=.08;this.controls.minDistance=4;this.controls.maxDistance=120;
-          this.temp=V();this.bounds=new THREE.Box3();this.center=V();this.size=V();
+          this.temp=V();this.bounds=new THREE.Box3();this.center=V();this.size=V();this.transition=null;this.chapter='';this.step=0;this.currentPose=null;
+          this.controls.addEventListener('start',()=>{this.transition=null;this.currentPose=null;});
           this.arena=new Arena();this.root=new THREE.Group();this.scene.add(this.root);this.resize();
         }
-        reset(){this.scene.remove(this.root);this.arena.dispose();this.arena=new Arena();this.root=new THREE.Group();this.scene.add(this.root);$('labels').replaceChildren();this.labels=[];this.nodes.clear();this.paths=[];this.dynamic=null;this.time=0;this.dirty=true;}
+        reset(){this.scene.remove(this.root);this.arena.dispose();this.arena=new Arena();this.root=new THREE.Group();this.scene.add(this.root);$('labels').replaceChildren();this.labels=[];this.nodes.clear();this.paths=[];this.dynamic=null;this.worlds=null;this.transition=null;this.time=0;this.dirty=true;}
         material(key,opacity=1){return this.arena.keep(new THREE.MeshStandardMaterial({color:linear(key),emissive:linear(key),emissiveIntensity:.09,roughness:.66,transparent:opacity<1,opacity,depthWrite:opacity===1}));}
         group(parent=this.root,x=0,y=0,z=0){const group=new THREE.Group();group.position.set(x,y,z);parent.add(group);return group;}
         sphere(parent,x,y,z,r,key,scale=null,opacity=1){const mesh=new THREE.Mesh(this.arena.keep(new THREE.IcosahedronGeometry(r,2)),this.material(key,opacity));mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);parent.add(mesh);return mesh;}
@@ -571,7 +807,7 @@ AAA`}
           else {const mesh=new THREE.Mesh(this.arena.keep(new THREE.TubeGeometry(curve,30,.025,5,false)),this.material(key));this.root.add(mesh);}
           if(type.includes('inhibit')){const side=V(-direction.y,direction.x,0).normalize().multiplyScalar(.18);this.rod(this.root,end.clone().add(side),end.clone().sub(side),key,.05);}
           else {const cone=new THREE.Mesh(this.arena.keep(new THREE.ConeGeometry(.12,.32,8)),this.material(key));cone.position.copy(end);cone.quaternion.setFromUnitVectors(UP,curve.getTangent(1).normalize());this.root.add(cone);}
-          if(type==='arrow'){const dot=this.sphere(this.root,0,0,0,.065,'phosphate');this.paths.push({curve,dot,offset:this.paths.length*.23});}
+          if(type==='arrow'){const dot=this.sphere(this.root,0,0,0,.065,'phosphate');this.paths.push({curve,dot,offset:this.paths.length*.23,from,to});}
           if(caption)this.label(this.root,caption,midpoint.x,midpoint.y+.28,midpoint.z+.3);
         }
         dna(parent,length=7,pairs=24,key='dna'){
@@ -592,25 +828,133 @@ AAA`}
           this.sphere(group,-.3,-1.15,0,.55,'molecule',[1,.8,.7]);this.sphere(group,.25,-1.75,0,.72,'protein',[.9,1.05,.8]);
           this.rod(group,V(.2,-2.2),V(.35,-2.85),'protein',.06);return group;
         }
-        show(chapter,step,options){this.reset();this.chapter=chapter.id;this.step=step;this.options=options;this[`draw_${chapter.view}`]?.(step);this.root.updateMatrixWorld(true);this.fit();}
-        fit(){
+        show(chapter,step,options){
+          const continuing=this.chapter===chapter.id&&chapter.id==='orientation'&&this.worlds;
+          const wasEmpty=!this.root.children.length;
+          if(!continuing)this.reset();this.chapter=chapter.id;this.step=step;this.options=options;this.time=0;
+          if(!continuing)this[`draw_${chapter.view}`]?.(step);
+          this.root.updateMatrixWorld(true);
+          if(this.chapter==='orientation')this.orientStep(step,!wasEmpty&&options.motion);else this.fit(!wasEmpty&&options.motion);
+          this.animateAt(options.motion?0:STEP_SECONDS);this.update(0,false);this.dirty=true;
+        }
+        moveCamera(target,position,smooth=false){
+          this.controls.enableDamping=false;this.controls.update();this.controls.enableDamping=true;
+          this.currentPose={target:target.clone(),position:position.clone()};
+          if(smooth)this.transition={from:this.camera.position.clone(),fromTarget:this.controls.target.clone(),to:position.clone(),target:target.clone(),elapsed:0};
+          else{this.transition=null;this.camera.position.copy(position);this.controls.target.copy(target);this.controls.update();}
+          this.dirty=true;
+        }
+        fit(smooth=false){
+          if(this.chapter==='orientation'&&this.worlds){this.orientCamera(this.step,smooth);return;}
           this.controls.enableDamping=false;this.controls.update();
           this.bounds.setFromObject(this.root);if(this.bounds.isEmpty()){this.center.set(0,0,0);this.size.set(10,10,10);}else{this.bounds.getCenter(this.center);this.bounds.getSize(this.size);}
           const half=Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2));
           const distance=Math.max(this.size.y/(2*half),this.size.x/(2*half*this.camera.aspect),7)+this.size.z*.6+2;
-          this.controls.target.copy(this.center);this.camera.position.copy(this.center).add(V(0,distance*.12,distance*1.13));this.controls.update();this.controls.enableDamping=true;this.dirty=true;
+          this.controls.enableDamping=true;this.moveCamera(this.center,this.center.clone().add(V(0,distance*.12,distance*1.24)),smooth);
         }
         resize(){const w=this.wrap.clientWidth,h=this.wrap.clientHeight;if(!w||!h)return;this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7,Math.sqrt(2200000/(w*h))));this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.dirty=true;}
+        animateAt(time){this.time=time;this.dynamic?.(time);for(const path of this.paths){const start=this.chapter==='network'?2+path.offset*1.3:0;path.dot.visible=time>=start&&time<start+3;path.curve.getPoint(THREE.MathUtils.clamp((time-start)/3,0,1),this.temp);path.dot.position.copy(this.temp);}this.dirty=true;}
         update(dt,animate){
-          if(animate){this.time+=dt;for(const path of this.paths){path.curve.getPoint((this.time*.33+path.offset)%1,this.temp);path.dot.position.copy(this.temp);}this.dynamic?.(this.time);}
+          if(this.transition&&animate){const tr=this.transition;tr.elapsed+=dt;const f=Math.min(1,tr.elapsed/2.4),u=f*f*(3-2*f);this.camera.position.lerpVectors(tr.from,tr.to,u);this.controls.target.lerpVectors(tr.fromTarget,tr.target,u);if(f===1)this.transition=null;this.dirty=true;}
           const changed=this.controls.update();
           if(changed||this.dirty||animate){this.renderer.render(this.scene,this.camera);this.projectLabels();this.dirty=false;}
         }
-        projectLabels(){const w=this.wrap.clientWidth,h=this.wrap.clientHeight;for(const item of this.labels){let visible=true;for(let node=item.anchor;node;node=node.parent){if(!node.visible){visible=false;break;}}item.anchor.getWorldPosition(this.temp);this.temp.project(this.camera);visible=visible&&this.temp.z>-1&&this.temp.z<1&&Math.abs(this.temp.x)<1.2&&Math.abs(this.temp.y)<1.2;item.element.hidden=!visible;if(visible){item.element.style.left=`${(this.temp.x*.5+.5)*w}px`;item.element.style.top=`${(-this.temp.y*.5+.5)*h}px`;}}}
+        projectLabels(){const w=this.wrap.clientWidth,h=this.wrap.clientHeight;for(const item of this.labels){let visible=!item.element.dataset.suppressed;for(let node=item.anchor;node;node=node.parent){if(!node.visible||node.userData.labelOpacity<.6){visible=false;break;}}item.anchor.getWorldPosition(this.temp);this.temp.project(this.camera);visible=visible&&this.temp.z>-1&&this.temp.z<1&&Math.abs(this.temp.x)<.97&&Math.abs(this.temp.y)<.96;item.element.hidden=!visible;if(visible){item.element.style.left=`${(this.temp.x*.5+.5)*w}px`;item.element.style.top=`${(-this.temp.y*.5+.5)*h}px`;}}}
         dispose(){this.reset();this.controls.dispose();this.renderer.dispose();}
       }
 
       /** Procedural scenes are deliberately topological, never atomistic models. */
+      TeachingScene.prototype.fadeGroup=function(group,opacity){
+        group.visible=opacity>.001;group.userData.labelOpacity=opacity;
+        group.traverse(object=>{if(!object.material)return;for(const material of Array.isArray(object.material)?object.material:[object.material]){if(material.userData.baseOpacity===undefined)material.userData.baseOpacity=material.opacity;material.opacity=material.userData.baseOpacity*opacity;material.transparent=true;material.depthWrite=false;}});
+      };
+      TeachingScene.prototype.orientCamera=function(step,smooth){
+        // Separate pedagogical coordinate frames. The scale badge explicitly
+        // announces magnification changes; this is not a metric body scan.
+        const poses=[[[0,0,0],21],[[0,1,-.3],16],[[0,-.6,0],12],[[0,0,0],13],[[0,0,0],11],[[-1.1,.35,.3],5.4],[[0,.6,0],12],[[0,0,0],11]];
+        const [point,height]=poses[step],target=V(...point),half=Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2));
+        const distance=Math.max(height/(2*half),height*.8/(2*half*this.camera.aspect))+1.5;
+        this.moveCamera(target,target.clone().add(V(0,distance*.025,distance)),smooth);
+      };
+      TeachingScene.prototype.orientStep=function(step,smooth){
+        const world=['body','body','adrenal','tissue','cell','cell','membrane','cell'][step];
+        this.blendStart={};for(const [id,group]of Object.entries(this.worlds))this.blendStart[id]=group.userData.labelOpacity||0;
+        if(!Object.values(this.blendStart).some(value=>value>0))this.blendStart[world]=1;
+        this.activeWorld=world;this.orientCamera(step,smooth);
+        for(const label of this.labels){const phase=label.element.dataset.orientationStep;if(phase)label.element.dataset.suppressed=phase.split(',').includes(String(step))?'':'true';}
+      };
+      TeachingScene.prototype.draw_orientation=function(){
+        this.worlds={};for(const name of ['body','adrenal','tissue','cell','membrane'])this.worlds[name]=this.group();
+        const {body,adrenal,tissue,cell,membrane}=this.worlds;
+        const label=(parent,text,x,y,z=0,steps='')=>{const element=this.label(parent,text,x,y,z);if(steps)element.dataset.orientationStep=steps;return element;};
+        // Original stylized anterior body: posterior spine/chains, paired
+        // kidneys and suprarenal glands; no patient mesh or borrowed artwork.
+        const skin=this.group(body);
+        this.sphere(skin,0,7.65,0,1.1,'dna',[.85,1.12,.75],.11);
+        this.rod(skin,V(0,5.7),V(0,6.8),'dna',.35);
+        this.sphere(skin,0,2.5,0,3.2,'dna',[.74,1.12,.34],.10);
+        this.sphere(skin,0,-1.1,0,1.8,'dna',[1.14,.68,.55],.10);
+        for(const side of [-1,1]){this.rod(skin,V(side*2.1,5),V(side*3.1,.6),'dna',.24);this.rod(skin,V(side*3.1,.6),V(side*3.4,-1.8),'dna',.18);this.rod(skin,V(side*.95,-2),V(side*1.2,-5.4),'dna',.35);this.rod(skin,V(side*1.2,-5.4),V(side*1.3,-8.2),'dna',.24);}
+        skin.traverse(o=>{if(o.isMesh){o.material.opacity=Math.min(o.material.opacity,.13);o.material.transparent=true;o.material.depthWrite=false;}});
+        for(let i=0;i<23;i++)this.sphere(body,0,5.4-i*.29,-.5,.15,'stage-muted',[1.2,.8,.7],.5);
+        for(const side of [-1,1]){
+          const points=[];for(let i=0;i<16;i++){const y=5.45-i*.43,x=side*(.45+.025*Math.sin(i));points.push(V(x,y,-.32));this.sphere(body,x,y,-.32,.10,'phosphate');if(i%3===1)this.curve(body,[V(x,y,-.32),V(side*.95,y-.2,-.1),V(side*1.4,y-.3,0)],'phosphate',.025);}
+          this.curve(body,points,'phosphate',.035);
+          const kidney=this.sphere(body,side*1.15,.25,.05,.72,'molecule',[.65,1.15,.55],.55);kidney.rotation.z=-side*.18;
+          this.sphere(body,side*1.1,1.22,.18,.41,'rna',[1.2,.5,.55]);
+          this.sphere(body,side*1.2,4,.2,1.1,'cofactor',[.8,1.1,.4],.09);
+        }
+        this.sphere(body,-.65,1.6,.5,1.2,'molecule',[1.4,.5,.4],.08);
+        this.curve(body,[V(-1,-.5,.5),V(1,-.3,.5),V(-1,-.9,.5),V(1,-1.2,.5)],'cofactor',.12);
+        label(body,'Sympathetic chains · outside spinal cord',0,6.25,.6);
+        label(body,'Adrenal glands',3.35,1.6,.5);label(body,'Kidneys',3.35,.15,.5);
+        label(body,'Front view · transparent body wall',0,-9.3,.6);
+        label(body,'Spine / cord region',-3.2,3.8,.5);label(body,'Faint organs provide context',0,-2.8,.6,'0');
+        const targetRing=this.ring(body,.57,'rna',V(-1.1,1.22,.65));
+        // Magnified adrenal cutaway. A sphere sector leaves the front open so
+        // the medulla is inside the cortex, not incorrectly on its surface.
+        const shell=new THREE.Mesh(this.arena.keep(new THREE.SphereGeometry(2.5,36,24,0,Math.PI*1.55)),this.material('rna',.3));shell.scale.set(1.3,.75,.7);adrenal.add(shell);
+        this.sphere(adrenal,0,0,0,1.2,'molecule',[1.45,.6,.65]);
+        this.sphere(adrenal,0,-3.15,-.3,1.6,'molecule',[.85,1.1,.65],.18);
+        label(adrenal,'Outer adrenal cortex',0,2.4,.7);label(adrenal,'Inner adrenal medulla',0,.05,1);
+        label(adrenal,'Kidney below · separate organ',0,-5.25,.5);
+        label(adrenal,'Magnified cutaway · adrenal example',0,3.7,.5);
+        // Generic tissue patch: blood remains within the vessel; moving
+        // erythrocyte glyphs are not immune cells or a perfusion simulation.
+        const vesselPath=[V(-5,-2.8,-.8),V(-2.5,-2.45,-.8),V(.4,-3,-.8),V(5,-2.2,-.8)];
+        const vessel=this.curve(tissue,vesselPath,'molecule',.32);vessel.mesh.material.opacity=.28;vessel.mesh.material.transparent=true;vessel.mesh.material.depthWrite=false;
+        const redCells=[];for(let i=0;i<7;i++)redCells.push(this.sphere(tissue,0,0,0,.17,'molecule',[1,.45,1]));
+        for(let i=0;i<redCells.length;i++)vessel.curve.getPoint(i/7,redCells[i].position);
+        for(let i=0;i<17;i++){const a=i*2.399,r=1.9+Math.floor(i/6)*.75,x=Math.cos(a)*r,y=Math.sin(a)*r*.7+.5;const group=this.group(tissue,x,y,(i%3)*.2-.5);this.sphere(group,0,0,0,.61,i%6===0?'cofactor':'protein',[1,.9,.8],.23);this.sphere(group,.08,.05,.1,.24,i%6===0?'cofactor':'protein');}
+        for(let i=0;i<6;i++){const x=-4+i*1.55;this.curve(tissue,[V(x,-1.8,-.5),V(x+.4,.2,-.7),V(x-.2,2.6,-.6)],'dna',.025);}
+        const selected=this.group(tissue,0,.25,1);this.sphere(selected,0,0,0,.9,'molecule',null,.24);this.sphere(selected,-.17,.1,.2,.36,'protein');
+        label(tissue,'Selected cell',0,1.8,1.5);label(tissue,'Blood vessel · nutrients / waste exchange',0,-4,.5);
+        label(tissue,'Support / immune cell examples',0,4.5,.5);label(tissue,'Matrix outside cells',3.8,2,.5);
+        // A deliberately sparse cell cutaway; other organelles are omitted.
+        this.sphere(cell,0,0,0,3.8,'molecule',[1.2,.88,.65],.055);
+        const cellRim=this.ring(cell,3.8,'molecule',V());cellRim.scale.set(1.2,.88,1);
+        this.sphere(cell,-1.1,.35,.3,1.25,'protein',[1.12,1,.8],.13);
+        this.ring(cell,1.25,'protein',V(-1.1,.35,.7));
+        const chromatin=this.dna(cell,1.6,14);chromatin.position.set(-1.1,.35,1.2);chromatin.scale.setScalar(.78);
+        for(let j=0;j<5;j++)this.curve(cell,[V(.2,-1.5+j*.3,-.1),V(1.1,-1.25+j*.3,.1),V(2.7,-1.5+j*.3,-.1),V(3,-.8+j*.3,0)],'dna',.075);
+        for(let i=0;i<18;i++)this.sphere(cell,.5+(i%6)*.38,-1.2+Math.floor(i/6)*.35,.3,.065,'cofactor');
+        const receptor=this.receptor(cell,0);receptor.scale.setScalar(.33);receptor.rotation.z=-Math.PI/2;receptor.position.set(4,0,.6);
+        // Receptor domain labels are too fine at whole-cell scale.
+        for(const item of this.labels)if(item.anchor.parent===receptor)item.element.dataset.suppressed='true';
+        label(cell,'Cell membrane',0,-4.1,.5,'4,7');label(cell,'Nucleus · DNA',-1.2,2.05,1,'4,7');
+        label(cell,'ER / ribosome examples',2,-2.3,.6,'4,7');label(cell,'FGFR1 at membrane',3.35,2.2,.7,'7');
+        label(cell,'MYCN is part of nuclear DNA',-1.1,2.1,1,'5');label(cell,'Enlarged DNA motif · not all cellular DNA',-1.1,-1.4,1,'5');
+        this.membrane(membrane,0,9,2.5);this.receptor(membrane,0);
+        this.sphere(membrane,.95,2.35,.5,.43,'rna');
+        label(membrane,'Outside cell · FGF',2.9,3.2,.7);label(membrane,'Inside cell · kinase',2.9,-2,.7);label(membrane,'Membrane patch · magnification changed',0,5,.5);
+        for(const group of Object.values(this.worlds))this.fadeGroup(group,0);
+        this.dynamic=t=>{
+          const f=this.options.motion?Math.min(1,t/2.6):1,u=f*f*(3-2*f);
+          for(const [id,group]of Object.entries(this.worlds)){const start=this.blendStart?.[id]||0;this.fadeGroup(group,start+((id===this.activeWorld?1:0)-start)*u);}
+          targetRing.scale.setScalar(this.step===1?1+.12*Math.sin(Math.min(t,12)*.7):1);
+          for(let i=0;i<redCells.length;i++){vessel.curve.getPoint((i/7+Math.min(t,STEP_SECONDS)*.018)%1,redCells[i].position);}
+        };
+      };
       TeachingScene.prototype.draw_genome=function(step){
         const nucleus=this.sphere(this.root,0,.3,0,4.6,'dna',[1.35,1,.65],.07);
         const chromosome=(x)=>{const g=this.group(this.root,x,.7,.4);this.rod(g,V(-.5,1.9),V(.45,-1.9),'dna',.18);this.rod(g,V(.5,1.9),V(-.45,-1.9),'dna',.18);this.sphere(g,-.32,1.2,.03,.25,'molecule');return g;};
@@ -627,12 +971,12 @@ AAA`}
       TeachingScene.prototype.draw_expression=function(step){
         const dna=this.dna(this.root,8.5,31);dna.position.set(0,2.5,0);this.label(this.root,'DNA · reusable template',0,3.7,0);
         const polymerase=this.sphere(this.root,-2.3,2.5,.35,.58,'cofactor',[1.2,1,.8]);
-        this.label(this.root,'RNA polymerase II',-2.6,1.45,.6);
+        this.label(polymerase,'RNA polymerase II',0,1.1,.6);
         const rnaY=step>=2?-.9:.1,rnaPoints=[];for(let i=0;i<32;i++)rnaPoints.push(V(-3.5+i*.23,rnaY+.11*Math.sin(i*.9),.1*Math.cos(i)));
-        this.curve(this.root,rnaPoints,'rna',.085);
-        this.label(this.root,step<1?'Pre-mRNA · transcription product':'Processed mRNA · 5′ → 3′',.3,rnaY+.62,.5);
+        const rnaMesh=this.curve(this.root,rnaPoints,'rna',.085).mesh;
+        this.label(this.root,step<1?'Pre-mRNA · transcription product':'Processed mRNA · 5′ → 3′',.3,step===0?-.65:rnaY+.62,.5);
         if(step>=1){this.sphere(this.root,-3.6,rnaY,0,.15,'cofactor');for(let i=0;i<8;i++)this.sphere(this.root,3.9+i*.12,rnaY,0,.05,'rna');}
-        this.label(this.root,'5′',-4.2,rnaY,.5);this.label(this.root,'3′',4.8,rnaY,.5);
+        if(step>0){this.label(this.root,'5′',-4.2,rnaY,.5);this.label(this.root,'3′',4.8,rnaY,.5);}
         if(step>=2){
           this.rod(this.root,V(-5,.55,-.5),V(5,.55,-.5),'stage-muted',.025);this.label(this.root,'Nucleus',-4.65,2.3,.5);this.label(this.root,'Cytoplasm',-4.7,-2.5,.5);
           const ribosome=this.group(this.root,-2,rnaY,0);this.sphere(ribosome,0,-.55,0,.62,'cofactor',[1.35,.8,1]);this.sphere(ribosome,0,.32,.1,.55,'cofactor',[1.15,.75,.9]);
@@ -640,9 +984,22 @@ AAA`}
           const vertices=new Float32Array(36*3),geometry=this.arena.keep(new THREE.BufferGeometry());geometry.setAttribute('position',new THREE.BufferAttribute(vertices,3));
           const line=new THREE.Line(geometry,this.arena.keep(new THREE.LineBasicMaterial({color:linear('protein')})));line.frustumCulled=false;ribosome.add(line);
           const dots=new THREE.Points(geometry,this.arena.keep(new THREE.PointsMaterial({color:linear('protein'),size:.11})));dots.frustumCulled=false;ribosome.add(dots);
-          this.dynamic=t=>{const phase=(t%10)/10,length=.6+phase*2.4;ribosome.position.x=-2+phase*4;for(let i=0;i<36;i++){const f=i/35;vertices[i*3]=Math.sin(f*6)*.25*(1-f);vertices[i*3+1]=-1-length*(1-f);vertices[i*3+2]=Math.sin(f*8)*.12;}geometry.attributes.position.needsUpdate=true;};this.dynamic(4);
-          this.label(this.root,'N terminus emerges first · C end grows at ribosome',0,-4.7,.5);this.label(this.root,'Playback resets to a new initiation; no reverse elongation',0,-5.45,.5);
-        }else this.dynamic=t=>{polymerase.position.x=-2.3+(t%10)*.38;};
+          const trna=this.group(ribosome,.45,.15,1);this.rod(trna,V(0,0),V(.2,.9),'rna',.045);this.rod(trna,V(.2,.9),V(-.1,1.2),'rna',.045);this.sphere(trna,-.1,1.2,0,.10,'protein');
+          this.label(this.root,'Charged tRNA delivers an amino acid',1.3,1.2,1);
+          this.dynamic=t=>{const phase=THREE.MathUtils.clamp((t-2)/12,0,1),length=.6+phase*2.4;ribosome.position.x=-2+phase*4;trna.visible=t>=2&&t<14;trna.position.y=.15+(1-Math.min(1,(t%3)/1.5))*.9;for(let i=0;i<36;i++){const f=i/35;vertices[i*3]=Math.sin(f*6)*.25*(1-f);vertices[i*3+1]=-1-length*(1-f);vertices[i*3+2]=Math.sin(f*8)*.12;}geometry.attributes.position.needsUpdate=true;};this.dynamic(0);
+          this.label(this.root,'N terminus emerges first · C end grows at ribosome',0,-4.7,.5);this.label(this.root,'One elongation excerpt · replay starts a new illustration',0,-5.45,.5);
+        }else if(step===0){
+          // Replace the pre-existing complete RNA with a growing strand whose
+          // 3′ end remains at polymerase; no DNA is consumed or cut.
+          rnaMesh.visible=false;
+          const geometry=this.arena.keep(new THREE.BufferGeometry()),vertices=new Float32Array(64*3);geometry.setAttribute('position',new THREE.BufferAttribute(vertices,3));const strand=new THREE.Line(geometry,this.arena.keep(new THREE.LineBasicMaterial({color:linear('rna')})));strand.frustumCulled=false;this.root.add(strand);
+          this.label(polymerase,'3′ growing end',1,-.55,1);this.label(this.root,'5′ emerges first · RNA bends away',0,-1.7,.5);
+          this.dynamic=t=>{const phase=THREE.MathUtils.clamp(t/13,0,1);polymerase.position.x=-2.3+phase*4.6;for(let i=0;i<64;i++){const f=i/63;vertices[i*3]=polymerase.position.x-(1-f)*(.5+phase*3);vertices[i*3+1]=2.3-(1-f)*(.4+phase*2.4);vertices[i*3+2]=.5+.12*Math.sin(f*10)*(1-f);}geometry.attributes.position.needsUpdate=true;};
+        }else{
+          const intron=this.curve(this.root,[V(-1,.1,.1),V(-.8,-1.3,.2),V(.5,-1.5,.3),V(1,.1,.1)],'protein',.075).mesh;
+          this.label(this.root,'Splicing example · RNA segment removed',0,-2.5,.6);
+          this.dynamic=t=>{const f=THREE.MathUtils.clamp((t-5)/5,0,1);intron.position.y=-f*1.2;intron.material.transparent=true;intron.material.opacity=1-f;};
+        }
         if(step===3){this.label(this.root,'AAC → AAA',3.7,2.25,1,'c.1638C>A changes the third base of codon 546 in NM_023110.3; Asn becomes Lys.');this.label(this.root,'Asn546 → Lys546',3,-2.55,1);}
         if(step===4){this.label(this.root,'FGFR1: 822 aa  |  N-Myc: 464 aa',0,4.4,0);}
       };
@@ -657,9 +1014,23 @@ AAA`}
         const left=this.receptor(this.root,-separation),right=this.receptor(this.root,separation);
         this.label(this.root,'Extracellular',-4.6,3.8,1);this.label(this.root,'Cytosol',-4.8,-2.8,1);
         if(step>=1){this.sphere(this.root,-.35,2.4,.7,.55,'rna');this.label(this.root,'FGF ligand',0,4.55,.6);const hs=[];for(let i=0;i<32;i++)hs.push(V(-2.7+i*.17,1.6+.1*Math.sin(i*.8),.85));this.curve(this.root,hs,'cofactor',.07);this.label(this.root,'Heparan sulfate',3.8,2.8,1);}
-        if(step>=2){for(const [side,receptor]of [[-1,left],[1,right]]){const sites=step===2?[['pY653',-1.4]]:[['pY653',-1.4],['pY654',-1.9],['pY766',-2.65]];for(const [name,y]of sites){const bead=this.sphere(receptor,side*.7,y,.35,.14,'phosphate');this.label(receptor,name,side*1.55,y,.35);bead.name='Schematic phosphotyrosine marker';}}this.label(this.root,'ATP → ADP · trans-phosphorylation',0,-3.6,.7);}
-        if(step===3)this.label(this.root,'Y653 → Y583 → Y463 → Y766 → Y585 → Y654',0,-4.5,.8,'Favored order in classical purified assays, not an obligatory in-cell timetable. N546K perturbs early ordering.');
+        if(step>=2){for(const [side,receptor]of [[-1,left],[1,right]]){const sites=step===2?[['pY653',-1.4]]:[['pY653',-1.4],['pY654',-1.9],['pY766',-2.65]];for(const [name,y]of sites){const bead=this.sphere(receptor,side*.7,y,.35,.14,'phosphate');this.label(receptor,name,side*1.55,y,.35);bead.name='Schematic phosphotyrosine marker';bead.userData.site=name;}}this.label(this.root,'ATP → ADP · trans-phosphorylation',0,-3.6,.7);}
+        if(step===3){this.label(this.root,'Y653 → Y583 → Y463 → Y766 → Y585 → Y654',0,-4.5,.8,'Favored order in classical purified assays, not an obligatory in-cell timetable. N546K perturbs early ordering.');this.label(this.root,'Only Y653, Y766 and Y654 markers located here',0,-5.2,.8);}
         if(step===4){this.node('frs','FRS2 · juxtamembrane docking',-4.1,-.8,'cofactor','FRS2 binds the receptor near the cytosolic membrane face; its phosphorylation recruits GRB2/SHP2 and other partners.');this.node('plc','PLCγ1 · pY766 + contacts',4.1,-3.3,'cofactor','pY766 and additional kinase contacts recruit PLCγ1. This is distinct from juxtamembrane FRS2 association.');this.rod(this.root,V(-1.15,-.48,.1),V(-3.5,-.6,.1),'cofactor');this.rod(this.root,V(1.5,-2.7,.1),V(3.5,-3,.1),'cofactor');}
+        const sites=[];for(const receptor of [left,right])receptor.traverse(o=>{if(o.name==='Schematic phosphotyrosine marker')sites.push(o);});
+        const donor=this.group(this.root,-.9,-1.2,1.5);donor.visible=step>=2;
+        const donorLabel=this.label(donor,'ATP + Mg²⁺',0,.65,.2);this.sphere(donor,0,0,0,.15,'rna');this.sphere(donor,.28,0,0,.09,'phosphate');this.sphere(donor,.5,0,0,.09,'phosphate');
+        const phosphate=this.sphere(this.root,0,0,0,.1,'phosphate');phosphate.visible=step>=2;
+        const transfer=new THREE.QuadraticBezierCurve3(V(-.15,-1.2,1.5),V(.1,-.35,1.5),V(1.85,-1.4,.35));
+        this.dynamic=t=>{
+          const association=THREE.MathUtils.smoothstep(t,1,6),spread=step>=1?2.4-(2.4-1.15)*association:2.4;
+          left.position.x=-spread;right.position.x=spread;
+          if(step>=2){const fraction=THREE.MathUtils.smoothstep(t,6,10);transfer.getPoint(fraction,phosphate.position);phosphate.visible=t>=5&&t<10;donorLabel.textContent=t>=10?'ADP + Mg²⁺':'ATP + Mg²⁺';}
+          const schedule=step===3?{pY653:10,pY766:13,pY654:16}:{pY653:10,pY766:10,pY654:10};
+          sites.forEach(site=>{site.visible=t>=schedule[site.userData.site];});
+          for(const item of this.labels)if(/^pY/.test(item.element.textContent))item.element.dataset.suppressed=t<schedule[item.element.textContent]?'true':'';
+          if(step===4)for(const node of this.nodes.values()){const f=THREE.MathUtils.smoothstep(t,10,13);node.group.scale.setScalar(Math.max(.001,f));node.group.visible=f>0;}
+        };
       };
       TeachingScene.prototype.draw_kinase=function(step){
         this.sphere(this.root,-1.2,1.7,0,1.45,'molecule',[1.35,.8,.85]);this.sphere(this.root,.65,-.9,0,2.1,'protein',[1,1,.7]);
@@ -698,6 +1069,8 @@ AAA`}
           const selected=this.options.branch==='all'?(step===1?'mapk':step===2?'pi3k':step===3?'plc':'all'):this.options.branch;
           if(selected!=='all'){const allowed=new Set(['fgfr','frs','output',...(selected==='mapk'?['sos','raf','mek','erk']:selected==='pi3k'?['gab','pip','mtor','s6']:['plc','ip','ca'])]);for(const [id,node]of this.nodes){if(!allowed.has(id)){node.mesh.material.opacity=.25;node.mesh.material.transparent=true;node.mesh.material.depthWrite=false;node.label.style.opacity='.55';}}}
         }
+        const nodes=[...this.nodes.values()];for(const node of nodes)node.mesh.material.userData.restOpacity=node.mesh.material.opacity;
+        this.dynamic=t=>{for(let i=0;i<nodes.length;i++){const node=nodes[i],f=THREE.MathUtils.smoothstep(t,i===0?0:1+i*.45,2+i*.45);node.mesh.material.transparent=true;node.mesh.material.opacity=node.mesh.material.userData.restOpacity*(.12+.88*f);node.label.style.opacity=String(.2+.8*f);}};
       };
       TeachingScene.prototype.draw_nmyc=function(step){
         const dna=this.dna(this.root,8,30);dna.position.set(0,-.8,0);this.label(this.root,'E-box DNA · 5′-CACGTG-3′',0,-2.2,.7,'The E-box is a preferred sequence, not a guarantee of occupancy or activation.');
@@ -710,7 +1083,7 @@ AAA`}
         this.label(this.root,'C-terminal zipper interface',0,4.85,.5);this.label(this.root,'Basic DNA-contact regions',0,.2,1);
         this.label(this.root,'HLH region',2.6,1.8,.5);
         const tail=[V(-1.35,-.35,.4)];for(let i=0;i<55;i++)tail.push(V(-1.6-i*.065,-.1+i*.048+Math.sin(i*.33)*.25,.4+Math.sin(i*.4)*.2));this.curve(this.root,tail,'protein',.055);this.label(this.root,'N-terminal regulatory region',-3.7,3.1,.5);
-        if(step>=1)this.label(this.root,'Transcription programs ≠ DNA amplification event',0,5,.5);
+        if(step>=1)this.label(this.root,'Transcription programs ≠ DNA amplification event',0,5.8,.5);
         if(step===2){const g=this.group(this.root,0,-4.2,0);for(let i=0;i<4;i++){const a=i*Math.PI/2;this.sphere(g,Math.cos(a)*2,Math.sin(a)*.8,0,.38,'protein');this.label(g,['G1','S · DNA synthesis','G2','M · segregation'][i],Math.cos(a)*3,Math.sin(a)*1.7,0);}this.ring(g,1.6,'protein',V(),[Math.PI/2.8,0,0]);}
         if(step===3){this.sphere(this.root,4.8,2.4,0,.8,'dna');this.label(this.root,'Aurora-A binding',4.8,3.8,.5);this.label(this.root,'Synthesis ↔ turnover · ubiquitin / proteasome',0,-3.5,.6);}
         if(step===4){for(const [x,key]of[[-2,'cofactor'],[2,'molecule']])this.sphere(this.root,x,-4,.2,.65,key);this.label(this.root,'More divisions',-2,-5.2,.5);this.label(this.root,'Fewer losses',2,-5.2,.5);this.label(this.root,'Net accumulation = division − cell loss',0,-6.3,.5);}
@@ -770,47 +1143,270 @@ AAA`}
         dispose(){this.disposed=true;this.leave();this.viewer?.clear();this.cache.clear();}
       }
 
+      /** Floating local frames keep precision from organ to atom scales.
+       * Adjacent representations are spatially registered at a selected target;
+       * exponential magnification blends their levels of detail continuously.
+       * This is NOT a metric scan or an experimentally measured connected mesh.
+       */
+      class ZoomJourney {
+        constructor(engine,onDepth){this.engine=engine;this.onDepth=onDepth;this.depth=0;this.target=0;this.branch='dna';this.gene='mycn';this.auto=false;this.paused=false;this.pointers=new Map();this.layers={};this.anatomy={};this.request=null;this.generation=0;this.atomStatus='idle';this.atomText=null;this.enabled=false;}
+        build(){
+          ++this.generation;this.request?.abort();
+          this.auto=false;this.paused=false;this.depth=0;this.target=0;this.lastIndex=-1;
+          const e=this.engine;e.reset();e.chapter='orientation';e.options={motion:false};e.draw_orientation();e.dynamic=null;
+          this.layers={...e.worlds};e.worlds=null;
+          // The whole-cell receptor points outward along +X. Preserve that
+          // membrane normal in every close-up, rather than rotating it at LOD.
+          const membraneFrame=e.group();e.root.remove(this.layers.membrane);membraneFrame.add(this.layers.membrane);this.layers.membrane.rotation.z=-Math.PI/2;this.layers.membrane=membraneFrame;
+          // Undo the old crossfade material initialization. The new compositor
+          // caches base opacity once and never allocates geometry while zooming.
+          for(const group of Object.values(this.layers))group.traverse(o=>{if(o.material)o.material.opacity=o.material.userData.baseOpacity??o.material.opacity;});
+          for(const item of e.labels){delete item.element.dataset.orientationStep;delete item.element.dataset.suppressed;if(['MYCN is part of nuclear DNA','Enlarged DNA motif · not all cellular DNA'].includes(item.element.textContent))item.element.dataset.suppressed='true';}
+          this.layers.body.traverse(o=>{if(o.isMesh)o.userData.anatomy='organs';});
+          this.anatomy.wall=this.layers.body.children[0];this.anatomy.skeleton=e.group(this.layers.body);this.anatomy.nerves=e.group(this.layers.body);this.anatomy.vessels=e.group(this.layers.body);this.anatomy.organs=e.group(this.layers.body);
+          // Reparent existing explicit spine and sympathetic chain geometry;
+          // other organ context is retained. Nothing is presented as all anatomy.
+          for(const child of [...this.layers.body.children]){
+            if(child===this.anatomy.wall||Object.values(this.anatomy).includes(child)||!child.isMesh)continue;
+            const c=child.material.color;
+            if(c.equals(linear('phosphate')))this.anatomy.nerves.add(child);
+            else if(c.equals(linear('stage-muted')))this.anatomy.skeleton.add(child);
+            else this.anatomy.organs.add(child);
+          }
+          const label=(g,text,x,y,z=0,info='')=>e.label(g,text,x,y,z,info);
+          for(let i=0;i<7;i++)for(const s of [-1,1])e.curve(this.anatomy.skeleton,[V(0,4.9-i*.35,-.48),V(s*1.7,4.75-i*.3,-.2),V(s*1.9,4.5-i*.3,.2),V(s*.2,4.25-i*.3,.5)],'stage-muted',.025);
+          e.curve(this.anatomy.vessels,[V(-.13,5,-.2),V(-.13,2,-.2),V(-.13,-1.7,-.2)],'molecule',.075);
+          e.curve(this.anatomy.vessels,[V(.17,5,-.15),V(.17,1,-.15),V(.17,-1.7,-.15)],'dna',.09);
+          for(const s of [-1,1])e.curve(this.anatomy.vessels,[V(-.13,.5,-.2),V(s*.6,.6,-.2),V(s*1.05,.3,0)],'molecule',.04);
+          e.curve(this.anatomy.organs,[V(-2,2.7,.1),V(0,3,.1),V(2,2.7,.1)],'cofactor',.055);
+          e.sphere(this.anatomy.organs,-1.25,1.9,.45,.83,'molecule',[1.4,.6,.55],.16);
+          e.sphere(this.anatomy.organs,1.65,1.65,.4,.45,'protein',[.6,1,.5],.19);
+          e.sphere(this.anatomy.organs,.75,1.4,.6,.65,'cofactor',[.75,1,.5],.12);
+          e.sphere(this.anatomy.organs,.1,.95,.7,.75,'rna',[1.5,.22,.3],.19);
+          label(this.anatomy.vessels,'Aorta / vena cava',-2.7,-.65,.6);
+          label(this.anatomy.organs,'Diaphragm',2.7,3,.5);
+          label(this.anatomy.organs,'Liver · anterior neighbor on right',-3.3,2.25,.8);
+          label(this.anatomy.organs,'Left-side stomach / spleen context',3.3,2.1,.8);
+          label(this.layers.body,'Adrenal-region tumor example',-3,1.2,.8);
+          this.blob(this.layers.body,V(-1.1,1.22,.4),.28);
+          this.blob(this.layers.adrenal,V(0,0,.7),.6);
+          label(this.layers.adrenal,'Selected tumor region · illustrative',0,-1.75,1.3);
+          // The mass and tissue levels use the same selected-point registration.
+          this.layers.tumor=e.group();this.blob(this.layers.tumor,V(),2.7);
+          for(let i=0;i<7;i++)e.curve(this.layers.tumor,[V(-3+i,.5,2.1),V(-2+i,-1,2.4),V(-2.5+i,-2,1.8)],i%2?'dna':'molecule',.035);
+          e.ring(this.layers.tumor,.16,'rna',V(.35,.45,2.65));label(this.layers.tumor,'Zoom target · tissue region',.35,1.1,3);label(this.layers.tumor,'Solid tumor · representative mass',0,-3.9,.4);
+          // Enrich the cell while removing the oversized DNA helix at this scale.
+          for(const item of e.labels)if(item.anchor.parent?.parent===this.layers.cell&&/^D[123]$/.test(item.element.textContent))item.element.dataset.suppressed='true';
+          const cell=this.layers.cell;
+          for(const child of cell.children)if(child.isGroup&&child.position.x===-1.1&&child.position.y===.35)child.visible=false;
+          for(let i=0;i<3;i++){const g=e.group(cell,-2.5+i*2,-1.6+i*.3,.15);e.sphere(g,0,0,0,.48,'rna',[1.3,.6,.6],.5);e.curve(g,[V(-.35,0,.2),V(-.1,.13,.2),V(0,-.1,.2),V(.15,.13,.2),V(.35,0,.2)],'rna',.025);}
+          for(let i=0;i<4;i++)e.curve(cell,[V(1.8,1+i*.17,.15),V(2.5,.85+i*.17,.2),V(3,1.15+i*.17,.15)],'cofactor',.045);
+          label(cell,'Mitochondria',-2.2,-2.5,.7);label(cell,'Golgi',2.5,2,.7);
+          for(const item of e.labels){
+            const text=item.element.textContent;
+            if(text==='Nucleus · DNA')item.element.textContent='Nucleus · chromosomes / chromatin';
+            if(text==='FGFR1 at membrane'){item.anchor.position.set(4,1,.7);}
+            if(text==='Adrenal glands'||text==='Kidneys'||text==='Faint organs provide context')this.anatomy.organs.add(item.anchor);
+            if(text==='Spine / cord region')this.anatomy.skeleton.add(item.anchor);
+            if(text.startsWith('Sympathetic chains'))this.anatomy.nerves.add(item.anchor);
+          }
+          this.buildNuclearLevels();this.buildDNA();this.buildProtein();
+          for(const group of Object.values(this.layers))this.cacheMaterials(group);
+          this.enabled=true;e.controls.enableZoom=false;e.controls.enablePan=false;e.controls.minDistance=4;e.controls.maxDistance=120;
+          this.configureRoute();this.fit();this.applyDepth(0);this.updateUI(true);
+        }
+        blob(parent,position,radius){const e=this.engine,g=e.group(parent,...position.toArray());e.sphere(g,0,0,0,radius,'molecule',[1,.88,.8],.72);for(let i=0;i<16;i++){const angle=i*2.399,z=(i%5-2)*.15; e.sphere(g,Math.cos(angle)*radius*.68,Math.sin(angle)*radius*.57,z*radius,radius*.34,'molecule',null,.75);}return g;}
+        cacheMaterials(group){const materials=new Set();group.traverse(o=>{if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material]){if(m.userData.zoomBase===undefined)m.userData.zoomBase=m.userData.baseOpacity??m.opacity;materials.add(m);}});group.userData.zoomMaterials=[...materials];}
+        opacity(group,a){group.visible=a>.001;group.userData.labelOpacity=a;for(const m of group.userData.zoomMaterials||[]){m.opacity=m.userData.zoomBase*a;m.transparent=m.opacity<1;m.depthWrite=!m.transparent;}}
+        buildNuclearLevels(){
+          const e=this.engine,nucleus=this.layers.nucleus=e.group(),chromatin=this.layers.chromatin=e.group(),nuc=this.layers.nucleosome=e.group();
+          e.sphere(nucleus,0,0,0,3.8,'protein',[1.1,.9,.6],.045);e.ring(nucleus,3.8,'protein',V()).scale.set(1.1,.9,1);
+          for(let i=0;i<16;i++){const a=i*2.399,r=1.3+(i%3)*.65,g=e.group(nucleus,Math.cos(a)*r,Math.sin(a)*r*.8,(i%4)*.12);e.sphere(g,0,0,0,.68,i===0?'molecule':'dna',[1.25,.65,.45],i===0?.25:.055);const p=[];for(let j=0;j<35;j++)p.push(V(Math.sin(j*.5)*.5,Math.cos(j*.3)*.35,j*.012));e.curve(g,p,i===0?'molecule':'dna',.025);}
+          e.ring(nucleus,.2,'rna',V(1.3,0,.6));e.label(nucleus,'Chromosome territories · interphase',0,4,.8);e.label(nucleus,'Selected chromatin region',1.3,-1,.8);e.label(nucleus,'Not mitotic X-shaped chromosomes',0,-4,.8);
+          // Irregular chain; no universal 30-nm fiber or real locus topology.
+          let previous=null;for(let i=0;i<12;i++){const x=-3.8+i*.7,y=Math.sin(i*1.7)*1.1,z=Math.cos(i*.9)*.5,origin=V(x,y,z),g=e.group(chromatin,x,y,z);e.sphere(g,0,0,0,.32,'protein',[1,.75,.7]);const wrap=[];for(let j=0;j<42;j++){const a=j/41*Math.PI*3.3;wrap.push(V(.41*Math.cos(a),-.17+j/41*.34,.41*Math.sin(a)));}e.curve(g,wrap,'dna',.035);const entry=wrap[0].clone().add(origin),exit=wrap[wrap.length-1].clone().add(origin);if(previous)e.curve(chromatin,[previous,previous.clone().lerp(entry,.5).add(V(0,.1,.15)),entry],'dna',.03);previous=exit;}
+          e.label(chromatin,'Irregular nucleosome organization',0,2.5,1);e.label(chromatin,'Histone cores + DNA · locus geometry not measured',0,-2.7,1);
+          // Compact octamer symbol, not a hollow ring of eight free histones.
+          for(let i=0;i<8;i++){const a=(i%4)*Math.PI/2;e.sphere(nuc,Math.cos(a)*.85,Math.sin(a)*.85,i<4?-.35:.35,.94,i%2?'protein':'cofactor',[1,1,.7],.85);}
+          const wrap=[];for(let i=0;i<150;i++){const a=i/149*Math.PI*3.3;wrap.push(V(2.4*Math.cos(a),2.4*Math.sin(a),.5-i/149));}e.curve(nuc,wrap,'dna',.14);e.label(nuc,'DNA centerline · ~147 bp / ~1.65 turns',0,3.6,.8);e.label(nuc,'Histone octamer · compact core symbol',0,-3.6,.8);
+        }
+        buildDNA(){
+          const e=this.engine,g=this.layers.dna=e.group(),ref=GENOMIC_ANCHORS[this.gene],comp={A:'T',T:'A',G:'C',C:'G'};
+          this.dnaLetters=[];const a=[],b=[],n=ref.sequence.length,unit=.8;
+          for(let i=0;i<n;i++){
+            const angle=i*2*Math.PI/10.5,x=(i-(n-1)/2)*.34*unit,p=V(x,unit*Math.cos(angle),unit*Math.sin(angle)),q=V(x,-p.y,-p.z);a.push(p);b.push(q);
+            const key=ref.sequence[i]==='A'||ref.sequence[i]==='T'?'rna':'cofactor';e.rod(g,p,q,key,.045);
+            // Paired letters occupy their strand side; sequence strip below
+            // provides an accessible unoccluded readout independent of orbit.
+            const coordinate=ref.strand===1?ref.start+i:ref.end-i;
+            for(const [base,pos,strand]of [[ref.sequence[i],p,'coding'],[comp[ref.sequence[i]],q,'complement']]){
+              const element=e.label(g,base,pos.x,pos.y*1.25,pos.z*1.25,`${ref.gene} · ${ref.chromosome}:${coordinate} · ${strand} strand · pair ${ref.sequence[i]}–${comp[ref.sequence[i]]}. Coding position c.${ref.cdsStart+i}. Public reference, not patient DNA.`,`${base} · genomic ${coordinate}`);element.classList.add('base-letter');this.dnaLetters.push(element);
+            }
+          }
+          e.curve(g,a,'dna',.065);e.curve(g,b,'dna',.065);e.label(g,'Coding strand 5′ → 3′ · complement 3′ → 5′',0,2.5,.8);e.label(g,'A–T / G–C · idealized right-handed B-DNA',0,-2.5,.8);
+          this.cacheMaterials(g);
+        }
+        buildProtein(){
+          const e=this.engine,receptor=this.layers.receptor=e.group(),frame=e.group(receptor);frame.rotation.z=-Math.PI/2;e.membrane(frame,0,8,2);e.receptor(frame,0);e.label(frame,'Extracellular ligand-binding region',0,4.6,.5);e.label(frame,'Cytoplasmic kinase',2.2,-2.7,.5);
+          this.layers.kinase=e.group();e.sphere(this.layers.kinase,-1,1,0,1.5,'molecule',[1.2,.7,.7]);e.sphere(this.layers.kinase,.5,-1,0,2,'protein');e.label(this.layers.kinase,'Schematic kinase → experimental fragment',0,4,.5);e.label(this.layers.kinase,'Coordinates load on demand · reference Asn546',0,-4,.5);
+          this.layers.atoms=e.group();this.atomStatus='idle';this.atomLabels=[];this.traceMaterial=null;this.atomPointsMaterial=null;this.atomLabel=e.label(this.layers.atoms,'Experimental coordinates not yet loaded',0,0,0);
+        }
+        configureRoute(){
+          const common=[['body',12,V(-1.1,1.22,.4)],['adrenal',4,V(0,0,.7)],['tumor',60,V(.35,.45,2.65)],['tissue',4.5,V(0,.25,1)],['cell',3,V(-1.1,.35,.3)]];
+          if(this.branch==='dna')this.route=[...common,['nucleus',12,V(1.3,0,.6)],['chromatin',6,V(.4,-.6,0)],['nucleosome',4,V(2.3,0,.2)],['dna',2,V()],['dna',1,V()]];
+          else{common[4]=['cell',4,V(4,0,.6)];this.route=[...common,['membrane',1.4,V()],['receptor',4,V(-1.6,-.1,0)],['kinase',1,V()],['atoms',4,this.atomFocus||V()],['atoms',1,V()]];}
+          this.descriptions=[...JOURNEY_COMMON,...(this.branch==='dna'?JOURNEY_DNA:JOURNEY_PROTEIN)].map(row=>[...row]);
+          if(this.branch==='dna'&&this.gene==='fgfr'){
+            this.descriptions[5][2]='Chromosomes occupy dynamic interphase territories. The selected reference locus is now FGFR1 on chromosome8, not MYCN on chromosome2. Switching references changes the locus being illustrated, not its DNA sequence in a living cell.';
+            this.descriptions[5][3]='The territory positions and FGFR1 locus geometry are illustrative, not experimentally mapped in a tumor. An X-shaped replicated chromosome belongs to a different cell-cycle state.';this.descriptions[5][4]=['M03','M31','M32'];
+            this.descriptions[6][3]='No obligatory regular30-nm fiber is shown. The chromatin path and nucleosome positions are not experimentally mapped at the selected locus.';
+            this.descriptions[7][3]='This is a generic packaging illustration, not an FGFR1-specific nucleosome structure or a measured accessibility map.';
+            this.descriptions[9][2]='This reference fragment spans FGFR1 codon546. Coding AAC specifies asparagine; the c.1638C>A allele would make AAA, specifying lysine. The displayed reference remains unmutated.';
+          }
+        }
+        fit(){const e=this.engine,half=Math.tan(THREE.MathUtils.degToRad(e.camera.fov/2)),distance=Math.max(11/half,8/(half*e.camera.aspect));e.controls.target.set(0,0,0);e.camera.position.set(0,0,distance);e.controls.update();e.dirty=true;}
+        setDepth(value,immediate=false){this.target=THREE.MathUtils.clamp(value,0,9);if(immediate||!app.options.motion){this.depth=this.target;this.applyDepth(this.depth);this.updateUI();}this.paused=false;}
+        advance(delta){this.auto=false;this.setDepth(this.target+delta);}
+        applyDepth(depth){
+          const e=this.engine,i=Math.min(8,Math.floor(depth)),f=depth-i,u=f*f*(3-2*f),[name,factor,focus]=this.route[i],[next]=this.route[i+1],parent=this.layers[name],child=this.layers[next],scale=Math.pow(factor,u);
+          for(const group of Object.values(this.layers)){group.visible=false;group.userData.labelOpacity=0;}
+          if(parent===child){this.opacity(parent,1);parent.scale.setScalar(scale);parent.position.copy(focus).multiplyScalar(-scale*u);}
+          else{
+            this.opacity(parent,1-THREE.MathUtils.smoothstep(f,.58,.96));parent.scale.setScalar(scale);parent.position.copy(focus).multiplyScalar(-scale*u);
+            this.opacity(child,THREE.MathUtils.smoothstep(f,.08,.58));child.scale.setScalar(scale/factor);child.position.copy(focus).multiplyScalar(scale*(1-u));
+          }
+          // Body has a taller framing extent than the microscopic levels.
+          const framing=depth<1?1:Math.min(1.65,1+(depth-1)*.3);e.root.scale.setScalar(framing);
+          for(const element of this.dnaLetters)element.dataset.suppressed=depth>=8.15?'':'true';
+          for(const element of this.atomLabels||[])element.dataset.suppressed=depth>=8.45?'':'true';
+          if(this.branch==='protein'&&this.traceMaterial){const context=1-.86*THREE.MathUtils.smoothstep(depth,8.2,8.9);this.traceMaterial.opacity=(this.layers.atoms.userData.labelOpacity||0)*context;this.traceMaterial.transparent=true;this.atomPointsMaterial.opacity=(this.layers.atoms.userData.labelOpacity||0)*.15*context;}
+          e.root.updateMatrixWorld(true);e.dirty=true;
+          if(this.branch==='protein'&&depth>6.5&&this.atomStatus==='idle')void this.loadAtoms();
+          $('journeyZoom').value=String(Math.round(depth/9*1000));$('zoomReadout').value=`${(depth/9*100).toFixed(0)}% · ${this.descriptions[Math.min(9,Math.round(depth))][0]}`;
+          document.body.dataset.zoomDepth=depth.toFixed(4);document.body.dataset.zoomGeometry=[name,next].join(':');
+        }
+        update(dt){if(!this.enabled||this.paused)return false;if(this.auto)this.target=Math.min(9,this.target+dt*.14*(app.pace||1));if(Math.abs(this.target-this.depth)<.0002){if(this.auto&&this.target===9){this.auto=false;this.updateUI(true);}return false;}this.depth=app.options.motion?this.depth+(this.target-this.depth)*(1-Math.exp(-dt*9)):this.target;this.applyDepth(this.depth);this.updateUI();return true;}
+        updateUI(force=false){const index=Math.min(9,Math.round(this.depth));if(force||index!==this.lastIndex){this.lastIndex=index;this.onDepth(index,this.descriptions[index]);}for(const button of $('journeyStops').children)button.setAttribute('aria-pressed',String(Number(button.dataset.zoomStop)===index));$('zoomTour').textContent=!app.options.motion?'Next level':this.auto?'Pause zoom':'Auto zoom';$('zoomTour').setAttribute('aria-pressed',String(this.auto));}
+        async loadAtoms(){
+          const generation=++this.generation;this.request?.abort();const request=this.request=new AbortController();const timer=setTimeout(()=>request.abort(),18000);this.atomStatus='loading';this.atomLabel.textContent='Loading 1FGK · deposited coordinates…';this.engine.dirty=true;
+          try{
+            let text=this.atomText;if(!text){const response=await fetch('https://files.rcsb.org/download/1FGK.pdb',{signal:request.signal,credentials:'omit',referrerPolicy:'no-referrer'});if(!response.ok)throw Error(`HTTP ${response.status}`);text=await response.text();}
+            if(generation!==this.generation||!this.enabled)return;
+            const atoms=text.split('\n').filter(l=>l.startsWith('ATOM  ')&&l[21]==='A'&&[' ','A'].includes(l[16])).map(l=>({atom:l.slice(12,16).trim(),resn:l.slice(17,20).trim(),resi:Number(l.slice(22,26)),x:Number(l.slice(30,38)),y:Number(l.slice(38,46)),z:Number(l.slice(46,54)),element:l.slice(76,78).trim()}));
+            if(atoms.length<100||atoms.some(a=>!Number.isFinite(a.x+a.y+a.z)))throw Error('Invalid coordinate response');
+            const e=this.engine,g=this.layers.atoms,ca=atoms.filter(a=>a.atom==='CA'),center=V();for(const a of ca)center.add(V(a.x,a.y,a.z));center.multiplyScalar(1/ca.length);const scale=.13,pos=a=>V(a.x,a.y,a.z).sub(center).multiplyScalar(scale);
+            const highlight=atoms.filter(a=>a.resi===546),target=highlight.find(a=>a.atom==='CA');
+            if(ca.length<100||!target||highlight.some(a=>a.resn!=='ASN'))throw Error('Reference Asn546 or Cα trace not found');
+            this.atomLabel.dataset.suppressed='true';
+            const points=[];for(let i=1;i<ca.length;i++){if(ca[i].resi===ca[i-1].resi+1&&pos(ca[i]).distanceTo(pos(ca[i-1]))<.65)points.push(pos(ca[i-1]),pos(ca[i]));}
+            const material=e.material('molecule'),geometry=e.arena.keep(new THREE.CylinderGeometry(.032,.032,1,7)),trace=new THREE.InstancedMesh(geometry,material,points.length/2),dummy=new THREE.Object3D(),delta=V();
+            for(let i=0;i<points.length;i+=2){delta.subVectors(points[i+1],points[i]);dummy.position.copy(points[i]).add(points[i+1]).multiplyScalar(.5);dummy.scale.set(1,delta.length(),1);dummy.quaternion.setFromUnitVectors(UP,delta.normalize());dummy.updateMatrix();trace.setMatrixAt(i/2,dummy.matrix);}trace.instanceMatrix.needsUpdate=true;g.add(trace);this.traceMaterial=material;
+            const atomPositions=[];for(const atom of atoms)atomPositions.push(...pos(atom).toArray());const atomGeometry=e.arena.keep(new THREE.BufferGeometry());atomGeometry.setAttribute('position',new THREE.Float32BufferAttribute(atomPositions,3));this.atomPointsMaterial=e.arena.keep(new THREE.PointsMaterial({color:linear('stage-muted'),size:.035,transparent:true,opacity:.15,depthWrite:false}));g.add(new THREE.Points(atomGeometry,this.atomPointsMaterial));
+            this.atomFocus=pos(target);
+            for(const a of highlight){const p=pos(a),key=a.element==='N'?'atom-n':a.element==='O'?'atom-o':'stage-muted';e.sphere(g,p.x,p.y,p.z,.07,key);this.atomLabels.push(e.label(g,`${a.atom}`,p.x,p.y+.12,p.z,`1FGK · chain A · ASN546 · ${a.atom} (${a.element}) · deposited x ${a.x}, y ${a.y}, z ${a.z} Å. Reference asparagine; no mutant coordinate modeled.`));}
+            e.label(g,'1FGK · chain A · resolved Cα trace',0,3.8,.8);e.label(g,'ASN546 · atom centers, no invented bonds',0,-3.6,.8);
+            this.atomText=text;this.atomStatus='ready';this.cacheMaterials(g);this.configureRoute();this.applyDepth(this.depth);this.updateUI(true);
+          }catch(error){if(generation!==this.generation||!this.enabled)return;this.atomStatus='error';delete this.atomLabel.dataset.suppressed;this.atomLabel.textContent=`No experimental coordinates: ${error.name==='AbortError'?'request timed out':error.message}`;this.engine.dirty=true;this.updateUI(true);}
+          finally{clearTimeout(timer);}
+        }
+        leave(){this.enabled=false;this.auto=false;this.pointers.clear();++this.generation;this.request?.abort();this.engine.root.scale.setScalar(1);this.engine.controls.enabled=true;this.engine.controls.enableZoom=true;this.engine.controls.enablePan=true;}
+      }
+
       class Atlas {
-        constructor(){this.index=0;this.step=0;this.playing=false;this.elapsed=0;this.last=0;this.frameId=0;this.destroyed=false;this.motion=matchMedia('(prefers-reduced-motion: reduce)');this.options={architecture:'ecdna',branch:'all',motion:!this.motion.matches};this.abort=new AbortController();this.lab=new StructureLab();this.frame=this.frame.bind(this);}
+        constructor(){this.index=0;this.step=0;this.playing=false;this.elapsed=0;this.last=0;this.frameId=0;this.destroyed=false;this.captionIndex=-1;this.mode='beginner';this.motion=matchMedia('(prefers-reduced-motion: reduce)');this.options={architecture:'ecdna',branch:'all',motion:!this.motion.matches};this.abort=new AbortController();this.lab=new StructureLab();this.frame=this.frame.bind(this);}
+        get chapter(){return CHAPTERS[this.index];}
+        get isLab(){return this.chapter.id==='structures';}
+        get isJourney(){return this.chapter.id==='orientation';}
         init(){
           this.engine=new TeachingScene($('scene'),$('stageWrap'));
+          this.journey=new ZoomJourney(this.engine,(index,content)=>this.renderJourney(index,content));
           $('chapters').innerHTML=CHAPTERS.map((ch,i)=>`<button type="button" class="chapter" data-chapter="${i}"><span class="number">${String(i+1).padStart(2,'0')}</span><span><strong>${ch.title}</strong><small>${ch.subtitle}</small></span></button>`).join('');
-          this.bind();this.observer=new ResizeObserver(()=>{this.engine.resize();if(this.index!==7)this.engine.fit();this.lab.resize();});this.observer.observe($('stageWrap'));
+          this.bind();this.observer=new ResizeObserver(()=>{this.engine.resize();if(this.isJourney)this.journey.fit();else if(!this.isLab)this.engine.fit(false);this.lab.resize();});this.observer.observe($('stageWrap'));
           this.select(0);this.start();
         }
         on(target,event,handler){target.addEventListener(event,handler,{signal:this.abort.signal});}
         bind(){
+          this.on($('journeyZoom'),'input',()=>{this.journey.auto=false;this.journey.setDepth(Number($('journeyZoom').value)*9/1000,true);});
+          this.on($('zoomIn'),'click',()=>this.journey.advance(.5));this.on($('zoomOut'),'click',()=>this.journey.advance(-.5));
+          this.on($('zoomTour'),'click',()=>{const j=this.journey;if(!this.options.motion){j.setDepth(Math.min(9,Math.floor(j.depth)+1),true);j.auto=false;j.updateUI(true);return;}j.auto=!j.auto;j.paused=false;if(j.auto&&j.depth>8.98)j.setDepth(0,true);if(!j.auto){j.target=j.depth;j.paused=true;}j.updateUI(true);});
+          this.on($('journeyStops'),'click',event=>{const button=event.target.closest('[data-zoom-stop]');if(button){this.journey.auto=false;this.journey.setDepth(Number(button.dataset.zoomStop));}});
+          this.on($('journeyBranch'),'change',()=>{const j=this.journey;j.branch=$('journeyBranch').value;j.auto=false;j.configureRoute();j.setDepth(Math.min(j.depth,4),true);this.setupJourneyControls();j.updateUI(true);});
+          this.on($('anatomyLayers'),'change',event=>{const group=this.journey.anatomy[event.target.value];if(group){group.visible=event.target.checked;this.engine.dirty=true;}});
+          $('scene').addEventListener('wheel',event=>{if(!this.isJourney)return;event.preventDefault();const pixels=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?this.engine.wrap.clientHeight:1);this.journey.advance(THREE.MathUtils.clamp(pixels,-240,240)*.0025);},{passive:false,signal:this.abort.signal});
+          this.on($('scene'),'pointerdown',event=>{if(!this.isJourney||event.pointerType!=='touch')return;const j=this.journey;j.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(j.pointers.size===2){const [a,b]=[...j.pointers.values()];j.pinch=Math.hypot(a.x-b.x,a.y-b.y);this.engine.controls.enabled=false;}});
+          this.on($('scene'),'pointermove',event=>{const j=this.journey;if(!this.isJourney||!j.pointers.has(event.pointerId))return;j.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(j.pointers.size===2){const [a,b]=[...j.pointers.values()],distance=Math.hypot(a.x-b.x,a.y-b.y);if(j.pinch>0&&distance>0)j.advance(Math.log(distance/j.pinch)*2);j.pinch=distance;}});
+          for(const type of ['pointerup','pointercancel','lostpointercapture'])this.on($('scene'),type,event=>{this.journey.pointers.delete(event.pointerId);if(this.journey.pointers.size<2)this.engine.controls.enabled=true;});
           this.on($('chapters'),'click',event=>{const button=event.target.closest('[data-chapter]');if(button)this.select(Number(button.dataset.chapter));});
           this.on($('previous'),'click',()=>this.go(this.step-1));this.on($('next'),'click',()=>this.go(this.step+1));
           this.on($('play'),'click',()=>this.setPlaying(!this.playing));this.on($('progress'),'input',()=>{this.setPlaying(false);this.go(Number($('progress').value));});
-          this.on($('fit'),'click',()=>this.index===7?this.lab.reset():this.engine.fit());
-          this.on($('sceneOptions'),'change',event=>{const target=event.target;if(target.id==='architecture')this.options.architecture=target.value;if(target.id==='branch')this.options.branch=target.value;if(target.id==='motion')this.options.motion=target.checked;this.engine.show(CHAPTERS[this.index],this.step,this.options);});
+          this.on($('replay'),'click',()=>{this.elapsed=0;this.captionIndex=-1;this.renderStep();this.setPlaying(true);});
+          this.on($('animationProgress'),'input',()=>{const value=Number($('animationProgress').value);this.setPlaying(false);this.elapsed=value*STEP_SECONDS/1000;this.engine.fit(false);this.engine.animateAt(this.options.motion?this.elapsed:STEP_SECONDS);this.engine.update(0,false);this.updateCaption();});
+          this.on($('learningMode'),'change',()=>{this.mode=$('learningMode').value;if(this.isJourney)this.journey.updateUI(true);else if(!this.isLab)this.renderStep(false);});
+          this.on($('fit'),'click',()=>{this.manualTransition=true;if(this.isJourney){this.journey.fit();this.journey.applyDepth(this.journey.depth);}else this.isLab?this.lab.reset():this.engine.fit(this.options.motion);});
+          this.on($('sceneOptions'),'change',event=>{const target=event.target;if(target.id==='architecture')this.options.architecture=target.value;if(target.id==='branch')this.options.branch=target.value;if(target.id==='motion'){this.options.motion=target.checked;if(!target.checked){this.engine.fit(false);this.setPlaying(false);}}if(target.id==='pace')this.pace=Number(target.value);else{this.engine.show(this.chapter,this.step,this.options);this.engine.animateAt(this.options.motion&&this.playing?this.elapsed:STEP_SECONDS);}});
           this.on($('structureSelect'),'change',()=>this.openStructure($('structureSelect').value));this.on($('representation'),'change',()=>this.lab.style());this.on($('focusFeature'),'click',()=>this.lab.focus());this.on($('wholeStructure'),'click',()=>{if(this.lab.ready){this.lab.viewer.zoomTo(this.lab.displaySelection());this.lab.viewer.render();}});
           this.on($('inspectResidue'),'click',()=>this.lab.locate());this.on($('residue'),'keydown',event=>{if(event.key==='Enter')this.lab.locate();});this.on($('clearMeasures'),'click',()=>this.lab.clearMeasurements());this.on($('measure'),'change',()=>{this.lab.atomA=null;});
           for(const element of [$('scene'),$('molecule')])this.on(element,'keydown',event=>this.key(event));
           this.on(document,'visibilitychange',()=>document.hidden?this.stop():this.start());this.on(window,'pagehide',event=>event.persisted?this.stop():this.dispose());this.on(window,'pageshow',()=>this.start());
-          this.on(this.motion,'change',event=>{if(event.matches){this.options.motion=false;this.setPlaying(false);if($('motion'))$('motion').checked=false;}});
+          this.on(this.motion,'change',event=>{if(event.matches){this.options.motion=false;this.setPlaying(false);if(this.isJourney){this.journey.auto=false;this.journey.setDepth(this.journey.target,true);}else{this.engine.fit(false);this.engine.animateAt(STEP_SECONDS);}if($('motion'))$('motion').checked=false;}});
           this.on($('scene'),'webglcontextlost',event=>{event.preventDefault();this.setPlaying(false);this.stop();message('Graphics context interrupted. Reload to rebuild the atlas; written lessons and sources remain available.',true);});
         }
-        select(index){if(!Number.isInteger(index)||index<0||index>=CHAPTERS.length)return;this.setPlaying(false);this.lab.leave();this.index=index;this.step=0;
+        select(index){if(!Number.isInteger(index)||index<0||index>=CHAPTERS.length)return;this.setPlaying(false);this.lab.leave();this.journey.leave();this.index=index;this.step=0;this.elapsed=0;
           document.querySelectorAll('[data-chapter]').forEach((button,i)=>{if(i===index)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
-          $('lesson').scrollTop=0;$('inspector').hidden=true;$('scene').hidden=index===7;$('labels').hidden=index===7;$('molecule').hidden=index!==7;$('labControls').hidden=index!==7;$('transport').hidden=index===7;$('sceneOptions').hidden=index===7;
-          if(index===7){this.engine.reset();this.openStructure($('structureSelect').value);}
+          $('lesson').scrollTop=0;$('inspector').hidden=true;$('scene').hidden=this.isLab;$('labels').hidden=this.isLab;$('molecule').hidden=!this.isLab;$('labControls').hidden=!this.isLab;$('transport').hidden=this.isLab||this.isJourney;$('sceneOptions').hidden=this.isLab||this.isJourney;$('liveCaption').hidden=this.isLab;$('scaleRoute').hidden=true;$('journeyControls').hidden=!this.isJourney;$('zoomHud').hidden=!this.isJourney;
+          if(this.isLab){this.engine.reset();this.openStructure($('structureSelect').value);}
+          else if(this.isJourney){this.journey.depth=0;this.journey.target=0;this.journey.build();this.setupJourneyControls();this.journey.updateUI(true);$('sceneMessage').hidden=true;}
           else{this.renderStep();$('sceneMessage').hidden=true;}
           document.body.dataset.chapter=CHAPTERS[index].id;
         }
         go(step){const chapter=CHAPTERS[this.index];if(!chapter.steps.length)return;this.step=Math.max(0,Math.min(chapter.steps.length-1,step));this.elapsed=0;this.renderStep();}
-        renderStep(){
+        setupJourneyControls(){
+          $('journeyBranch').value=this.journey.branch;
+          $('journeyStops').innerHTML=this.journey.descriptions.map((d,i)=>`<button type="button" data-zoom-stop="${i}" aria-pressed="false">${esc(d[0])}</button>`).join('');
+          $('canvasHelp').textContent='Wheel / two-finger pinch / + −: continuous depth · drag: orbit · click a base or atom to inspect';
+          $('scene').setAttribute('aria-label','Continuous body to molecule zoom. Wheel, pinch or plus and minus to change depth. Drag to orbit.');
+          for(const checkbox of $('anatomyLayers').querySelectorAll('input')){checkbox.checked=true;this.journey.anatomy[checkbox.value].visible=true;}
+        }
+        renderJourney(index,content){
+          const j=this.journey,ref=GENOMIC_ANCHORS[j.gene],dna=j.branch==='dna';
+          $('sceneTitle').textContent=content[0];$('sceneBadge').textContent='Continuous scale exploration · generic spatial model';
+          $('zoomLocation').textContent=content[1];$('zoomScale').textContent=index>=8&&!dna?`Experimental fragment · ${j.atomStatus==='ready'?'1FGK coordinates':'coordinates '+j.atomStatus}`:'Nested levels of detail · sizes illustrative, not a metric scan';
+          $('captionPhase').textContent=`${index+1} / 10 · ${content[1]} · ${j.auto?'automatic zoom':'zoom at your own pace'}`;$('captionText').textContent=content[2];
+          const sequence=dna&&index>=8?`<div class="sequence-strip"><strong>${ref.gene} · coding strand 5′→3′</strong><br>${ref.sequence}<br><strong>Complement 3′→5′</strong><br>${ref.sequence.replace(/[ATGC]/g,c=>({A:'T',T:'A',G:'C',C:'G'}[c]))}</div><p class="small">GRCh38 ${ref.chromosome}:${ref.start}–${ref.end} · ${ref.strand===1?'plus strand, increasing coordinates':'minus coding strand, decreasing coordinates'} · ${ref.transcript} c.${ref.cdsStart}–${ref.cdsStart+ref.sequence.length-1}. A contiguous genomic fragment, not a complete spliced CDS.</p><label class="small">Reference fragment <select id="zoomGene"><option value="mycn">MYCN coding start · chromosome2</option><option value="fgfr">FGFR1 N546 region · chromosome8</option></select></label>`:'';
+          const protein=!dna&&index>=7?`<p class="evidence">${j.atomStatus==='ready'?'Coordinates verified: chain A, ASN546.':'Experimental coordinates: '+j.atomStatus+'. No invented structure is substituted.'}</p><button type="button" id="zoomLab" class="research-action">Open full experimental structure lab ↗</button>${j.atomStatus==='error'?'<button type="button" id="retryZoomAtoms">Retry coordinate download</button>':''}`:'';
+          $('lessonContent').innerHTML=`<p class="eyebrow">Spatial level ${index+1} of 10 · ${this.mode==='academic'?'evidence and anatomy':'plain-language guide'}</p><h2>${esc(content[0])}</h2><p class="lead">${esc(content[2])}</p>${sequence}${protein}<h3>What is being represented?</h3><p class="detail">${index<5?'Organ systems are shown as relevant landmarks. They are not serial barriers that every tumor, drug or camera must cross. Bloodstream and nervous-system pathways are different from this visual zoom.':dna?'This is a location/packaging hierarchy, not a measured molecular trajectory. A chromosome remains DNA plus associated proteins as you increase magnification.':'The membrane cartoon and experimental kinase fragment use different sources of evidence. Changing magnification does not show activation or a folding pathway.'}</p><h3>Accuracy boundary</h3><p class="evidence">${esc(content[3])}</p>${citations(content[4])}${index>=5?'<button type="button" id="zoomProcess" class="research-action">DNA → RNA → protein is a process: study it separately ↗</button>':''}<details class="check-question"><summary>How to explore</summary><p>Scroll over the canvas or pinch to move continuously between scales. Use the depth slider or named landmarks for direct access. Drag to orbit; Reset view restores the camera without losing depth. Choose the membrane branch to inspect FGFR1 coordinates. These are representative models, not a patient reconstruction.</p></details>`;
+          if($('zoomGene')){$('zoomGene').value=j.gene;$('zoomGene').addEventListener('change',()=>{const depth=j.depth;j.gene=$('zoomGene').value;$('inspector').hidden=true;j.build();j.setDepth(depth,true);this.setupJourneyControls();j.updateUI(true);});}
+          $('zoomLab')?.addEventListener('click',()=>{$('structureSelect').value='1FGK';this.select(CHAPTERS.findIndex(c=>c.id==='structures'));});
+          $('retryZoomAtoms')?.addEventListener('click',()=>void j.loadAtoms());
+          $('zoomProcess')?.addEventListener('click',()=>this.select(CHAPTERS.findIndex(c=>c.id==='expression')));
+          document.body.dataset.zoomLevel=String(index);document.body.dataset.zoomBranch=j.branch;
+        }
+        renderStep(rebuild=true){
           const chapter=CHAPTERS[this.index],content=chapter.steps[this.step];
           $('sceneTitle').textContent=chapter.title;$('sceneBadge').textContent=`Chapter ${String(this.index+1).padStart(2,'0')} · Schematic / not to scale`;
-          $('lessonContent').innerHTML=`<p class="eyebrow">${this.step+1} / ${chapter.steps.length} · Mechanism</p><h2>${esc(content[0])}</h2><p class="lead">${esc(content[1])}</p><h3>Molecular detail</h3><p class="detail">${esc(content[2])}</p><h3>Evidence boundary</h3><p class="evidence">${esc(content[3])}</p>${citations(content[4])}${this.index===6&&this.step===4?'<div class="equation">dN/dt = (division − loss) × N<br>Conceptual balance, not a fitted model.</div>':''}${['folding','activation','kinase','nmyc'].includes(chapter.id)?'<button class="research-action" type="button" id="openLab">Inspect an experimental structure ↗</button>':''}`;
-          $('openLab')?.addEventListener('click',()=>{const id=chapter.id==='nmyc'?'5G1X':chapter.id==='activation'?'1FQ9':'1FGK';$('structureSelect').value=id;this.select(7);});
+          const guide=GUIDE[chapter.id][this.step],beginner=this.mode==='beginner';
+          const detail=`<h3>Core mechanism</h3><p class="detail">${esc(content[1])}</p><h3>Molecular detail</h3><p class="detail">${esc(content[2])}</p>`;
+          $('lessonContent').innerHTML=`<p class="eyebrow">${this.step+1} / ${chapter.steps.length} · ${beginner?'Plain-language lesson':'Academic mechanism'}</p><h2>${esc(content[0])}</h2><p class="lead">${esc(beginner?guide[0]:content[1])}</p>${beginner?`<h3>Words you need now</h3><dl class="term-list">${guide[3].map(term=>`<div class="term-card"><dt>${esc(term)}</dt><dd>${esc(TERMS[term])}</dd></div>`).join('')}</dl><details><summary>Go deeper · academic mechanism</summary>${detail}</details><details class="check-question"><summary>What should I remember?</summary><p>${esc(guide[2])}</p></details>`:`<h3>Molecular detail</h3><p class="detail">${esc(content[2])}</p>`}<h3>What this view cannot tell you</h3><p class="evidence">${esc(content[3])}</p>${citations(content[4])}${chapter.id==='nmyc'&&this.step===4?'<div class="equation">dN/dt = (division − loss) × N<br>Conceptual balance, not a fitted model.</div>':''}${['folding','activation','kinase','nmyc'].includes(chapter.id)?'<button class="research-action" type="button" id="openLab">Inspect an experimental structure ↗</button>':''}${this.step===chapter.steps.length-1&&this.index<CHAPTERS.length-1?`<button id="continueChapter" class="continue-chapter" type="button">Continue → ${esc(CHAPTERS[this.index+1].title)}</button>`:''}`;
+          $('openLab')?.addEventListener('click',()=>{const id=chapter.id==='nmyc'?'5G1X':chapter.id==='activation'?'1FQ9':'1FGK';$('structureSelect').value=id;this.select(CHAPTERS.findIndex(ch=>ch.id==='structures'));});
+          $('continueChapter')?.addEventListener('click',()=>this.select(this.index+1));
           $('previous').disabled=this.step===0;$('next').disabled=this.step===chapter.steps.length-1;$('progress').max=String(chapter.steps.length-1);$('progress').value=String(this.step);$('stepLabel').textContent=`${this.step+1} / ${chapter.steps.length} · ${content[0]}`;
-          $('sceneOptions').innerHTML=`${chapter.id==='genome'?'<label>Architecture <select id="architecture"><option value="baseline">Baseline topology</option><option value="ecdna">ecDNA example</option><option value="hsr">HSR example</option></select></label>':''}${chapter.id==='network'?'<label>Focus <select id="branch"><option value="all">All branches</option><option value="mapk">MAPK focus</option><option value="pi3k">PI3K detail</option><option value="plc">PLCγ focus</option></select></label>':''}<label><input id="motion" type="checkbox" ${this.options.motion?'checked':''}> Animate reaction indicators</label><span>Indicators ≠ measured molecular flux</span>`;
+          $('sceneOptions').innerHTML=`${chapter.id==='genome'?'<label>Architecture <select id="architecture"><option value="baseline">Baseline topology</option><option value="ecdna">ecDNA example</option><option value="hsr">HSR example</option></select></label>':''}${chapter.id==='network'?'<label>Focus <select id="branch"><option value="all">All branches</option><option value="mapk">MAPK focus</option><option value="pi3k">PI3K detail</option><option value="plc">PLCγ focus</option></select></label>':''}<label><input id="motion" type="checkbox" ${this.options.motion?'checked':''}> Motion</label><label>Pace <select id="pace"><option value="0.65">Slow</option><option value="1">Standard</option><option value="1.5">Quick</option></select></label><span>Teaching time ≠ biological time</span>`;
+          $('pace').value=String(this.pace||1);
           if($('architecture')){$('architecture').value=this.step===0?'baseline':this.step===2?'ecdna':this.step===3?'hsr':this.options.architecture;$('architecture').disabled=this.step===0||this.step===2||this.step===3;}
           if($('branch'))$('branch').value=this.options.branch;
           $('canvasHelp').textContent='Drag to orbit · right-drag to pan · wheel/pinch or +/− to zoom · arrows orbit · labeled molecules are inspectable';
-          this.engine.show(chapter,this.step,this.options);document.body.dataset.step=String(this.step);
+          if(chapter.id==='orientation'){
+            const scales=['Whole person · organ positions','Nervous-system context','Organ region · magnification changed','Tissue · magnification changed','One cell · cutaway','Nuclear DNA · motif enlarged','Membrane protein · separate magnification','Whole cell · locations reconnected'];
+            $('sceneBadge').textContent=scales[this.step]+' · not to scale';
+            const active=[0,1,2,3,4,5,6,4][this.step];$('scaleRoute').innerHTML=['Body','Sympathetic tissue','Adrenal example','Tissue','Cell','Nuclear DNA','Membrane receptor'].map((name,i)=>`<span${i===active?' aria-current="step"':''}>${i+1} ${name}</span>`).join('');
+          }
+          if(rebuild){this.manualTransition=!this.playing;this.engine.show(chapter,this.step,this.options);this.engine.animateAt(this.options.motion&&this.playing?this.elapsed:STEP_SECONDS);this.engine.update(0,false);}
+          this.captionIndex=-1;this.updateCaption();document.body.dataset.step=String(this.step);document.body.dataset.mode=this.mode;
+        }
+        updateCaption(){
+          if(this.isLab||this.isJourney)return;const index=Math.min(2,Math.floor(this.elapsed/(STEP_SECONDS/3))),guide=GUIDE[this.chapter.id][this.step];
+          if(index!==this.captionIndex){this.captionIndex=index;$('captionText').textContent=guide[index];$('captionPhase').textContent=`${['Understand','Watch / locate','Take away'][index]} · ${index+1}/3${this.playing?'':' · paused — play or use the timeline'}`;}
+          $('animationProgress').value=String(Math.round(this.elapsed/STEP_SECONDS*1000));$('animationTime').value=`0:${String(Math.floor(this.elapsed)).padStart(2,'0')}`;
         }
         openStructure(id){
           const def=STRUCTURES[id];if(!def)return;$('structureSelect').value=id;$('sceneTitle').textContent=def.title;$('sceneBadge').textContent=`Experimental coordinates · ${id} · ${def.resolution}`;
@@ -818,16 +1414,17 @@ AAA`}
           $('canvasHelp').textContent='Drag to rotate · right-drag to zoom · Ctrl-drag to pan · wheel/pinch or +/− to zoom · arrows rotate';
           void this.lab.load(id);
         }
-        setPlaying(value){this.playing=Boolean(value)&&this.index!==7;this.elapsed=0;$('play').textContent=this.playing?'Pause steps':'Play steps';$('play').setAttribute('aria-pressed',String(this.playing));if(this.playing&&this.step===CHAPTERS[this.index].steps.length-1)this.go(0);}
-        key(event){const key=event.key;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','_',' '].includes(key))return;event.preventDefault();if(key===' '){if(!event.repeat)this.setPlaying(!this.playing);return;}
+        setPlaying(value){this.playing=Boolean(value)&&!this.isLab&&!this.isJourney;this.manualTransition=false;if(this.isJourney&&this.journey){this.journey.auto=false;this.journey.paused=true;}if(this.playing&&this.elapsed>=STEP_SECONDS){this.elapsed=0;this.renderStep();}$('play').textContent=this.playing?'Pause':'Play lesson';$('play').setAttribute('aria-pressed',String(this.playing));this.captionIndex=-1;if(this.engine&&!this.isLab)this.updateCaption();}
+        key(event){const key=event.key;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','_',' '].includes(key))return;event.preventDefault();if(key===' '){if(!event.repeat){if(this.isJourney)$('zoomTour').click();else this.setPlaying(!this.playing);}return;}
           const zoom=['+','=','-','_'].includes(key),positive=['ArrowRight','ArrowUp','+','='].includes(key);
-          if(this.index===7){if(!this.lab.ready)return;if(zoom)this.lab.viewer.zoom(positive?1.1:.9);else this.lab.viewer.rotate(positive?8:-8,key.includes('Up')||key.includes('Down')?'x':'y');this.lab.viewer.render();}
+          if(this.isJourney&&zoom){this.journey.advance(positive?.3:-.3);return;}
+          if(this.isLab){if(!this.lab.ready)return;if(zoom)this.lab.viewer.zoom(positive?1.1:.9);else this.lab.viewer.rotate(positive?8:-8,key.includes('Up')||key.includes('Down')?'x':'y');this.lab.viewer.render();}
           else{const engine=this.engine;engine.temp.subVectors(engine.camera.position,engine.controls.target);if(zoom)engine.temp.setLength(THREE.MathUtils.clamp(engine.temp.length()*(positive?.9:1.1),4,120));else engine.temp.applyAxisAngle(key.includes('Up')||key.includes('Down')?V(1,0,0):UP,positive?.1:-.1);engine.camera.position.copy(engine.controls.target).add(engine.temp);engine.controls.update();engine.dirty=true;}
         }
-        frame(now){if(this.destroyed||document.hidden){this.frameId=0;return;}this.frameId=requestAnimationFrame(this.frame);const dt=Math.max(0,Math.min(.06,(now-this.last)/1000));this.last=now;if(this.index!==7){this.engine.update(dt,this.options.motion&&!document.querySelector('dialog[open]'));if(this.playing){this.elapsed+=dt;if(this.elapsed>=12){if(this.step<CHAPTERS[this.index].steps.length-1)this.go(this.step+1);else this.setPlaying(false);}}}}
+        frame(now){if(this.destroyed||document.hidden){this.frameId=0;return;}this.frameId=requestAnimationFrame(this.frame);const dt=Math.max(0,Math.min(.06,(now-this.last)/1000));this.last=now;if(!this.isLab){const modal=Boolean(document.querySelector('dialog[open]'));if(this.isJourney){if(!modal)this.journey.update(dt);this.engine.update(0,false);return;}if(this.playing&&!modal){this.elapsed=Math.min(STEP_SECONDS,this.elapsed+dt*(this.pace||1));this.engine.animateAt(this.options.motion?this.elapsed:STEP_SECONDS);this.updateCaption();if(this.elapsed>=STEP_SECONDS){if(this.step<this.chapter.steps.length-1)this.go(this.step+1);else this.setPlaying(false);}}this.engine.update(dt,this.options.motion&&!modal&&(this.playing||this.manualTransition));}}
         start(){if(this.frameId||this.destroyed||document.hidden)return;this.last=performance.now();this.frameId=requestAnimationFrame(this.frame);}
         stop(){cancelAnimationFrame(this.frameId);this.frameId=0;}
-        dispose(){if(this.destroyed)return;this.destroyed=true;this.stop();this.abort.abort();this.observer?.disconnect();this.lab.dispose();this.engine?.dispose();}
+        dispose(){if(this.destroyed)return;this.destroyed=true;this.stop();this.abort.abort();this.observer?.disconnect();this.journey?.leave();this.lab.dispose();this.engine?.dispose();}
       }
       app=new Atlas();
       try{app.init();}catch(error){app.dispose();console.error('Atlas initialization failed:',error);message('The atlas could not initialize WebGL. Use a current browser with graphics acceleration. The companion dossier remains readable.',true);}

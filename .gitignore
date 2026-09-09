@@ -4,6 +4,9 @@
 !/.gitignore
 !/molecular-atlas.html
 !/immunotherapy-simulation.html
+!/drug-atlas.html
+!/assets/
+!/assets/alteration-frequency-supplied.png
 !/.github/
 !/.github/README.md
 !/.github/workflows/
