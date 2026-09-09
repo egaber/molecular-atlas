@@ -1,0 +1,10 @@
+# Public-site allowlist. Everything else in this workspace stays local.
+# In particular, never commit medical documents, research notes, or the local README.
+*
+!/.gitignore
+!/molecular-atlas.html
+!/immunotherapy-simulation.html
+!/.github/
+!/.github/README.md
+!/.github/workflows/
+!/.github/workflows/pages.yml

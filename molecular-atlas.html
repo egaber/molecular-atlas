@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="An evidence-linked 3D teaching atlas of MYCN amplification, FGFR1 structure, gene expression, allostery, and neuroblastoma signaling.">
+  <title>MYCN × FGFR1 — Molecular Teaching Atlas</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    /* Semantic scientific colors remain stable across dashboard themes. */
+    :root {
+      --cp-stage: #10151c;
+      --cp-stage-text: #eff3f7;
+      --cp-stage-muted: #b4c0cd;
+      --cp-stage-panel: rgba(16, 21, 28, .9);
+      --cp-molecule: #ea8398;
+      --cp-dna: #88adc7;
+      --cp-rna: #edbd68;
+      --cp-cofactor: #8fc6a4;
+      --cp-protein: #d5a5dd;
+      --cp-phosphate: #f2ce69;
+      --cp-atom-n: #7aa8ee;
+      --cp-atom-o: #ef7878;
+      --cp-atom-s: #ebd87c;
+      --cp-atom-h: #eeeeee;
+      --cp-clear: transparent;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 14px/1.55 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    h1,h2,h3,p { margin: 0; }
+    a { color: var(--cp-link); text-underline-offset: 3px; }
+    button, select, input, textarea { font: inherit; }
+    button, select { min-height: 40px; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-surface); color: var(--cp-text); padding: 8px 12px; }
+    button { cursor: pointer; }
+    button:hover:not(:disabled), button[aria-pressed="true"] { background: var(--cp-accent-soft); border-color: var(--cp-accent); }
+    button:disabled { opacity: .45; cursor: default; }
+    :focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 3px; }
+    code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+    code { font-size: .91em; overflow-wrap: anywhere; }
+    .app { display: grid; grid-template-rows: auto minmax(0,1fr); height: 100vh; height: 100dvh; min-height: 660px; }
+    .header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:18px 24px; border-bottom:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .brandmark { width:38px; height:38px; display:grid; place-items:center; color:var(--cp-accent); background:var(--cp-accent-soft); border:1px solid var(--cp-accent); border-radius:10px; font-size:23px; }
+    h1 { font-size:23px; line-height:1.15; letter-spacing:-.04em; font-weight:650; }
+    .eyebrow { font:10px/1.5 Consolas, "Courier New", Courier, monospace; text-transform:uppercase; letter-spacing:.14em; color:var(--cp-text-muted); }
+    .header .eyebrow { margin-top:5px; }
+    .toolbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .toolbar button { font-size:12px; }
+    .workspace { display:grid; grid-template-columns:226px minmax(0,1fr) 348px; min-height:0; }
+    .sidebar { padding:22px 16px; overflow-y:auto; border-right:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .sidebar>.eyebrow { margin:0 8px 14px; }
+    .chapters { display:grid; gap:6px; }
+    .chapter { display:grid; grid-template-columns:26px 1fr; gap:8px; align-items:center; text-align:left; border-color:var(--cp-clear); background:var(--cp-clear); padding:10px 8px; }
+    .chapter .number { color:var(--cp-text-muted); font:12px Consolas,monospace; }
+    .chapter strong { display:block; font-size:12px; font-weight:600; }
+    .chapter small { display:block; font-size:10px; color:var(--cp-text-soft); }
+    .chapter[aria-current="step"] { border-color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .chapter[aria-current="step"] .number { color:var(--cp-accent); }
+    .sidebar-note { margin:24px 8px 0; padding-top:18px; border-top:1px solid var(--cp-border); font-size:11px; color:var(--cp-text-soft); }
+    .sidebar-note p+p { margin-top:10px; }
+    .scene-column { display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--cp-stage); }
+    .scene-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:18px 22px 10px; color:var(--cp-stage-text); }
+    .scene-heading h2 { font-size:20px; font-weight:500; letter-spacing:-.02em; }
+    .scene-heading .eyebrow { color:var(--cp-stage-muted); }
+    .scene-heading button { min-height:34px; flex-shrink:0; font-size:11px; }
+    .tag { display:inline-block; font:10px/1.5 Consolas,monospace; text-transform:uppercase; letter-spacing:.06em; color:var(--cp-stage-muted); }
+    .stage-wrap { position:relative; flex:1; min-height:280px; overflow:hidden; }
+    #scene, #molecule { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+    #molecule { z-index:1; }
+    #labels { position:absolute; inset:0; z-index:2; overflow:hidden; pointer-events:none; }
+    .scene-label { position:absolute; transform:translate(-50%,-50%); padding:3px 7px; border-radius:6px; color:var(--cp-stage-text); background:var(--cp-stage-panel); font:11px/1.35 "Segoe UI",sans-serif; border:1px solid var(--cp-clear); white-space:nowrap; max-width:200px; text-align:center; }
+    .scene-label.is-node { cursor:pointer; pointer-events:auto; min-height:28px; }
+    .scene-label.is-node:hover { border-color:var(--cp-molecule); }
+    .canvas-note { position:absolute; bottom:8px; left:20px; right:20px; z-index:3; pointer-events:none; font-size:10px; text-align:center; color:var(--cp-stage-muted); }
+    .scene-message { position:absolute; inset:0; z-index:4; display:grid; align-content:center; justify-items:center; padding:28px; gap:14px; text-align:center; color:var(--cp-stage-text); background:var(--cp-stage-panel); }
+    .transport { padding:12px 22px 17px; border-top:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .transport-top { display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    .transport-buttons { display:flex; gap:6px; }
+    .transport button { padding:6px 10px; min-height:34px; font-size:12px; }
+    .step-label { color:var(--cp-text-soft); font-size:11px; text-align:right; }
+    input[type="range"] { width:100%; accent-color:var(--cp-accent); height:22px; margin:10px 0 0; }
+    .scene-options { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:0 22px 12px; font-size:11px; color:var(--cp-stage-text); }
+    .scene-options button,.scene-options select { min-height:32px; padding:5px 8px; font-size:11px; max-width:100%; }
+    .scene-options label { display:flex; align-items:center; gap:6px; }
+    input[type="checkbox"] { accent-color:var(--cp-accent); width:16px; height:16px; }
+    .lesson { overflow-y:auto; padding:24px; border-left:1px solid var(--cp-border); background:var(--cp-bg-elevated); }
+    .lesson h2 { font-size:23px; line-height:1.2; letter-spacing:-.035em; margin:10px 0 14px; font-weight:600; }
+    .lesson h3 { font-size:11px; text-transform:uppercase; letter-spacing:.08em; margin:23px 0 8px; color:var(--cp-text-muted); }
+    .lead { font-size:14px; line-height:1.65; }
+    .detail { font-size:12px; line-height:1.8; color:var(--cp-text-soft); }
+    .evidence { border-left:2px solid var(--cp-accent); padding:12px; border-radius:0 10px 10px 0; background:var(--cp-accent-soft); font-size:11px; line-height:1.65; }
+    .citations { display:flex; gap:6px; flex-wrap:wrap; margin:16px 0; }
+    .citations button { padding:3px 8px; min-height:28px; font-size:10px; }
+    .research-action { width:100%; text-align:left; font-size:12px; margin:8px 0; }
+    .lesson-footer { border-top:1px solid var(--cp-border); padding-top:15px; margin-top:20px; color:var(--cp-text-muted); font-size:10px; }
+    .equation { font:12px/1.8 Consolas,monospace; background:var(--cp-surface-soft); padding:12px; margin-top:12px; border-radius:10px; overflow-wrap:anywhere; }
+    .inspect { margin-top:18px; padding:14px; border:1px solid var(--cp-border); border-radius:10px; font-size:12px; }
+    .inspect strong { color:var(--cp-accent); }
+    .lab-controls { display:grid; gap:10px; }
+    .lab-controls label { font-size:11px; color:var(--cp-text-soft); }
+    .lab-controls select,.lab-controls input[type="text"] { width:100%; margin-top:4px; }
+    input[type="text"],input[type="search"] { min-height:40px; padding:8px 10px; border-radius:10px; border:1px solid var(--cp-border); color:var(--cp-text); background:var(--cp-surface); }
+    .lab-row { display:flex; gap:6px; }
+    .lab-row button { flex:1; font-size:11px; }
+    .chain-legend { display:flex; gap:8px 12px; flex-wrap:wrap; padding-top:12px; font-size:11px; color:var(--cp-text-soft); }
+    .chain-key { display:inline-flex; gap:5px; align-items:center; }
+    .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+    dialog { width:min(1000px,calc(100% - 32px)); max-height:88vh; padding:0; border:1px solid var(--cp-border); border-radius:16px; color:var(--cp-text); background:var(--cp-bg-elevated); }
+    dialog::backdrop { background:var(--cp-overlay); backdrop-filter:blur(5px); }
+    .dialog-head { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 24px; border-bottom:1px solid var(--cp-border); position:sticky; top:0; background:var(--cp-bg-elevated); z-index:1; }
+    .dialog-head h2 { font-size:20px; font-weight:600; }
+    .dialog-body { padding:24px; }
+    .source { padding:18px 0; border-top:1px solid var(--cp-border); scroll-margin-top:95px; }
+    .source h3 { font-size:14px; margin-bottom:8px; }
+    .source p { font-size:12px; color:var(--cp-text-soft); }
+    .source a { display:inline-block; margin-top:7px; font-size:12px; overflow-wrap:anywhere; }
+    .source:target { background:var(--cp-accent-soft); }
+    #sourceSearch { width:100%; margin-bottom:16px; }
+    .seq-controls { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
+    .seq-meta { display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px; margin-bottom:18px; }
+    .seq-meta>div { padding:12px; background:var(--cp-surface-soft); border-radius:10px; }
+    .seq-meta strong { color:var(--cp-accent); display:block; }
+    .codon { padding:16px; border:1px solid var(--cp-accent); border-radius:10px; margin-bottom:18px; }
+    .codon .mono { font-size:17px; margin:8px 0; }
+    .seq-output { width:100%; height:290px; resize:vertical; font:12px/1.7 Consolas,monospace; border:1px solid var(--cp-border); border-radius:10px; padding:16px; background:var(--cp-surface); color:var(--cp-text); white-space:pre; }
+    .small { font-size:11px; line-height:1.7; color:var(--cp-text-soft); }
+    .glossary { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .glossary dt { color:var(--cp-accent); font-weight:600; }
+    .glossary dd { margin:4px 0 0; font-size:12px; }
+    @media (max-width:1250px) { .workspace{grid-template-columns:190px minmax(0,1fr) 306px;} .lesson{padding:20px;} .chapter{padding:9px 4px;gap:4px;} .sidebar{padding:18px 10px;} }
+    @media (max-width:1000px) {
+      .app{height:auto;min-height:100vh;} .workspace{grid-template-columns:190px minmax(0,1fr);}
+      .sidebar{grid-row:1/3;overflow:visible;} .scene-column{height:660px;} .lesson{grid-column:2;overflow:visible;border-top:1px solid var(--cp-border);}
+      .header{padding:16px;gap:12px;}.header .eyebrow{font-size:9px;}h1{font-size:21px;}
+    }
+    @media (max-width:640px) {
+      .header{align-items:flex-start;flex-direction:column;} .brandmark{width:32px;height:32px;}
+      .toolbar{gap:6px;} .toolbar button{font-size:11px;padding:6px 9px;min-height:36px;}
+      .workspace{display:flex;flex-direction:column;} .sidebar{padding:12px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--cp-border);}
+      .sidebar>.eyebrow,.sidebar-note{display:none;} .chapters{display:flex;gap:8px;} .chapter{flex:0 0 160px;padding:8px;}
+      .scene-column{height:580px;min-height:580px;} .scene-heading{padding:14px 16px 8px;}.scene-heading h2{font-size:18px;}
+      .scene-options{padding:0 16px 10px;}.transport{padding:12px 16px;}.lesson{padding:22px;border-left:0;}
+      .seq-meta,.glossary{grid-template-columns:1fr;}.dialog-head,.dialog-body{padding:16px;}.scene-label{font-size:10px;padding:2px 4px;}
+    }
+    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="brand"><div class="brandmark" aria-hidden="true">↬</div><div><h1>MYCN × FGFR1</h1><p class="eyebrow">Molecular teaching atlas · Neuroblastoma · Evidence checked 09 Sep 2026</p></div></div>
+      <div class="toolbar"><button id="sequenceOpen" type="button">Sequence workbench</button><button id="referencesOpen" type="button">Sources &amp; evidence</button><button id="glossaryOpen" type="button">Glossary</button><button id="theme" type="button">Theme</button></div>
+    </header>
+    <div class="workspace">
+      <nav class="sidebar" aria-label="Teaching chapters"><p class="eyebrow">From information to phenotype</p><div id="chapters" class="chapters"></div><div class="sidebar-note"><p><strong>Two distinct alterations</strong><br>MYCN: DNA dosage.<br>FGFR1 N546K: kinase regulation.</p><p>Chapters 01–07 are molecular cartoons. Chapter 08 uses experimental PDB coordinates with construct limitations.</p><p>Not a patient-specific model, treatment recommendation, or accredited course. No private clinical measurements are embedded.</p><p>This HTML is separate from the private research dossier. If distributing it, share this file alone—not the workspace folder.</p></div></nav>
+      <section class="scene-column" aria-label="Three-dimensional lesson">
+        <div class="scene-heading"><div><p id="sceneBadge" class="eyebrow">Schematic · not to scale</p><h2 id="sceneTitle">Loading the atlas…</h2></div><button id="fit" type="button">Reset view</button></div>
+        <div class="stage-wrap" id="stageWrap">
+          <canvas id="scene" tabindex="0" aria-label="Interactive schematic molecular model" aria-describedby="canvasHelp"></canvas>
+          <div id="molecule" tabindex="0" role="img" aria-label="Experimental molecular structure" hidden></div>
+          <div id="labels"></div>
+          <div class="scene-message" id="sceneMessage" role="status"><p id="sceneMessageText">Preparing the 3D teaching environment…</p><button id="retry" type="button" hidden>Reload</button></div>
+          <p id="canvasHelp" class="canvas-note">Drag to orbit · right-drag to pan · wheel/pinch to zoom · +/− zoom · arrows orbit · click a labeled molecule</p>
+        </div>
+        <div class="scene-options" id="sceneOptions"></div>
+        <div class="transport" id="transport"><div class="transport-top"><div class="transport-buttons"><button id="previous" type="button" aria-label="Previous teaching step">←</button><button id="play" type="button" aria-pressed="false">Play steps</button><button id="next" type="button" aria-label="Next teaching step">→</button></div><span id="stepLabel" class="step-label"></span></div><input id="progress" type="range" min="0" max="4" value="0" step="1" aria-label="Teaching step"></div>
+      </section>
+      <aside class="lesson" id="lesson" aria-label="Academic explanation">
+        <div id="lessonContent"></div>
+        <div id="labControls" class="lab-controls" hidden>
+          <label>Experimental entry<select id="structureSelect"><option value="1FGK">1FGK · FGFR1 autoinhibited kinase</option><option value="3GQI">3GQI · active FGFR1 + PLCγ fragment</option><option value="1FQ9">1FQ9 · classical FGF2 / FGFR1 / heparin</option><option value="7YSH">7YSH · asymmetric FGF23 / FGFR1 / Klotho</option><option value="5G1X">5G1X · N-Myc peptide + Aurora-A</option><option value="1NKP">1NKP · c-Myc / MAX / DNA — analogy only</option></select></label>
+          <label>Representation<select id="representation"><option value="cartoon">Cartoon + selected side chains</option><option value="stick">Atomic sticks</option><option value="sphere">Space-filling atoms</option></select></label>
+          <label>Structural feature<select id="feature"><option value="whole">Whole displayed assembly</option><option value="brake">FGFR1 brake: N546 / E562 / K638</option><option value="loop">FGFR1 activation loop: Y653 / Y654</option><option value="atp">FGFR1 ATP-binding region</option><option value="peptide">N-Myc resolved peptide: 61–89</option><option value="dna">c-Myc / MAX DNA interface</option></select></label>
+          <div class="lab-row"><button id="focusFeature" type="button">Focus feature</button><button id="wholeStructure" type="button">Whole view</button></div>
+          <label>Inspect a PDB author-numbered residue<input id="residue" type="text" value="A:546" placeholder="A:546" aria-label="Chain and author residue number"></label><button id="inspectResidue" type="button">Locate residue</button>
+          <label><input id="measure" type="checkbox"> Measure distance between two clicked atoms</label><button id="clearMeasures" type="button">Clear measurements</button>
+          <p id="atomInfo" class="small" role="status">Select a side chain to inspect its deposited atom coordinates.</p><div id="chainLegend" class="chain-legend"></div>
+          <p id="structureMetadata" class="small"></p>
+        </div>
+        <div class="inspect" id="inspector" hidden><strong id="inspectTitle"></strong><p id="inspectText"></p></div>
+        <p class="lesson-footer">Reading order is pedagogical. Real signaling branches overlap, adapt, and depend on cellular context. Animation speed, positions, and molecule counts are not measured kinetics.</p>
+      </aside>
+    </div>
+  </main>
+  <dialog id="referencesDialog" aria-labelledby="referencesTitle"><div class="dialog-head"><h2 id="referencesTitle">Sources &amp; evidence boundaries</h2><button type="button" data-close="referencesDialog">Close</button></div><div class="dialog-body"><p class="small">Primary experiments, curated sequence records, reviews, and structural examples are distinguished below. The review is targeted, not systematic. No patient data is sent to these sources.</p><input id="sourceSearch" type="search" placeholder="Filter by gene, author, accession, or evidence…" aria-label="Filter sources"><div id="sourceList"></div></div></dialog>
+  <dialog id="sequenceDialog" aria-labelledby="sequenceTitle"><div class="dialog-head"><h2 id="sequenceTitle">Sequence → residue workbench</h2><button type="button" data-close="sequenceDialog">Close</button></div><div class="dialog-body"><div class="seq-controls"><select id="sequenceGene" aria-label="Reference gene"><option value="fgfr">FGFR1</option><option value="mycn">MYCN</option></select><select id="sequenceType" aria-label="Sequence type"><option value="rna">Full reference mRNA · U alphabet</option><option value="cds">Spliced CDS · DNA alphabet</option><option value="protein">Translated protein · amino acids</option></select><label class="small"><input id="sequenceMutation" type="checkbox"> In-silico FGFR1 N546K substitution</label></div><div id="sequenceMeta" class="seq-meta"></div><div id="codonExplanation" class="codon"></div><textarea id="sequenceOutput" class="seq-output" readonly spellcheck="false" aria-label="Reference sequence with one-based coordinates"></textarea><p class="small" id="sequenceNote"></p><p class="small">Reference mRNA records use T in GenBank; this view converts T→U for RNA. Caps, variable poly(A) tails and chemical modifications are not inferred from the letters. A reference sequence is not a measured 3D RNA fold or a tumor-specific sequence.</p></div></dialog>
+  <dialog id="glossaryDialog" aria-labelledby="glossaryTitle"><div class="dialog-head"><h2 id="glossaryTitle">Molecular vocabulary</h2><button type="button" data-close="glossaryDialog">Close</button></div><div class="dialog-body"><dl id="glossary" class="glossary"></dl></div></dialog>
+  <noscript><p>JavaScript is required for the atlas. The companion research dossier contains the written explanation and citations.</p></noscript>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/3dmol@2.5.5/build/3Dmol-min.js" integrity="sha384-OsczYbldvrHgslr9fFp/i4GiLSeuw9l+QIlv99ITw8soOwXcoGeflFMLg+CU/X1d" crossorigin="anonymous"></script>
+  <script>
+    /**
+     * Molecular Teaching Atlas, 2026-09-09.
+     * Two deliberately separate representations:
+     *  1. Three.js procedural topology cartoons (no atomistic accuracy claim).
+     *  2. 3Dmol experimental PDB coordinates, never silently mutated or morphed.
+     * References and teaching content are local. Public coordinate retrieval is
+     * on demand, abortable, cached in memory, and contains no clinical data.
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const esc = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+      const SOURCES = {
+        M01:['UniProt P11362 · human FGFR1','https://www.uniprot.org/uniprotkb/P11362/entry','Curated reference','822-aa P11362-1; domains, residues, glycosylation and splice forms. Annotation is not tumor-specific expression or activity.'],
+        M02:['UniProt P04198 · human N-Myc','https://www.uniprot.org/uniprotkb/P04198/entry','Curated reference','464 amino acids; bHLH 381–433, leucine zipper 433–454 and disordered regions. No single full-length experimental conformation is asserted.'],
+        M03:['RefSeq NM_023110.3 / NP_075598.2 · FGFR1','https://www.ncbi.nlm.nih.gov/nuccore/NM_023110.3','Sequence record verified','5,697-nt mRNA; CDS 744–3212 including stop; 822-aa protein. c.1638 corresponds to transcript base 2381.'],
+        M04:['RefSeq NM_005378.6 / NP_005369.2 · MYCN','https://www.ncbi.nlm.nih.gov/nuccore/NM_005378.6','Sequence record verified','2,613-nt mRNA; CDS 312–1706 including stop; 464-aa N-Myc. Not MYC/c-Myc or MYCNOS.'],
+        M05:['ClinVar 224896 · FGFR1 N546K / N577K','https://www.ncbi.nlm.nih.gov/clinvar/variation/224896/','Transcript mapping','NM_023110.3:c.1638C>A maps to NM_001174067.2:c.1731C>A / N577K. The +31 offset is not universal. FGFR1 is minus-strand: GRCh38 g.38417331G>T.'],
+        M06:['Ornitz & Itoh 2015 · The FGF signaling pathway','https://doi.org/10.1002/wdev.176','Review · relevant full text read','FGFR family, FRS2/GRB2/SOS/GAB1, PLCγ and feedback. The classical symmetric assembly model predates M11.'],
+        M07:['Furdui et al. 2006 · Ordered FGFR1 phosphorylation','https://doi.org/10.1016/j.molcel.2006.01.022','Primary biochemistry · abstract + M08 account','Rapid-quench/MS studies of ordered autophosphorylation. Enzyme activity ratios are assay-specific, not tumor growth rates.'],
+        M08:['Lew et al. 2009 · N546K and phosphorylation order','https://pmc.ncbi.nlm.nih.gov/articles/PMC2755185/','Primary biochemistry · relevant full text read','DOI 10.1126/scisignal.2000021. N546K accelerated initial autophosphorylation about 25-fold and changed site order in purified constructs; cell transformation assays are separate evidence.'],
+        M09:['Chen et al. 2017 · Four-site FGFR allosteric network','https://elifesciences.org/articles/21137','Primary X-ray / NMR / functional experiments','Molecular brake, DFG latch, αC tether and A-loop plug. Much detailed work uses FGFR2; homologous inference must not be called a solved FGFR1 N546K trajectory.'],
+        M10:['Schlessinger et al. 2000 · FGF2 / FGFR1 / heparin','https://www.rcsb.org/structure/1FQ9','Experimental structure · X-ray 3.00 Å','PDB 1FQ9, DOI 10.1016/S1097-2765(00)00073-3. Engineered fragments and a heparin surrogate; no complete receptor, D1, membrane or kinase.'],
+        M11:['Chen et al. 2023 · Asymmetric FGF hormone signaling','https://doi.org/10.1038/s41586-023-06155-9','Primary cryo-EM / cellular experiments','FGF23:FGFR:αKlotho:HS = 1:2:1:1; PDB 7YSH 2.74 Å. Paracrine generalization is supported by cellular complementation, not atomic structures of every ligand.'],
+        M12:['Helmsauer et al. 2020 · MYCN amplicon enhancers','https://doi.org/10.1038/s41467-020-19452-y','Primary genomics / chromatin','Local enhancer retention and distal enhancer hijacking represent different amplicon architectures. Copy-number testing alone does not distinguish these.'],
+        M13:['Montuori et al. 2025 · ecDNA dosage heterogeneity','https://doi.org/10.1158/2159-8290.CD-24-1738','Primary models / specimens · abstract verified','ecDNA inheritance and dosage associate with cell-state heterogeneity. No numerical clinical prediction or individual ecDNA diagnosis is made here.'],
+        M14:['Zeid et al. 2018 · MYCN enhancer invasion','https://doi.org/10.1038/s41588-018-0044-9','Primary chromatin / transcription · abstract verified','Affinity- and abundance-dependent N-Myc chromatin occupancy and lineage cofactor effects. Not uniform amplification of every transcript.'],
+        M15:['Richards et al. 2016 · Aurora-A / N-Myc interface','https://www.rcsb.org/structure/5G1X','Primary structure / binding · X-ray 1.72 Å','DOI 10.1073/pnas.1610626113. N-Myc 61–89 is resolved from a 28–89 peptide. Thr58 is NOT resolved. The complete FBXW7 ubiquitination geometry remains a model.'],
+        M16:['Manning & Toker 2017 · AKT/PKB network','https://doi.org/10.1016/j.cell.2017.04.001','Review · abstract verified / pathway cross-checks','PI3K lipids, AKT1 T308/S473, TSC/RHEB/mTORC1, GSK3 and feedback. General biochemistry is not proof of FGFR dependence in a tumor.'],
+        M17:['Werr et al. 2026 · FGFR1-mutant neuroblastoma','https://www.jci.org/articles/view/189152','Primary NB models + small clinical cohort','Kinase-dependent transformation, FGFR1 N546K/MYCN mouse cooperation and patient-derived models. Reduced apoptosis matters. One chemotherapy-combination case cannot establish monotherapy efficacy.'],
+        M18:['Cimmino et al. 2022 · FGFR1 in neuroblastoma','https://doi.org/10.1186/s12935-022-02587-x','Primary engineered cell models','N546K overexpression, signaling/invasion, AZD4547 ± GDC0941. Not pan-FGFR resistance and not a clinically validated combination. STAT3 was studied, not an obligatory STAT1–p21 chain.'],
+        M19:['Suenaga et al. 2014 · NCYM / MYCNOS','https://doi.org/10.1371/journal.pgen.1003996','Primary molecular / transgenic experiments','NCYM protein inhibits GSK3β in studied systems. A MYCNOS co-amplification label does not establish transcript choice, NCYM expression or activity.'],
+        M20:['Alberts et al. · Protein shape and structure','https://www.ncbi.nlm.nih.gov/books/NBK26830/','Foundational textbook · 2002','Backbone bonds, helices/sheets, hydrophobic effects, domains, disulfides. Historical single-fold language is qualified here by ensembles and intrinsic disorder.'],
+        M21:['Alberts et al. · From RNA to protein','https://www.ncbi.nlm.nih.gov/books/NBK26829/','Foundational textbook · 2002','Codons, tRNA, ribosomes, cotranslational folding and quality control. Not a source for exact present-day cellular rates or a measured full mRNA fold.'],
+        M22:['Mohammadi et al. 1996 · FGFR1 kinase structure','https://www.rcsb.org/structure/1FGK','Experimental structure · X-ray 2.00 Å','Autoinhibited kinase fragment, not whole receptor. Deposited construct differs from the reference (including C488A/C584S). No N546K coordinates.'],
+        M23:['Bae et al. 2009 · FGFR1 / PLCγ recognition','https://www.rcsb.org/structure/3GQI','Experimental structure · X-ray 2.50 Å','Phosphorylated human FGFR1 with rat PLCγ tandem-SH2 fragment and ATP analog. Engineered C488A/Y583F/C584S/Y585F. Not full PLCγ or mutant N546K.'],
+        M24:['Nair & Burley 2003 · c-Myc / MAX / DNA','https://www.rcsb.org/structure/1NKP','Experimental homolog example · X-ray 1.80 Å','c-Myc (MYC), NOT N-Myc (MYCN). A related-family DNA-recognition example with author-specific numbering; no N-Myc-specific contacts claimed.'],
+        M25:['Malumbres 2014 · Cyclin-dependent kinases','https://doi.org/10.1186/gb4184','Review · full-text sections verified','Cyclins, CDK4/6, RB/E2F, INK4 and Cip/Kip inhibitors. p21 usually restrains cell-cycle progression; bypass routes and cell context matter.'],
+        M26:['Chesler et al. 2006 · PI3K / N-Myc stability — caution','https://doi.org/10.1158/0008-5472.CAN-05-2769','Historical primary paper · editorial concern','2024 Editor’s Note, DOI 10.1158/0008-5472.CAN-24-2888, flags similar Figure 7B β-tubulin controls. Not used for quantitative predictions. Historical T50/S54 construct labels must not silently become human T58/S62.']
+      };
+      // Each step: title, core mechanism, molecular detail, evidence boundary, references.
+      const CHAPTERS = [
+        {id:'genome',title:'MYCN amplification',subtitle:'Gene dosage & chromatin',view:'genome',steps:[
+          ['A gene is not its protein','MYCN is a DNA locus at 2p24.3. Its product, N-Myc, is a nuclear transcription factor; it is not FGFR and is not a kinase.','An ordinary diploid G1 cell has two homologous chromosome-2 copies. A tumor can have altered ploidy. MYCN amplification is a focal increase relative to genomic background, not merely “more than two signals.” DNA, mRNA, protein abundance and biochemical activity are four separate measurements. The compact chromosome glyphs here orient the locus; interphase chromatin is not literally X-shaped.','Copy number alone neither establishes the physical amplicon architecture nor predicts active protein abundance.',['M02','M04','M12']],
+          ['Extra DNA templates','An amplified region contains many copies of MYCN, often together with regulatory DNA and other genes. The encoded N-Myc sequence need not change.','Genomic rearrangement and selection can generate and maintain high-copy amplicons. This is different from a missense mutation changing a codon, and from an entire chromosome gain. Greater template dosage can increase expression, but transcription, RNA turnover, translation and protein degradation all intervene. The circles and repeated bands are alternative architectures—not a measured copy count.','An “amplified” result does not mean more copies in every normal cell or prove a germline alteration.',['M12','M13','M04']],
+          ['ecDNA: outside chromosomes, inside nuclei','Oncogene-bearing extrachromosomal DNA can form circular, chromatinized amplicons. Cytogenetic double minutes are a related appearance.','Large oncogenic ecDNA lacks a conventional centromere and can segregate unequally, generating cell-to-cell dosage variation. Circles can carry multiple regulatory elements and more than one oncogene segment. They are not naked plasmids drifting outside the cell. The illustrated circles are not a reconstruction of a particular tumor amplicon.','ecDNA-associated heterogeneity is demonstrated in studied MYCN-amplified models and specimens; amplification alone does not diagnose ecDNA.',['M12','M13']],
+          ['Chromosomal amplification: HSR','Amplified DNA may instead be incorporated in a chromosome as a homogeneously staining region or a complex repeated array.','HSRs can occur away from the native MYCN locus; ecDNA reintegration is one possible route, not the sole origin. Chromosomal arrays can still be rearranged and heterogeneous. The baseline, ecDNA and HSR buttons compare topology only; their molecular output is deliberately not assigned a fabricated linear expression ratio.','FISH can help distinguish cytogenetic patterns; sequencing and structural analysis add architecture. A bulk copy-number estimate is not an exact count in each cell.',['M12','M13']],
+          ['Regulatory context determines output','Enhancers and promoters recruit transcriptional machinery through chromatin interactions. More copies are not sufficient to explain every expression difference.','MYCN amplicons can retain/co-amplify nearby enhancers or recruit distal lineage-regulated enhancers through rearrangement. Enhancer hijacking at MYCN is distinct from enhancer invasion: the latter is excess N-Myc protein occupying additional downstream regulatory sites. Neither process is simply FGFR phosphorylating DNA.','Helmsauer describes distinct architectures; Zeid studies N-Myc occupancy. These are separate experiments and mechanisms.',['M12','M14']]
+        ]},
+        {id:'expression',title:'DNA → RNA → protein',subtitle:'Sequence & codon mechanics',view:'expression',steps:[
+          ['Transcription preserves the DNA template','RNA polymerase II uses one DNA strand as a template to synthesize pre-mRNA 5′→3′. The DNA remains present.','The RNA sequence is complementary to the template strand and matches the coding strand with U in place of T. MYCN and FGFR1 are separate genes on chromosomes 2 and 8. Neither DNA nor mRNA is “inside” the mature FGFR1 protein. The workbench contains public reference transcripts, not a tumor-derived sequence.','The double helix is a topology model; gene spans and sequence-scale distances are compressed.',['M03','M04','M21']],
+          ['Processing creates mature mRNA','The transcript acquires a 5′ cap, undergoes splicing, and receives 3′-end processing and a poly(A) tail before export.','Exons can contain both coding and untranslated sequence. Introns are removed from RNA, not routinely cut from the genomic gene. Alternative promoters/splicing change RNA structure and sometimes protein domains. FGFR1 D3 splice choices affect ligand specificity; transcript numbering must be retained when naming a variant.','An RNA fusion panel is not a full transcriptome, an isoform-expression measurement, or a complete RNA-structure experiment.',['M01','M03','M04','M21']],
+          ['The ribosome reads codons, not genes','Ribosomes read mRNA 5′→3′ in triplets. Aminoacyl-tRNAs deliver amino acids, extending the peptide from N to C terminus.','The small subunit organizes decoding; the large subunit’s rRNA-rich catalytic center forms peptide bonds. Translation has initiation, elongation and termination phases, with charged tRNAs cycling through A, P and E sites. A stop codon recruits release factors rather than encoding an amino acid. Multiple ribosomes can translate the same mRNA.','The animated ribosome is a schematic ribonucleoprotein, not an atomic model or a clock for protein synthesis.',['M21']],
+          ['One nucleotide changes one amino acid','FGFR1 NM_023110.3:c.1638C>A changes coding DNA AAC → AAA, so Asn546 becomes Lys546.','Codon 546 occupies coding bases 1636–1638. Because this reference CDS starts at transcript base 744, the changed nucleotide is mRNA position 2381, not 1638. The RNA codons are also AAC → AAA. The same positive-genome allele is GRCh38 NC_000008.11:g.38417331G>T because FGFR1 lies on the opposite strand.','The workbench performs one explicitly labeled in-silico substitution. It does not infer additional variants or measure mutant RNA expression.',['M03','M05']],
+          ['Reference identity is part of the result','FGFR1: 5,697-nt reference mRNA → 822-aa protein. MYCN: 2,613-nt reference mRNA → 464-aa N-Myc.','FGFR1 NM_023110.3 / NP_075598.2 matches UniProt P11362-1. MYCN NM_005378.6 / NP_005369.2 matches P04198. Another FGFR1 transcript, NM_001174067.2, calls this allele c.1731C>A / N577K. The 31-aa shift applies to this comparison, not every isoform. A gene’s genomic DNA includes introns absent from the spliced CDS displayed here.','Accession, version, strand and reference assembly prevent false comparisons between reports or structures.',['M01','M02','M03','M04','M05']]
+        ]},
+        {id:'folding',title:'Folding & maturation',subtitle:'Domains, ER & ensembles',view:'folding',steps:[
+          ['Primary sequence constrains conformation','A peptide backbone has restricted bond geometry. Side-chain chemistry and the cellular environment shape its accessible conformations.','Peptide bonds are approximately planar; backbone φ/ψ rotations are sterically constrained. Hydrophobic effects, hydrogen bonds, electrostatics and van der Waals packing stabilize different states. Folding follows an energy landscape, often cotranslationally, rather than an exhaustive search or a single universal sequence of moves.','The changing chain is a teaching cartoon, not a molecular-dynamics trajectory, free-energy calculation, or measured folding intermediate.',['M20','M21']],
+          ['Secondary structure: helix and sheet','Backbone hydrogen bonding supports α helices and β sheets. Their arrangement creates larger domains.','An α helix typically has about 3.6 residues per turn and i→i+4 backbone hydrogen bonds. β sheets combine strands, often antiparallel in Ig-like domains. FGFR extracellular Ig-like domains use β-sandwich architecture; its membrane-spanning segment is helical. A motif is not equivalent to a whole functional protein.','These geometries illustrate motifs. Open the experimental ligand-binding or kinase fragments to see sequence-specific structure.',['M01','M10','M20']],
+          ['FGFR1 enters the secretory pathway','The signal peptide directs the nascent receptor to the ER. Extracellular regions fold in the ER lumen while the kinase remains cytosolic.','For P11362-1: signal peptide 1–21; extracellular region 22–376; membrane helix 377–397; cytoplasmic portion 398–822. SRP/translocon-dependent targeting and membrane insertion establish topology. Luminal domains form disulfide bonds and receive N-linked glycans; these help maturation and quality control. This does not place DNA in the ER.','The ER topology is conserved through vesicular transport: lumen becomes the extracellular-facing surface.',['M01','M06','M21']],
+          ['Maturation is not activation','Correct folding, glycan processing and trafficking deliver a receptor capable of responding. Ligand-dependent activation is a later regulatory event.','Chaperones suppress aggregation and support folding; protein-disulfide isomerase and ER glycoprotein quality-control machinery assist secretory proteins. FGFR1 glycans undergo Golgi maturation. Misfolded receptors can be retained or degraded. N546K, however, is an activating kinase-regulatory substitution—not a general claim of trafficking failure.','Different FGFR mutations have different effects: folding loss-of-function and kinase gain-of-function must not be conflated.',['M01','M08','M20','M21']],
+          ['A protein can be functional and disordered','N-Myc contains substantial intrinsically disordered regulatory regions. It is not one globular fold equivalent to an FGFR kinase.','The N-terminal region recruits regulatory partners through short motifs; the C-terminal bHLH-leucine-zipper region participates in MAX dimerization and DNA recognition. Binding can stabilize local helices without fixing the whole protein. An AlphaFold-like complete picture would be a prediction, not an experimental folding movie.','5G1X resolves only N-Myc residues 61–89 bound to Aurora-A. It does not show full N-Myc, the MAX interface, or Thr58.',['M02','M15']]
+        ]},
+        {id:'activation',title:'FGFR activation',subtitle:'Ligand, HS & phosphotyrosines',view:'activation',steps:[
+          ['FGF is the ligand; FGFR is the receptor','FGFR1–4 are related receptor tyrosine kinases. FGFR1 is a single-pass membrane protein with extracellular recognition domains and an intracellular kinase.','The historical name “fibroblast growth factor receptor” does not restrict it to fibroblasts. Normal FGF signaling regulates development, differentiation, migration and homeostasis as well as proliferation. Ligand specificity depends on receptor isoform and cofactors. The main teaching model uses paracrine FGF/HS—not endocrine FGF23 signaling as a tumor assumption.','FGFR presence is not FGFR addiction. A gene on a panel is not a measured activated protein.',['M01','M06']],
+          ['Ligand and heparan sulfate organize receptors','Heparan sulfate is an extracellular sulfated carbohydrate cofactor that stabilizes appropriate FGF–FGFR interactions.','Productive association or rearrangement increases the likelihood that intracellular kinases contact each other correctly. Classical 1FQ9 displays a 2:2:2 FGF2:FGFR1:heparin complex. Newer 7YSH shows an asymmetric FGF23:FGFR1:αKlotho:HS complex. Receptor preassociation and ligand-specific arrangements mean “two isolated monomers merge” is not a universal movie.','The diagram’s paired receptors are topology only. Chapter 08 contrasts experimental assemblies without relabeling FGF23 as FGF2.',['M06','M10','M11']],
+          ['Trans-autophosphorylation changes the enzyme','One receptor kinase transfers ATP’s terminal phosphate to tyrosines on its partner receptor. Mg²⁺ supports catalysis.','Phosphorylation produces phosphotyrosine plus ADP and changes catalytic competence and docking interactions. Y653/Y654 are activation-loop residues in the 822-aa reference. The phosphate is covalently attached; glowing points below symbolize reaction events, not an electrical current or a molecule passed unchanged down a pathway.','Reference activation is shown qualitatively. N546K can produce basal activity in tested systems, but no universal activation fraction is assigned.',['M01','M07','M08']],
+          ['Phosphorylation has staged kinetics','Classical purified FGFR1 assays found a favored order: Y653 → Y583 → Y463 → Y766 → Y585 → Y654.','Y653 phosphorylation strongly increases measured catalytic activity, and later Y654 phosphorylation raises it further; intermediate sites develop interaction capacity. Experimental constructs do not include every receptor segment. In a cell, phosphatases, geometry, substrate competition and receptor turnover modify the process. N546K perturbs order, not simply playback speed.','The step sequence is drawn from biochemical studies, not a stopwatch for living neuroblastoma. Enzyme fold changes are not tumor-growth multipliers.',['M07','M08']],
+          ['Docking branches into multiple pathways','FRS2, GRB2/SHP2/SOS and GAB1 assemble signaling platforms. PLCγ1 recognizes pY766 plus additional interfaces.','FRS2 can associate with the receptor juxtamembrane region through its PTB domain independently of receptor phosphorylation. Receptor-dependent FRS2 phosphorylation recruits downstream partners. A domain called PTB need not require a phosphotyrosine in every binding mode. Distinct complexes couple kinase output to protein, nucleotide and lipid reactions.','Most arrows in a compact pathway image summarize several binding and catalytic steps. Chapter 06 separates these chemistries.',['M06','M23']]
+        ]},
+        {id:'kinase',title:'The N546K mechanism',subtitle:'Allostery, not global misfolding',view:'kinase',steps:[
+          ['The kinase is a two-lobed enzyme','The β-rich N-lobe and α-rich C-lobe form a catalytic cleft. ATP, Mg²⁺ and a protein substrate must be organized for phosphate transfer.','FGFR1’s reference kinase domain is annotated at 478–767. The ATP-binding region, catalytic loop, αC helix and activation loop are interacting structural elements. D623 is a catalytic residue; an ATP pocket is not the same location as the extracellular FGF-binding site. Kinase lobes are parts of one intracellular domain—not two independent enzymes.','Schematic lobes and labels are not residue coordinates. 1FGK and 3GQI provide actual fragment structures.',['M01','M09','M22','M23']],
+          ['A molecular brake restrains activity','An autoinhibitory hydrogen-bond network near the hinge includes FGFR1 N546, E562 and K638.','Structural and solution studies connect this brake with the DFG latch, αC tether and activation-loop plug. They regulate a conformational ensemble. A residue can alter distant behavior without the whole protein unfolding. Corresponding FGFR2 residues are N549/E565/K641; the experimental protein and numbering must be stated.','The four-site mechanism has detailed FGFR2 evidence and FGFR1 comparisons. It is not a fully resolved mutant FGFR1 trajectory in a tumor.',['M09','M22']],
+          ['Asparagine becomes lysine','N546K substitutes a neutral polar amide side chain with a longer side chain that is usually positively charged at physiological pH.','This changes local steric and hydrogen-bond possibilities within the regulatory network, biasing access to catalytically productive states. It does not replace the entire fold, create a new receptor ligand or automatically eliminate every feedback mechanism. The altered side-chain diagram is chemical topology, not an optimized rotamer fitted into the receptor.','The atomic lab keeps experimentally deposited Asn546 unchanged. It will not label a guessed Lys rotamer as a solved N546K structure.',['M05','M08','M09']],
+          ['What was directly measured','Lew et al. measured about 25-fold faster initial autophosphorylation and altered early phosphorylation-site ordering in N546K kinase constructs.','Kinase-dead controls and transformation assays test a different causal question from structural localization. Werr’s N546K + D623A construct lost the cytokine-independent proliferation phenotype, supporting a requirement for catalytic activity in that model. Neither result specifies every patient’s signaling strength.','Purified-enzyme rates, cell transformation, mouse tumors and patient outcomes are different evidence levels. No 25× cell-division animation is used.',['M08','M17']],
+          ['Compare real states without inventing a transition','1FGK is an autoinhibited kinase fragment. 3GQI is a phosphorylated active FGFR1 fragment bound to a PLCγ fragment.','Both contain construct differences from the reference. Comparing these structures helps identify the activation loop and binding surfaces, but they are not a matched wild-type/N546K pair. A morph between them would interpolate coordinates, not reveal the physical pathway or free-energy barrier.','Select the atomic lab, inspect N546/E562/K638, then Y653/Y654. Deposited chain/residue identity is retained throughout.',['M09','M22','M23']]
+        ]},
+        {id:'network',title:'Branching signal network',subtitle:'MAPK · PI3K · PLCγ · feedback',view:'network',steps:[
+          ['Assembly creates parallel signaling options','Activated FGFR1 phosphorylates docking proteins. FRS2/GRB2-based complexes connect to more than one downstream branch.','SHP2 (PTPN11) is a phosphatase that can positively support RAS signaling; it is not another serial kinase. GRB2 is an adaptor; SOS is a guanine-nucleotide exchange factor. GAB1 scaffolds PI3K recruitment. PLCγ has a receptor-docking route. Real branch engagement depends on expression, localization and competing interactions.','Colored paths are causal diagrams, not physical cables. Click a molecule for the reaction it represents.',['M06','M23']],
+          ['RAS–RAF–MEK–ERK: relay to transcription','SOS promotes GDP release from RAS, allowing GTP loading. RAS-GTP organizes RAF activation; RAF phosphorylates MEK, and MEK phosphorylates ERK.','RAS activation is nucleotide exchange—not phosphorylation of RAS. RAF activation involves membrane recruitment and context-dependent dimerization. MEK is dual-specificity; ERK is a serine/threonine kinase with cytosolic and nuclear substrates. ETS/ELK and AP-1-related programs can contribute to cyclin expression, but duration and cell state can instead favor differentiation or arrest.','A phospho-ERK increase is evidence of signaling, not proof of completed division or exclusive FGFR dependence.',['M06','M17']],
+          ['PI3K–AKT–mTOR: lipids, survival and biomass','PI3K converts membrane PIP₂ to PIP₃. PIP₃ recruits PH-domain proteins; PDK1 and mTORC2 phosphorylate AKT.','For AKT1, PDK1 targets T308 and mTORC2 S473. AKT can inhibit TSC2-associated restraint, favoring RHEB-GTP and mTORC1. Amino-acid/Rag inputs also matter at lysosomes. mTORC1 phosphorylates S6K and 4E-BPs; phosphorylated 4E-BPs release eIF4E to support cap-dependent translation. AKT also influences FOXO, GSK3 and survival pathways.','mTORC2 is an AKT regulator; mTORC1 is a distinct downstream complex. Ribosomal S6 is not p70 S6 kinase, and PI3K does not directly phosphorylate AKT.',['M06','M16']],
+          ['PLCγ: a different use of the same lipid','PLCγ1 docks at FGFR1 pY766 and other contact surfaces. Activated PLCγ hydrolyzes PIP₂ to IP₃ and DAG.','IP₃ diffuses to ER IP₃ receptors, mobilizing Ca²⁺. DAG stays in the membrane; DAG and Ca²⁺ cooperate for conventional PKC isoforms, whereas other PKC classes differ. PLCγ cleavage and PI3K lipid phosphorylation are different chemical reactions, despite sharing PIP₂ as substrate. PLCγ signaling can cross-talk with MAPK and other outputs.','This is not a universal requirement for every mitogenic FGFR response. 3GQI contains only a PLCγ tandem-SH2 fragment, not its whole lipase machinery.',['M06','M23']],
+          ['Feedback makes the network dynamic','DUSPs remove ERK phosphates; PTEN converts PIP₃ toward PIP₂; RAS GAPs accelerate GTP hydrolysis. Receptors are internalized and sorted.','SPRY/SEF regulators, phosphatases, CBL-linked ubiquitination and lysosomal trafficking restrain signaling. ERK and mTOR/S6K outputs can feed back upstream. Inhibition may relieve feedback and permit rebound or alternative receptor input; pathway diagrams alone cannot identify a resistance mechanism.','N546K is not a claim that every brake vanishes. Dashed lines and stop bars indicate negative regulation—not another activating arrow.',['M01','M06','M16']],
+          ['Why the supplied diagram needs qualification','STAT signaling is context-dependent; JAK is not an obligatory relay for an FGFR that already has its own kinase. p21 commonly inhibits cyclin–CDK activity.','The image’s STAT1→p21 branch must not be treated as a universal positive growth route in FGFR1-mutant neuroblastoma. Relevant NB experiments measured STAT3, not interchangeable STAT1. PD173074 is a research inhibitor; its bar does not prove exclusive pathway dependence. Missing adaptors, PLCγ, mTORC1/C2 distinctions, survival effects and feedback change the interpretation.','The image’s publication and experimental context have not been established. This atlas explains limitations without attributing the image to an unverified source.',['M06','M17','M18','M25']]
+        ]},
+        {id:'nmyc',title:'N-Myc → cell fate',subtitle:'MAX, transcription & survival',view:'nmyc',steps:[
+          ['N-Myc partners with MAX on DNA','The C-terminal basic helix–loop–helix/leucine-zipper region supports MAX dimerization and sequence-specific DNA recognition.','The basic regions contact DNA; the leucine zipper mainly supports dimerization. The canonical E-box is 5′-CACGTG-3′, but motif occurrence alone does not determine binding. Chromatin accessibility, abundance and cofactors shape occupancy. N-terminal N-Myc interaction regions are largely dynamic rather than a second kinase domain.','The full N-Myc/MAX drawing is schematic. 1NKP is an experimental c-Myc/MAX homolog example, not a solved N-Myc complex.',['M02','M14','M24']],
+          ['Transcription changes a program, not one switch','N-Myc-associated complexes regulate promoter and enhancer activity, engaging chromatin cofactors and the transcription machinery.','Programs include ribosome biogenesis, metabolism and cell-cycle/replication competence. Higher N-Myc abundance can broaden occupancy into additional regulatory sites, but responses depend on lineage partners and target affinity. MYCN amplification itself is a separate genomic event, not the inevitable product of an ERK arrow.','N-Myc can regulate activation and repression, directly or indirectly. Binding and RNA changes do not by themselves prove a gene is necessary for growth.',['M12','M14']],
+          ['Cyclins and checkpoints permit replication','Cyclin D–CDK4/6, RB/E2F regulation and subsequent cyclin–CDK activities help govern entry into S phase and progression through the cycle.','RB restrains E2F-dependent transcription; phosphorylation and other regulatory steps can relieve that restraint. p21 and INK4 proteins inhibit parts of the machinery. DNA replication requires licensing and synthesis before segregation and cytokinesis. “Growth” (biomass), “proliferation” (more cells), and “survival” (less death) are not synonyms.','This cell-cycle drawing is a completion sequence, not a growth-rate prediction or a CDK inhibitor recommendation.',['M25','M14']],
+          ['Protein abundance also depends on removal','N-Myc turnover is regulated by phosphorylation, ubiquitination and protein interactions. Aurora-A can stabilize N-Myc through binding, independently of catalytic activity.','Human N-Myc T58/S62 participate in phosphodegron regulation; GSK3β, priming kinases and FBXW7-linked machinery contribute. Do not impose an obligatory ERK→S62 step in every setting. Aurora-A does not simply abolish all FBXW7 binding; altered engagement and productive ubiquitin-chain formation are part of a proposed stabilization mechanism. AKT/GSK3 effects are context-dependent.','5G1X resolves residues 61–89, NOT T58. Historical PI3K stability paper M26 has an editorial concern and is not used for quantitative predictions.',['M15','M16','M26']],
+          ['Tumor expansion is births minus losses','FGFR1 N546K and MYCN can cooperate in neuroblastoma models. Net expansion can reflect avoidance of apoptosis as well as cell division.','Werr’s FGFR1 N546K/MYCN mice had aggressive tumors with reduced apoptosis compared with an ALK/MYCN model, despite lower proliferation-associated markers. Elevated BCL2 does not establish BCL2 dependence. A MYCNOS co-amplification label likewise does not prove expression or activity of the experimentally reported NCYM protein.','Mechanistic cooperation is supported in models, but individual dependence requires expression/activity measurements and controlled perturbation. No patient-specific copy number, kinetic rate or treatment response is simulated.',['M17','M18','M19']]
+        ]},
+        {id:'structures',title:'Experimental structures',subtitle:'Atoms, residues & provenance',view:'structures',steps:[]}
+      ];
+      const STRUCTURES = {
+        '1FGK':{title:'FGFR1 · autoinhibited kinase',ref:'M22',resolution:'X-ray · 2.00 Å',chains:{A:['FGFR1 kinase','molecule']},focus:{brake:{chain:'A',resi:[546,562,638]},loop:{chain:'A',resi:[653,654]},atp:{chain:'A',resi:[484,485,486,487,488,489,490,514,562,563,564,641]}},note:'Chain A only, a representative kinase fragment. Asn546 is the reference residue, NOT Lys546. The deposit includes sequence differences C488A/C584S (and L457V outside observed chain-A coordinates). Missing loops are not rebuilt. The crystallographic dimer is not rendered as a full membrane receptor.'},
+        '3GQI':{title:'FGFR1 · active kinase / PLCγ interface',ref:'M23',resolution:'X-ray · 2.50 Å',chains:{A:['Human FGFR1','molecule'],B:['Rat PLCγ1 SH2 fragment','cofactor']},focus:{brake:{chain:'A',resi:[546,562,638]},loop:{chain:'A',resi:[653,654]},atp:{chain:'A',resn:'ACP'}},note:'Human FGFR1 A contains C488A/Y583F/C584S/Y585F. Its Y653/Y654/Y766 are deposited as PTR (phosphotyrosine). Rat PLCγ1 B is a tandem-SH2 fragment, not full lipase. ACP is an ATP analog, not a simulated ATP→ADP reaction. No N546K mutant or measured transition is shown.'},
+        '1FQ9':{title:'Classical FGF2 / FGFR1 / heparin',ref:'M10',resolution:'X-ray · 3.00 Å',chains:{A:['FGF2','rna'],B:['FGF2','rna'],C:['FGFR1 D2–D3','molecule'],D:['FGFR1 D2–D3','molecule'],E:['Heparin','cofactor'],F:['Heparin','cofactor']},focus:{},note:'Classical 2:2:2 assembly using engineered FGF2 fragments (Cys→Ser at author 69/87), FGFR1 D2–D3 (N185Q), and heparin surrogate. Resolved sugar coverage is incomplete. D1, membrane, full glycans and kinase are absent. This is not the only supported receptor assembly model.'},
+        '7YSH':{title:'Asymmetric FGF23 / FGFR1 / αKlotho / HS',ref:'M11',resolution:'Cryo-EM · 2.74 Å',chains:{A:['αKlotho','protein'],B:['FGF23','rna'],D:['FGFR1c','molecule'],E:['FGFR1c','molecule'],F:['HS','cofactor']},focus:{},note:'One endocrine FGF23, two FGFR1c ligand-binding fragments and one αKlotho with HS: asymmetric 1:2:1:1 assembly. FGF23 construct includes R176Q/R179Q; tags, missing segments and deposited glycans are retained as deposited. Do not interpret this as FGF2, a full-length receptor, or evidence of FGF23/αKlotho expression in a tumor. Paracrine extension comes from separate cell experiments.'},
+        '5G1X':{title:'N-Myc peptide bound to Aurora-A',ref:'M15',resolution:'X-ray · 1.72 Å',chains:{A:['Aurora-A','dna'],B:['N-Myc residues 61–89','molecule']},focus:{peptide:{chain:'B',resi:Array.from({length:29},(_,i)=>61+i)}},note:'N-Myc peptide construct 28–89; only 61–89 is resolved. T58 and 28–60 are absent; do not infer their positions. Aurora-A contains C290A/C393A. This is not full N-Myc or N-Myc/MAX. ADP/Mg belong to Aurora-A; N-Myc is not an ATP-dependent kinase.'},
+        '1NKP':{title:'c-Myc / MAX / DNA — homolog example',ref:'M24',resolution:'X-ray · 1.80 Å',chains:{A:['c-Myc, NOT N-Myc','molecule'],B:['MAX','cofactor'],F:['DNA','dna'],G:['DNA','dna']},focus:{dna:{chain:['F','G']}},note:'Displayed A/B/F/G pair from the crystallographic entry. c-Myc is encoded by MYC, NOT MYCN. This is a family-level structural analogy only. PDB author A900–981 maps to c-Myc reference 353–434; B202–281 maps to MAX23–102. Engineered terminal residues and author numbering are retained.'}
+      };
+      const GLOSSARY = {
+        'Amplification':'Extra copies of a DNA region relative to genomic background. Not synonymous with mutation, RNA overexpression or protein activity.',
+        'Amplicon / ecDNA / HSR':'An amplified DNA unit; ecDNA is extrachromosomal nuclear DNA, whereas an HSR is chromosomally incorporated amplified material.',
+        'Transcript / CDS / isoform':'A particular RNA sequence; its protein-coding part; a variant RNA or protein product. Always retain accession and version.',
+        'MYCN / N-Myc / MYC':'MYCN is the gene; N-Myc is its protein product. MYC encodes the related but distinct c-Myc protein.',
+        'MYCNOS / NCYM':'A separate overlapping opposite-strand locus with transcript-dependent functions, including a reported NCYM protein. Not another name for N-Myc.',
+        'FGF / FGFR / HS':'Fibroblast growth factor ligand; its receptor; heparan sulfate carbohydrate cofactor. Their chemistry and roles are different.',
+        'Kinase / phosphatase':'An enzyme transferring phosphate (often from ATP); an enzyme removing phosphate. A phosphatase can positively regulate a network by removing an inhibitory phosphate.',
+        'Allostery / folding / disorder':'Coupling between structural sites; acquisition of structural organization; sampling multiple conformations without one persistent compact fold.',
+        'SH2 / PTB / PH':'Interaction domains. SH2 often recognizes phosphotyrosine; PTB specificity varies; PH domains may bind phosphoinositides, depending on the protein.',
+        'GEF / GAP':'A nucleotide-exchange factor supports GDP release and GTP loading; a GTPase-activating protein accelerates GTP hydrolysis.',
+        'mTORC1 / mTORC2':'Distinct mTOR-containing complexes. mTORC1 regulates anabolic outputs; mTORC2 contributes to AKT activation and other functions.',
+        'Dependence / target engagement':'Dependence means a function is required for the phenotype. Engagement means an intervention reaches or modulates its target; engagement alone is not clinical benefit.',
+        'Resolution / missing residues':'Experimental spatial detail and regions not supported by the deposited model. Missing coordinates do not mean the sequence never existed.',
+        'Phosphodegron':'A phosphorylation-regulated protein region recognized by degradation machinery. Protein turnover is distinct from gene dosage.',
+        'Growth / proliferation / survival':'More biomass; more cells; less cell loss. A larger tumor can reflect several of these processes.'
+      };
+      let app;
+      function openDialog(id) { app?.setPlaying(false); const dialog=$(id); if(!dialog.open) dialog.showModal(); }
+      function showSources(id='') {
+        $('sourceSearch').value=''; renderSources(); openDialog('referencesDialog');
+        if(id) requestAnimationFrame(()=>document.getElementById(`source-${id}`)?.scrollIntoView({block:'start'}));
+      }
+      function renderSources() {
+        const filter=$('sourceSearch').value.toLowerCase();
+        $('sourceList').innerHTML=Object.entries(SOURCES).filter(([id,source])=>`${id} ${source.join(' ')}`.toLowerCase().includes(filter)).map(([id,s])=>`<section class="source" id="source-${id}"><h3>${id} · ${esc(s[0])}</h3><p><strong>${esc(s[2])}</strong></p><p>${esc(s[3])}</p><a href="${esc(s[1])}" target="_blank" rel="noopener noreferrer">Open source ↗</a></section>`).join('') || '<p>No matching sources.</p>';
+      }
+      document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$(button.dataset.close).close()));
+      $('referencesOpen').addEventListener('click',()=>showSources());
+      $('sourceSearch').addEventListener('input',renderSources);
+      $('glossary').innerHTML=Object.entries(GLOSSARY).map(([term,definition])=>`<div><dt>${esc(term)}</dt><dd>${esc(definition)}</dd></div>`).join('');
+      $('glossaryOpen').addEventListener('click',()=>openDialog('glossaryDialog'));
+      $('sequenceOpen').addEventListener('click',()=>{updateSequence();openDialog('sequenceDialog');});
+      const updateTheme=()=>{$('theme').textContent=document.documentElement.dataset.theme==='dark'?'Light UI':'Dark UI';};
+      $('theme').addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';updateTheme();}); updateTheme();
+      $('retry').addEventListener('click',()=>location.reload());
+      function message(text,retry=false) {$('sceneMessage').hidden=false;$('sceneMessageText').textContent=text;$('retry').hidden=!retry;}
+      function citations(ids) {return `<div class="citations">${ids.map(id=>`<button type="button" data-source="${id}" title="${esc(SOURCES[id][0])}">${id} ↗</button>`).join('')}</div>`;}
+      document.addEventListener('click',event=>{const button=event.target.closest('[data-source]');if(button)showSources(button.dataset.source);});
+
+      /** Public RefSeq transcripts, retrieved 2026-09-09, stored in DNA alphabet. */
+      const SEQUENCES = {
+        fgfr:{gene:'FGFR1',rna:'NM_023110.3',proteinId:'NP_075598.2',uniprot:'P11362-1',length:5697,aa:822,cdsStart:744,cdsEnd:3212,locus:'8p11.23 · minus strand',sequence:`
+GCATAGCGCTCGGAGCGCTCTTGCGGCCACAGGCGCGGCGTCCTCGGCGGCGGGCGGCAGCTAGCGGGAGCCGGGACGCCGGTGCAGCCG
+CAGCGCGCGGAGGAACCCGGGTGTGCCGGGAGCTGGGCGGCCACGTCCGGACGGGACCGAGACCCCTCGTAGCGCATTGCGGCGACCTCG
+CCTTCCCCGGCCGCGAGCGCGCCGCTGCTTGAAAAGCCGCGGAACCCAAGGACTTTTCTCCGGTCCGAGCTCGGGGCGCCCCGCAGGGCG
+CACGGTACCCGTGCTGCAGTCGGGCACGCCGCGGCGCCGGGGCCTCCGCAGGGCGATGGAGCCCGGTCTGCAAGGAAAGTGAGGCGCCGC
+CGCTGCGTTCTGGAGGAGGGGGGCACAAGGTCTGGAGACCCCGGGTGGCGGACGGGAGCCCTCCCCCCGCCCCGCCTCCGGGGCACCAGC
+TCCGGCTCCATTGTTCCCGCCCGGGCTGGAGGCGCCGAGCACCGAGCGCCGCCGGGAGTCGAGCGCCGGCCGCGGAGCTCTTGCGACCCC
+GCCAGGACCCGAACAGAGCCCGGGGGCGGCGGGCCGGAGCCGGGGACGCGGGCACACGCCCGCTCGCACAAGCCACGGCGGACTCTCCCG
+AGGCGGAACCTCCACGCCGAGCGAGGGTCAGTTTGAAAAGGAGGATCGAGCTCACTGTGGAGTATCCATGGAGATGTGGAGCCTTGTCAC
+CAACCTCTAACTGCAGAACTGGGATGTGGAGCTGGAAGTGCCTCCTCTTCTGGGCTGTGCTGGTCACAGCCACACTCTGCACCGCTAGGC
+CGTCCCCGACCTTGCCTGAACAAGCCCAGCCCTGGGGAGCCCCTGTGGAAGTGGAGTCCTTCCTGGTCCACCCCGGTGACCTGCTGCAGC
+TTCGCTGTCGGCTGCGGGACGATGTGCAGAGCATCAACTGGCTGCGGGACGGGGTGCAGCTGGCGGAAAGCAACCGCACCCGCATCACAG
+GGGAGGAGGTGGAGGTGCAGGACTCCGTGCCCGCAGACTCCGGCCTCTATGCTTGCGTAACCAGCAGCCCCTCGGGCAGTGACACCACCT
+ACTTCTCCGTCAATGTTTCAGATGCTCTCCCCTCCTCGGAGGATGATGATGATGATGATGACTCCTCTTCAGAGGAGAAAGAAACAGATA
+ACACCAAACCAAACCGTATGCCCGTAGCTCCATATTGGACATCCCCAGAAAAGATGGAAAAGAAATTGCATGCAGTGCCGGCTGCCAAGA
+CAGTGAAGTTCAAATGCCCTTCCAGTGGGACCCCAAACCCCACACTGCGCTGGTTGAAAAATGGCAAAGAATTCAAACCTGACCACAGAA
+TTGGAGGCTACAAGGTCCGTTATGCCACCTGGAGCATCATAATGGACTCTGTGGTGCCCTCTGACAAGGGCAACTACACCTGCATTGTGG
+AGAATGAGTACGGCAGCATCAACCACACATACCAGCTGGATGTCGTGGAGCGGTCCCCTCACCGGCCCATCCTGCAAGCAGGGTTGCCCG
+CCAACAAAACAGTGGCCCTGGGTAGCAACGTGGAGTTCATGTGTAAGGTGTACAGTGACCCGCAGCCGCACATCCAGTGGCTAAAGCACA
+TCGAGGTGAATGGGAGCAAGATTGGCCCAGACAACCTGCCTTATGTCCAGATCTTGAAGACTGCTGGAGTTAATACCACCGACAAAGAGA
+TGGAGGTGCTTCACTTAAGAAATGTCTCCTTTGAGGACGCAGGGGAGTATACGTGCTTGGCGGGTAACTCTATCGGACTCTCCCATCACT
+CTGCATGGTTGACCGTTCTGGAAGCCCTGGAAGAGAGGCCGGCAGTGATGACCTCGCCCCTGTACCTGGAGATCATCATCTATTGCACAG
+GGGCCTTCCTCATCTCCTGCATGGTGGGGTCGGTCATCGTCTACAAGATGAAGAGTGGTACCAAGAAGAGTGACTTCCACAGCCAGATGG
+CTGTGCACAAGCTGGCCAAGAGCATCCCTCTGCGCAGACAGGTAACAGTGTCTGCTGACTCCAGTGCATCCATGAACTCTGGGGTTCTTC
+TGGTTCGGCCATCACGGCTCTCCTCCAGTGGGACTCCCATGCTAGCAGGGGTCTCTGAGTATGAGCTTCCCGAAGACCCTCGCTGGGAGC
+TGCCTCGGGACAGACTGGTCTTAGGCAAACCCCTGGGAGAGGGCTGCTTTGGGCAGGTGGTGTTGGCAGAGGCTATCGGGCTGGACAAGG
+ACAAACCCAACCGTGTGACCAAAGTGGCTGTGAAGATGTTGAAGTCGGACGCAACAGAGAAAGACTTGTCAGACCTGATCTCAGAAATGG
+AGATGATGAAGATGATCGGGAAGCATAAGAATATCATCAACCTGCTGGGGGCCTGCACGCAGGATGGTCCCTTGTATGTCATCGTGGAGT
+ATGCCTCCAAGGGCAACCTGCGGGAGTACCTGCAGGCCCGGAGGCCCCCAGGGCTGGAATACTGCTACAACCCCAGCCACAACCCAGAGG
+AGCAGCTCTCCTCCAAGGACCTGGTGTCCTGCGCCTACCAGGTGGCCCGAGGCATGGAGTATCTGGCCTCCAAGAAGTGCATACACCGAG
+ACCTGGCAGCCAGGAATGTCCTGGTGACAGAGGACAATGTGATGAAGATAGCAGACTTTGGCCTCGCACGGGACATTCACCACATCGACT
+ACTATAAAAAGACAACCAACGGCCGACTGCCTGTGAAGTGGATGGCACCCGAGGCATTATTTGACCGGATCTACACCCACCAGAGTGATG
+TGTGGTCTTTCGGGGTGCTCCTGTGGGAGATCTTCACTCTGGGCGGCTCCCCATACCCCGGTGTGCCTGTGGAGGAACTTTTCAAGCTGC
+TGAAGGAGGGTCACCGCATGGACAAGCCCAGTAACTGCACCAACGAGCTGTACATGATGATGCGGGACTGCTGGCATGCAGTGCCCTCAC
+AGAGACCCACCTTCAAGCAGCTGGTGGAAGACCTGGACCGCATCGTGGCCTTGACCTCCAACCAGGAGTACCTGGACCTGTCCATGCCCC
+TGGACCAGTACTCCCCCAGCTTTCCCGACACCCGGAGCTCTACGTGCTCCTCAGGGGAGGATTCCGTCTTCTCTCATGAGCCGCTGCCCG
+AGGAGCCCTGCCTGCCCCGACACCCAGCCCAGCTTGCCAATGGCGGACTCAAACGCCGCTGACTGCCACCCACACGCCCTCCCCAGACTC
+CACCGTCAGCTGTAACCCTCACCCACAGCCCCTGCTGGGCCCACCACCTGTCCGTCCCTGTCCCCTTTCCTGCTGGCAGGAGCCGGCTGC
+CTACCAGGGGCCTTCCTGTGTGGCCTGCCTTCACCCCACTCAGCTCACCTCTCCCTCCACCTCCTCTCCACCTGCTGGTGAGAGGTGCAA
+AGAGGCAGATCTTTGCTGCCAGCCACTTCATCCCCTCCCAGATGTTGGACCAACACCCCTCCCTGCCACCAGGCACTGCCTGGAGGGCAG
+GGAGTGGGAGCCAATGAACAGGCATGCAAGTGAGAGCTTCCTGAGCTTTCTCCTGTCGGTTTGGTCTGTTTTGCCTTCACCCATAAGCCC
+CTCGCACTCTGGTGGCAGGTGCCTTGTCCTCAGGGCTACAGCAGTAGGGAGGTCAGTGCTTCGTGCCTCGATTGAAGGTGACCTCTGCCC
+CAGATAGGTGGTGCCAGTGGCTTATTAATTCCGATACTAGTTTGCTTTGCTGACCAAATGCCTGGTACCAGAGGATGGTGAGGCGAAGGC
+CAGGTTGGGGGCAGTGTTGTGGCCCTGGGGCCCAGCCCCAAACTGGGGGCTCTGTATATAGCTATGAAGAAAACACAAAGTGTATAAATC
+TGAGTATATATTTACATGTCTTTTTAAAAGGGTCGTTACCAGAGATTTACCCATCGGGTAAGATGCTCCTGGTGGCTGGGAGGCATCAGT
+TGCTATATATTAAAAACAAAAAAGAAAAAAAAGGAAAATGTTTTTAAAAAGGTCATATATTTTTTGCTACTTTTGCTGTTTTATTTTTTT
+AAATTATGTTCTAAACCTATTTTCAGTTTAGGTCCCTCAATAAAAATTGCTGCTGCTTCATTTATCTATGGGCTGTATGAAAAGGGTGGG
+AATGTCCACTGGAAAGAAGGGACACCCACGGGCCCTGGGGCTAGGTCTGTCCCGAGGGCACCGCATGCTCCCGGCGCAGGTTCCTTGTAA
+CCTCTTCTTCCTAGGTCCTGCACCCAGACCTCACGACGCACCTCCTGCCTCTCCGCTGCTTTTGGAAAGTCAGAAAAAGAAGATGTCTGC
+TTCGAGGGCAGGAACCCCATCCATGCAGTAGAGGCGCTGGGCAGAGAGTCAAGGCCCAGCAGCCATCGACCATGGATGGTTTCCTCCAAG
+GAAACCGGTGGGGTTGGGCTGGGGAGGGGGCACCTACCTAGGAATAGCCACGGGGTAGAGCTACAGTGATTAAGAGGAAAGCAAGGGCGC
+GGTTGCTCACGCCTGTAATCCCAGCACTTTGGGACACCGAGGTGGGCAGATCACTTCAGGTCAGGAGTTTGAGACCAGCCTGGCCAACTT
+AGTGAAACCCCATCTCTACTAAAAATGCAAAAATTATCCAGGCATGGTGGCACACGCCTGTAATCCCAGCTCCACAGGAGGCTGAGGCAG
+AATCCCTTGAAGCTGGGAGGCGGAGGTTGCAGTGAGCCGAGATTGCGCCATTGCACTCCAGCCTGGGCAACAGAGAAAACAAAAAGGAAA
+ACAAATGATGAAGGTCTGCAGAAACTGAAACCCAGACATGTGTCTGCCCCCTCTATGTGGGCATGGTTTTGCCAGTGCTTCTAAGTGCAG
+GAGAACATGTCACCTGAGGCTAGTTTTGCATTCAGGTCCCTGGCTTCGTTTCTTGTTGGTATGCCTCCCCAGATCGTCCTTCCTGTATCC
+ATGTGACCAGACTGTATTTGTTGGGACTGTCGCAGATCTTGGCTTCTTACAGTTCTTCCTGTCCAAACTCCATCCTGTCCCTCAGGAACG
+GGGGGAAAATTCTCCGAATGTTTTTGGTTTTTTGGCTGCTTGGAATTTACTTCTGCCACCTGCTGGTCATCACTGTCCTCACTAAGTGGA
+TTCTGGCTCCCCCGTACCTCATGGCTCAAACTACCACTCCTCAGTCGCTATATTAAAGCTTATATTTTGCTGGATTACTGCTAAATACAA
+AAGAAAGTTCAATATGTTTTCATTTCTGTAGGGAAAATGGGATTGCTGCTTTAAATTTCTGAGCTAGGGATTTTTTGGCAGCTGCAGTGT
+TGGCGACTATTGTAAAATTCTCTTTGTTTCTCTCTGTAAATAGCACCTGCTAACATTACAATTTGTATTTATGTTTAAAGAAGGCATCAT
+TTGGTGAACAGAACTAGGAAATGAATTTTTAGCTCTTAAAAGCATTTGCTTTGAGACCGCACAGGAGTGTCTTTCCTTGTAAAACAGTGA
+TGATAATTTCTGCCTTGGCCCTACCTTGAAGCAATGTTGTGTGAAGGGATGAAGAATCTAAAAGTCTTCATAAGTCCTTGGGAGAGGTGC
+TAGAAAAATATAAGGCACTATCATAATTACAGTGATGTCCTTGCTGTTACTACTCAAATCACCCACAAATTTCCCCAAAGACTGCGCTAG
+CTGTCAAATAAAAGACAGTGAAATTGA`},
+        mycn:{gene:'MYCN',rna:'NM_005378.6',proteinId:'NP_005369.2',uniprot:'P04198',length:2613,aa:464,cdsStart:312,cdsEnd:1706,locus:'2p24.3',sequence:`
+AGGCTGTGACAGTCATCTGTCTGGACGCGCTGGGTGGATGCGGGGGGCTCCTGGGAACTGTGTTGGAGCCGAGCAAGCGCTAGCCAGGCG
+CAAGCGCGCACAGACTGTAGCCATCCGAGGACACCCCCGCCCCCCCGGCCCACCCGGAGACACCCGCGCAGAATCGCCTCCGGATCCCCT
+GCAGTCGGCGGGAGTGTTGGAGGTCGGCGCCGGCCCCCGCCTTCCGCGCCCCCCACGGGAAGGAAGCACCCCCGGTATTAAAACGAACGG
+GGCGGAAAGAAGCCCTCAGTCGCCGGCCGGGAGGCGAGCCGATGCCGAGCTGCTCCACGTCCACCATGCCGGGCATGATCTGCAAGAACC
+CAGACCTCGAGTTTGACTCGCTACAGCCCTGCTTCTACCCGGACGAAGATGACTTCTACTTCGGCGGCCCCGACTCGACCCCCCCGGGGG
+AGGACATCTGGAAGAAGTTTGAGCTGCTGCCCACGCCCCCGCTGTCGCCCAGCCGTGGCTTCGCGGAGCACAGCTCCGAGCCCCCGAGCT
+GGGTCACGGAGATGCTGCTTGAGAACGAGCTGTGGGGCAGCCCGGCCGAGGAGGACGCGTTCGGCCTGGGGGGACTGGGTGGCCTCACCC
+CCAACCCGGTCATCCTCCAGGACTGCATGTGGAGCGGCTTCTCCGCCCGCGAGAAGCTGGAGCGCGCCGTGAGCGAGAAGCTGCAGCACG
+GCCGCGGGCCGCCAACCGCCGGTTCCACCGCCCAGTCCCCGGGAGCCGGCGCCGCCAGCCCTGCGGGTCGCGGGCACGGCGGGGCTGCGG
+GAGCCGGCCGCGCCGGGGCCGCCCTGCCCGCCGAGCTCGCCCACCCGGCCGCCGAGTGCGTGGATCCCGCCGTGGTCTTCCCCTTTCCCG
+TGAACAAGCGCGAGCCAGCGCCCGTGCCCGCAGCCCCGGCCAGTGCCCCGGCGGCGGGCCCTGCGGTCGCCTCGGGGGCGGGTATTGCCG
+CCCCAGCCGGGGCCCCGGGGGTCGCCCCTCCGCGCCCAGGCGGCCGCCAGACCAGCGGCGGCGACCACAAGGCCCTCAGTACCTCCGGAG
+AGGACACCCTGAGCGATTCAGATGATGAAGATGATGAAGAGGAAGATGAAGAGGAAGAAATCGACGTGGTCACTGTGGAGAAGCGGCGTT
+CCTCCTCCAACACCAAGGCTGTCACCACATTCACCATCACTGTGCGTCCCAAGAACGCAGCCCTGGGTCCCGGGAGGGCTCAGTCCAGCG
+AGCTGATCCTCAAACGATGCCTTCCCATCCACCAGCAGCACAACTATGCCGCCCCCTCTCCCTACGTGGAGAGTGAGGATGCACCCCCAC
+AGAAGAAGATAAAGAGCGAGGCGTCCCCACGTCCGCTCAAGAGTGTCATCCCCCCAAAGGCTAAGAGCTTGAGCCCCCGAAACTCTGACT
+CGGAGGACAGTGAGCGTCGCAGAAACCACAACATCCTGGAGCGCCAGCGCCGCAACGACCTTCGGTCCAGCTTTCTCACGCTCAGGGACC
+ACGTGCCGGAGTTGGTAAAGAATGAGAAGGCCGCCAAGGTGGTCATTTTGAAAAAGGCCACTGAGTATGTCCACTCCCTCCAGGCCGAGG
+AGCACCAGCTTTTGCTGGAAAAGGAAAAATTGCAGGCAAGACAGCAGCAGTTGCTAAAGAAAATTGAACACGCTCGGACTTGCTAGACGC
+TTCTCAAAACTGGACAGTCACTGCCACTTTGCACATTTTGATTTTTTTTTTAAACAAACATTGTGTTGACATTAAGAATGTTGGTTTACT
+TTCAAATCGGTCCCCTGTCGAGTTCGGCTCTGGGTGGGCAGTAGGACCACCAGTGTGGGGTTCTGCTGGGACCTTGGAGAGCCTGCATCC
+CAGGATGCTGGGTGGCCCTGCAGCCTCCTCCACCTCACCTCCATGACAGCGCTAAACGTTGGTGACGGTTGGGAGCCTCTGGGGCTGTTG
+AAGTCACCTTGTGTGTTCCAAGTTTCCAAACAACAGAAAGTCATTCCTTCTTTTTAAAATGGTGCTTAAGTTCCAGCAGATGCCACATAA
+GGGGTTTGCCATTTGATACCCCTGGGGAACATTTCTGTAAATACCATTGACACATCCGCCTTTTGTATACATCCTGGGTAATGAGAGGTG
+GCTTTTGCGGCCAGTATTAGACTGGAAGTTCATACCTAAGTACTGTAATAATACCTCAATGTTTGAGGAGCATGTTTTGTATACAAATAT
+ATTGTTAATCTCTGTTATGTACTGTACTAATTCTTACACTGCCTGTATACTTTAGTATGACGCTGATACATAACTAAATTTGATACTTAT
+ATTTTCGTATGAAAATGAGTTGTGAAAGTTTTGAGTAGATATTACTTTATCACTTTTTGAACTAAGAAACTTTTGTAAAGAAATTTACTA
+TATATATATGCCTTTTTCCTAGCCTGTTTCTTCCTGTTAATGTATTTGTTCATGTTTGGTGCATAGAACTGGGTAAATGCAAAGTTCTGT
+GTTTAATTTCTTCAAAATGTATATATTTAGTGCTGCATCTTATAGCACTTTGAAATACCTCATGTTTATGAAAATAAATAGCTTAAAATT
+AAA`}
+      };
+      const codonTable={};
+      const aminoCode='FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG';
+      let codeIndex=0;
+      for(const a of 'TCAG')for(const b of 'TCAG')for(const c of 'TCAG')codonTable[a+b+c]=aminoCode[codeIndex++];
+      function translate(cds) {let result='';for(let i=0;i<cds.length;i+=3)result+=codonTable[cds.slice(i,i+3)]||'?';return result;}
+      for(const ref of Object.values(SEQUENCES)) {
+        ref.sequence=ref.sequence.replace(/\s/g,'');
+        ref.cds=ref.sequence.slice(ref.cdsStart-1,ref.cdsEnd);
+        ref.protein=translate(ref.cds).replace(/\*$/,'');
+        if(ref.sequence.length!==ref.length||ref.protein.length!==ref.aa||/[?*]/.test(ref.protein))throw new Error('Reference sequence integrity check failed: '+ref.rna);
+      }
+      function updateSequence() {
+        const ref=SEQUENCES[$('sequenceGene').value],isFGFR=ref.gene==='FGFR1';
+        $('sequenceMutation').disabled=!isFGFR;
+        const mutant=isFGFR&&$('sequenceMutation').checked;
+        let sequence=ref.sequence;
+        if(mutant){const index=ref.cdsStart-1+1638-1;sequence=sequence.slice(0,index)+'A'+sequence.slice(index+1);}
+        const type=$('sequenceType').value;
+        if(type==='rna')sequence=sequence.replace(/T/g,'U');
+        else if(type==='cds')sequence=sequence.slice(ref.cdsStart-1,ref.cdsEnd);
+        else sequence=translate(sequence.slice(ref.cdsStart-1,ref.cdsEnd)).replace(/\*$/,'');
+        $('sequenceMeta').innerHTML=`<div><strong>${ref.gene} · ${ref.locus}</strong>${ref.rna} → ${ref.proteinId}<br>UniProt ${ref.uniprot}</div><div><strong>${ref.length.toLocaleString()} nt → ${ref.aa} aa</strong>CDS ${ref.cdsStart}–${ref.cdsEnd} inclusive, including stop<br>${mutant?'In-silico mutant; not a measured tumor sequence':'Public reference; not patient-specific'}</div>`;
+        $('codonExplanation').innerHTML=isFGFR?`<strong>Variant coordinate map</strong><p class="mono">Coding DNA: AAC → AAA<br>mRNA: AAC → AAA<br>Protein: Asn546 (N) → Lys546 (K)</p><p class="small">c.1638C>A · coding bases 1636–1638 = mRNA bases 2379–2381. FGFR1 is minus-strand: GRCh38 positive-reference g.38417331G>T. Alternative NM_001174067.2 uses c.1731C>A / N577K. Do not generalize the +31 offset.</p>`:`<strong>Amplification is dosage, not a new sequence</strong><p class="small">This MYCN reference encodes N-Myc, not c-Myc. Extra MYCN copies can preserve this amino-acid sequence. MYCNOS is a separate opposite-strand locus. No coding mutation is implied by the amplification example.</p>`;
+        const lines=[];for(let i=0;i<sequence.length;i+=60)lines.push(`${String(i+1).padStart(5)}  ${sequence.slice(i,i+60).match(/.{1,10}/g).join(' ')}  ${Math.min(i+60,sequence.length)}`);
+        $('sequenceOutput').value=lines.join('\n');
+        $('sequenceNote').textContent=type==='cds'?'Coordinates above are 1-based CDS coordinates, starting at ATG. This is the spliced coding sequence—not contiguous genomic DNA. Stop codon included.':type==='protein'?'Coordinates above are 1-based amino-acid positions. Terminal stop omitted; signal peptides and other precursor segments are not computationally removed.':'Coordinates above are 1-based positions in the full reference mRNA record, NOT HGVS c. positions.';
+      }
+      for(const id of ['sequenceGene','sequenceType','sequenceMutation'])$(id).addEventListener('change',updateSequence);
+
+      if(!window.THREE||!THREE.OrbitControls){message('The schematic viewer could not load. Allow the pinned libraries from cdn.jsdelivr.net, then reload.',true);return;}
+      const css=getComputedStyle(document.documentElement);
+      const COLORS={};for(const key of ['stage','stage-text','stage-muted','molecule','dna','rna','cofactor','protein','phosphate','atom-n','atom-o','atom-s','atom-h'])COLORS[key]=css.getPropertyValue(`--cp-${key}`).trim();
+      const linear=key=>new THREE.Color(COLORS[key]||key).convertSRGBToLinear();
+      const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
+      const UP=V(0,1,0);
+
+      /** Per-scene resource arena: bounded allocation on navigation, never per frame. */
+      class Arena {
+        constructor(){this.resources=new Set();}
+        keep(object){this.resources.add(object);return object;}
+        dispose(){for(const object of this.resources)object.dispose();this.resources.clear();}
+      }
+      class TeachingScene {
+        constructor(canvas,wrap) {
+          this.canvas=canvas;this.wrap=wrap;this.labels=[];this.nodes=new Map();this.paths=[];this.time=0;this.dirty=true;
+          this.renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+          this.renderer.outputEncoding=THREE.sRGBEncoding;this.renderer.toneMapping=THREE.NoToneMapping;
+          this.scene=new THREE.Scene();this.scene.background=new THREE.Color(COLORS.stage);
+          this.scene.add(new THREE.HemisphereLight(COLORS['stage-text'],COLORS.stage,.9));
+          const light=new THREE.DirectionalLight(COLORS['stage-text'],1.3);light.position.set(4,9,12);this.scene.add(light);
+          this.camera=new THREE.PerspectiveCamera(40,1,.1,300);
+          this.camera.position.set(0,2,23);
+          this.controls=new THREE.OrbitControls(this.camera,canvas);this.controls.enableDamping=true;this.controls.dampingFactor=.08;this.controls.minDistance=4;this.controls.maxDistance=120;
+          this.temp=V();this.bounds=new THREE.Box3();this.center=V();this.size=V();
+          this.arena=new Arena();this.root=new THREE.Group();this.scene.add(this.root);this.resize();
+        }
+        reset(){this.scene.remove(this.root);this.arena.dispose();this.arena=new Arena();this.root=new THREE.Group();this.scene.add(this.root);$('labels').replaceChildren();this.labels=[];this.nodes.clear();this.paths=[];this.dynamic=null;this.time=0;this.dirty=true;}
+        material(key,opacity=1){return this.arena.keep(new THREE.MeshStandardMaterial({color:linear(key),emissive:linear(key),emissiveIntensity:.09,roughness:.66,transparent:opacity<1,opacity,depthWrite:opacity===1}));}
+        group(parent=this.root,x=0,y=0,z=0){const group=new THREE.Group();group.position.set(x,y,z);parent.add(group);return group;}
+        sphere(parent,x,y,z,r,key,scale=null,opacity=1){const mesh=new THREE.Mesh(this.arena.keep(new THREE.IcosahedronGeometry(r,2)),this.material(key,opacity));mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);parent.add(mesh);return mesh;}
+        rod(parent,a,b,key,r=.05){const delta=V().subVectors(b,a),length=delta.length();if(length<.0001)return null;const mesh=new THREE.Mesh(this.arena.keep(new THREE.CylinderGeometry(r,r,length,8)),this.material(key));mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(UP,delta.multiplyScalar(1/length));parent.add(mesh);return mesh;}
+        curve(parent,points,key,r=.04,closed=false){const curve=new THREE.CatmullRomCurve3(points,closed,'centripetal');const mesh=new THREE.Mesh(this.arena.keep(new THREE.TubeGeometry(curve,Math.min(250,Math.max(20,points.length*5)),r,6,closed)),this.material(key));parent.add(mesh);return {mesh,curve};}
+        ring(parent,radius,key,position,rotation=null){const mesh=new THREE.Mesh(this.arena.keep(new THREE.TorusGeometry(radius,.035,6,100)),this.material(key));mesh.position.copy(position);if(rotation)mesh.rotation.set(...rotation);parent.add(mesh);return mesh;}
+        label(parent,text,x,y,z=0,info='',title=text){
+          const anchor=this.group(parent,x,y,z),element=document.createElement(info?'button':'span');
+          element.className=`scene-label${info?' is-node':''}`;element.textContent=text;
+          if(info){element.type='button';element.addEventListener('click',()=>{ $('inspector').hidden=false;$('inspectTitle').textContent=title;$('inspectText').textContent=info;});}
+          $('labels').append(element);this.labels.push({anchor,element});return element;
+        }
+        node(id,text,x,y,key='molecule',info='',z=0,r=.55){const group=this.group(this.root,x,y,z);const mesh=this.sphere(group,0,0,0,r,key,[1.35,.8,.75]);const label=this.label(group,text,0,-r-.3,.1,info||text);const node={id,group,mesh,label};this.nodes.set(id,node);return node;}
+        edge(from,to,key='molecule',type='arrow',caption='') {
+          const a=this.nodes.get(from).group.position,b=this.nodes.get(to).group.position;
+          const direction=V().subVectors(b,a).normalize(),start=a.clone().addScaledVector(direction,.67),end=b.clone().addScaledVector(direction,-.67);
+          const midpoint=start.clone().add(end).multiplyScalar(.5);midpoint.z-=.35;
+          const curve=new THREE.QuadraticBezierCurve3(start,midpoint,end);
+          if(type.includes('dashed')) {const geometry=this.arena.keep(new THREE.BufferGeometry().setFromPoints(curve.getPoints(40)));const material=this.arena.keep(new THREE.LineDashedMaterial({color:linear(key),dashSize:.14,gapSize:.1}));const line=new THREE.Line(geometry,material);line.computeLineDistances();this.root.add(line);}
+          else {const mesh=new THREE.Mesh(this.arena.keep(new THREE.TubeGeometry(curve,30,.025,5,false)),this.material(key));this.root.add(mesh);}
+          if(type.includes('inhibit')){const side=V(-direction.y,direction.x,0).normalize().multiplyScalar(.18);this.rod(this.root,end.clone().add(side),end.clone().sub(side),key,.05);}
+          else {const cone=new THREE.Mesh(this.arena.keep(new THREE.ConeGeometry(.12,.32,8)),this.material(key));cone.position.copy(end);cone.quaternion.setFromUnitVectors(UP,curve.getTangent(1).normalize());this.root.add(cone);}
+          if(type==='arrow'){const dot=this.sphere(this.root,0,0,0,.065,'phosphate');this.paths.push({curve,dot,offset:this.paths.length*.23});}
+          if(caption)this.label(this.root,caption,midpoint.x,midpoint.y+.28,midpoint.z+.3);
+        }
+        dna(parent,length=7,pairs=24,key='dna'){
+          const group=this.group(parent),a=[],b=[];
+          for(let i=0;i<pairs;i++){const x=-length/2+i*length/(pairs-1),angle=i*2*Math.PI/10.5;const p=V(x,.46*Math.cos(angle),.46*Math.sin(angle)),q=V(x,-p.y,-p.z);a.push(p);b.push(q);this.rod(group,p,q,i%3?'rna':'cofactor',.035);}
+          this.curve(group,a,key,.065);this.curve(group,b,key,.065);return group;
+        }
+        membrane(parent,y=0,width=12,depth=4){
+          const material=this.material('dna',.48),geometry=this.arena.keep(new THREE.SphereGeometry(.10,8,6));
+          const positions=[];for(let x=-width/2;x<=width/2;x+=.38)for(let z=-depth/2;z<=depth/2;z+=.55)for(const sign of [-1,1])positions.push([x,y+sign*.23,z]);
+          const mesh=new THREE.InstancedMesh(geometry,material,positions.length),dummy=new THREE.Object3D();
+          positions.forEach((p,i)=>{dummy.position.set(...p);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);});mesh.instanceMatrix.needsUpdate=true;mesh.frustumCulled=false;parent.add(mesh);
+          const slab=new THREE.Mesh(this.arena.keep(new THREE.BoxGeometry(width,.37,depth)),this.material('stage-muted',.08));slab.position.y=y;parent.add(slab);return mesh;
+        }
+        receptor(parent,x=0){
+          const group=this.group(parent,x);this.rod(group,V(0,-.6),V(0,3.7),'molecule',.13);
+          for(const [i,y] of [3.3,2.2,1.1].entries()){this.sphere(group,0,y,0,.53,'molecule',[.8,1,.68]);this.label(group,`D${i+1}`,i%2?.8:-.8,y,.2);}
+          this.sphere(group,-.3,-1.15,0,.55,'molecule',[1,.8,.7]);this.sphere(group,.25,-1.75,0,.72,'protein',[.9,1.05,.8]);
+          this.rod(group,V(.2,-2.2),V(.35,-2.85),'protein',.06);return group;
+        }
+        show(chapter,step,options){this.reset();this.chapter=chapter.id;this.step=step;this.options=options;this[`draw_${chapter.view}`]?.(step);this.root.updateMatrixWorld(true);this.fit();}
+        fit(){
+          this.controls.enableDamping=false;this.controls.update();
+          this.bounds.setFromObject(this.root);if(this.bounds.isEmpty()){this.center.set(0,0,0);this.size.set(10,10,10);}else{this.bounds.getCenter(this.center);this.bounds.getSize(this.size);}
+          const half=Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2));
+          const distance=Math.max(this.size.y/(2*half),this.size.x/(2*half*this.camera.aspect),7)+this.size.z*.6+2;
+          this.controls.target.copy(this.center);this.camera.position.copy(this.center).add(V(0,distance*.12,distance*1.13));this.controls.update();this.controls.enableDamping=true;this.dirty=true;
+        }
+        resize(){const w=this.wrap.clientWidth,h=this.wrap.clientHeight;if(!w||!h)return;this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7,Math.sqrt(2200000/(w*h))));this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.dirty=true;}
+        update(dt,animate){
+          if(animate){this.time+=dt;for(const path of this.paths){path.curve.getPoint((this.time*.33+path.offset)%1,this.temp);path.dot.position.copy(this.temp);}this.dynamic?.(this.time);}
+          const changed=this.controls.update();
+          if(changed||this.dirty||animate){this.renderer.render(this.scene,this.camera);this.projectLabels();this.dirty=false;}
+        }
+        projectLabels(){const w=this.wrap.clientWidth,h=this.wrap.clientHeight;for(const item of this.labels){let visible=true;for(let node=item.anchor;node;node=node.parent){if(!node.visible){visible=false;break;}}item.anchor.getWorldPosition(this.temp);this.temp.project(this.camera);visible=visible&&this.temp.z>-1&&this.temp.z<1&&Math.abs(this.temp.x)<1.2&&Math.abs(this.temp.y)<1.2;item.element.hidden=!visible;if(visible){item.element.style.left=`${(this.temp.x*.5+.5)*w}px`;item.element.style.top=`${(-this.temp.y*.5+.5)*h}px`;}}}
+        dispose(){this.reset();this.controls.dispose();this.renderer.dispose();}
+      }
+
+      /** Procedural scenes are deliberately topological, never atomistic models. */
+      TeachingScene.prototype.draw_genome=function(step){
+        const nucleus=this.sphere(this.root,0,.3,0,4.6,'dna',[1.35,1,.65],.07);
+        const chromosome=(x)=>{const g=this.group(this.root,x,.7,.4);this.rod(g,V(-.5,1.9),V(.45,-1.9),'dna',.18);this.rod(g,V(.5,1.9),V(-.45,-1.9),'dna',.18);this.sphere(g,-.32,1.2,.03,.25,'molecule');return g;};
+        chromosome(-1.5);chromosome(1.5);this.label(this.root,'Chromosome 2 homologs · orientation glyphs',0,-2.8,1);
+        const architecture=step===0?'baseline':step===2?'ecdna':step===3?'hsr':this.options.architecture;
+        const amplified=step>0&&architecture!=='baseline';
+        if(amplified&&architecture==='ecdna')for(let i=0;i<12;i++){const a=i*2.399,r=2.7+(i%3)*.36;const g=this.group(this.root,Math.cos(a)*r,Math.sin(a)*r+.4,(i%2)*.9-.3);this.ring(g,.27,'molecule',V(),[.2*i,.2*i,0]);this.sphere(g,.25,0,0,.085,'rna');}
+        if(amplified&&architecture==='hsr')for(let i=0;i<9;i++)this.rod(this.root,V(1.18,.2-i*.2,.5),V(1.65,.2-i*.2,.5),'molecule',.085);
+        this.label(this.root,architecture==='ecdna'?'ecDNA · alternative amplified architecture':architecture==='hsr'?'HSR · amplified DNA within chromosome':'Baseline topology · no amplification example',0,4.1,1);
+        this.label(this.root,'MYCN locus · 2p24.3',-3.7,1.5,1,'MYCN is DNA; N-Myc is the encoded transcription factor. These locus positions and copy counts are illustrative.');
+        if(step===4){this.sphere(this.root,-3.8,-1.7,1,.2,'rna');this.curve(this.root,[V(-3.8,-1.7,1),V(-3,2.8,1.2),V(-1.8,1.9,1),V(-1.82,1.9,.4)],'rna',.035);this.label(this.root,'Enhancer contact · schematic',-2.9,2.9,1.3,'Enhancer retention and hijacking change regulation at MYCN. This is distinct from N-Myc protein occupying downstream enhancers.');}
+        nucleus.name='Illustrative nucleus';
+      };
+      TeachingScene.prototype.draw_expression=function(step){
+        const dna=this.dna(this.root,8.5,31);dna.position.set(0,2.5,0);this.label(this.root,'DNA · reusable template',0,3.7,0);
+        const polymerase=this.sphere(this.root,-2.3,2.5,.35,.58,'cofactor',[1.2,1,.8]);
+        this.label(this.root,'RNA polymerase II',-2.6,1.45,.6);
+        const rnaY=step>=2?-.9:.1,rnaPoints=[];for(let i=0;i<32;i++)rnaPoints.push(V(-3.5+i*.23,rnaY+.11*Math.sin(i*.9),.1*Math.cos(i)));
+        this.curve(this.root,rnaPoints,'rna',.085);
+        this.label(this.root,step<1?'Pre-mRNA · transcription product':'Processed mRNA · 5′ → 3′',.3,rnaY+.62,.5);
+        if(step>=1){this.sphere(this.root,-3.6,rnaY,0,.15,'cofactor');for(let i=0;i<8;i++)this.sphere(this.root,3.9+i*.12,rnaY,0,.05,'rna');}
+        this.label(this.root,'5′',-4.2,rnaY,.5);this.label(this.root,'3′',4.8,rnaY,.5);
+        if(step>=2){
+          this.rod(this.root,V(-5,.55,-.5),V(5,.55,-.5),'stage-muted',.025);this.label(this.root,'Nucleus',-4.65,2.3,.5);this.label(this.root,'Cytoplasm',-4.7,-2.5,.5);
+          const ribosome=this.group(this.root,-2,rnaY,0);this.sphere(ribosome,0,-.55,0,.62,'cofactor',[1.35,.8,1]);this.sphere(ribosome,0,.32,.1,.55,'cofactor',[1.15,.75,.9]);
+          this.label(ribosome,'Ribosome',1.6,-.5,.2);this.label(ribosome,'C · growing end',1.5,-1.35,.2);
+          const vertices=new Float32Array(36*3),geometry=this.arena.keep(new THREE.BufferGeometry());geometry.setAttribute('position',new THREE.BufferAttribute(vertices,3));
+          const line=new THREE.Line(geometry,this.arena.keep(new THREE.LineBasicMaterial({color:linear('protein')})));line.frustumCulled=false;ribosome.add(line);
+          const dots=new THREE.Points(geometry,this.arena.keep(new THREE.PointsMaterial({color:linear('protein'),size:.11})));dots.frustumCulled=false;ribosome.add(dots);
+          this.dynamic=t=>{const phase=(t%10)/10,length=.6+phase*2.4;ribosome.position.x=-2+phase*4;for(let i=0;i<36;i++){const f=i/35;vertices[i*3]=Math.sin(f*6)*.25*(1-f);vertices[i*3+1]=-1-length*(1-f);vertices[i*3+2]=Math.sin(f*8)*.12;}geometry.attributes.position.needsUpdate=true;};this.dynamic(4);
+          this.label(this.root,'N terminus emerges first · C end grows at ribosome',0,-4.7,.5);this.label(this.root,'Playback resets to a new initiation; no reverse elongation',0,-5.45,.5);
+        }else this.dynamic=t=>{polymerase.position.x=-2.3+(t%10)*.38;};
+        if(step===3){this.label(this.root,'AAC → AAA',3.7,2.25,1,'c.1638C>A changes the third base of codon 546 in NM_023110.3; Asn becomes Lys.');this.label(this.root,'Asn546 → Lys546',3,-2.55,1);}
+        if(step===4){this.label(this.root,'FGFR1: 822 aa  |  N-Myc: 464 aa',0,4.4,0);}
+      };
+      TeachingScene.prototype.draw_folding=function(step){
+        if(step===0){const points=[];for(let i=0;i<100;i++)points.push(V(-5+i*.1,Math.sin(i*.21)*.6,Math.cos(i*.16)*.5));this.curve(this.root,points,'protein',.075);this.label(this.root,'N terminus',-5.1,1.3,0);this.label(this.root,'C terminus',5,1.3,0);this.label(this.root,'Primary sequence · constrained backbone rotations',0,-1.6,0);}
+        if(step===1){const helix=[];for(let i=0;i<110;i++){const a=i*.26;helix.push(V(-3+.48*Math.cos(a),-2.2+i*.041,-.48*Math.sin(a)));}this.curve(this.root,helix,'molecule',.09);this.label(this.root,'Right-handed α helix · backbone H bonds',-3,3,0);for(let j=0;j<4;j++){const points=[];for(let i=0;i<14;i++)points.push(V(1+j*.7,-2+i*.3,.1*Math.sin(i*Math.PI/2)));this.curve(this.root,points,'cofactor',.07);for(let i=1;i<13;i+=3)if(j<3)this.rod(this.root,V(1+j*.7,-2+i*.3,0),V(1+(j+1)*.7,-2+i*.3,0),'stage-muted',.018);}this.label(this.root,'β sheet · interstrand H bonds',2.2,3,0);this.label(this.root,'Motif cartoons, not measured coordinates',0,-3,0);}
+        if(step===2||step===3){this.membrane(this.root,0,11,3);const receptor=this.receptor(this.root,0);this.label(this.root,'ER lumen → extracellular face',-3.25,2,1);this.label(this.root,'Cytosol · kinase remains inside',-3.1,-1.7,1);this.label(this.root,'Single transmembrane helix',3.3,0,1);if(step===3){for(const y of [1.3,2.1,3.3]){this.curve(receptor,[V(.4,y,0),V(.9,y+.2,0),V(1.1,y+.6,.1)],'cofactor',.04);this.sphere(receptor,1.1,y+.6,.1,.12,'cofactor');}this.label(this.root,'Glycan maturation / quality control',2.9,4.3,.5);this.label(this.root,'Trafficking ≠ kinase activation',0,-3.7,.5);}}
+        if(step===4){const points=[];for(let i=0;i<110;i++)points.push(V(-5+i*.073,Math.sin(i*.2)*.8,Math.sin(i*.37)*.4));this.curve(this.root,points,'protein',.06);for(let j=0;j<2;j++){const p=[];for(let i=0;i<60;i++)p.push(V(3+j*.55+.2*Math.cos(i*.4),-1.6+i*.053,-.2*Math.sin(i*.4)));this.curve(this.root,p,j?'cofactor':'molecule',.08);}this.label(this.root,'N-Myc dynamic regulatory regions',-1.8,2.3,1);this.label(this.root,'bHLH–LZ / partner binding',3.1,2.3,1);this.label(this.root,'No single full-length experimental fold implied',0,-2.7,1);}
+      };
+      TeachingScene.prototype.draw_activation=function(step){
+        this.membrane(this.root,0,11.5,3.6);const separation=step<1?2.4:1.15;
+        const left=this.receptor(this.root,-separation),right=this.receptor(this.root,separation);
+        this.label(this.root,'Extracellular',-4.6,3.8,1);this.label(this.root,'Cytosol',-4.8,-2.8,1);
+        if(step>=1){this.sphere(this.root,-.35,2.4,.7,.55,'rna');this.label(this.root,'FGF ligand',0,4.55,.6);const hs=[];for(let i=0;i<32;i++)hs.push(V(-2.7+i*.17,1.6+.1*Math.sin(i*.8),.85));this.curve(this.root,hs,'cofactor',.07);this.label(this.root,'Heparan sulfate',3.8,2.8,1);}
+        if(step>=2){for(const [side,receptor]of [[-1,left],[1,right]]){const sites=step===2?[['pY653',-1.4]]:[['pY653',-1.4],['pY654',-1.9],['pY766',-2.65]];for(const [name,y]of sites){const bead=this.sphere(receptor,side*.7,y,.35,.14,'phosphate');this.label(receptor,name,side*1.55,y,.35);bead.name='Schematic phosphotyrosine marker';}}this.label(this.root,'ATP → ADP · trans-phosphorylation',0,-3.6,.7);}
+        if(step===3)this.label(this.root,'Y653 → Y583 → Y463 → Y766 → Y585 → Y654',0,-4.5,.8,'Favored order in classical purified assays, not an obligatory in-cell timetable. N546K perturbs early ordering.');
+        if(step===4){this.node('frs','FRS2 · juxtamembrane docking',-4.1,-.8,'cofactor','FRS2 binds the receptor near the cytosolic membrane face; its phosphorylation recruits GRB2/SHP2 and other partners.');this.node('plc','PLCγ1 · pY766 + contacts',4.1,-3.3,'cofactor','pY766 and additional kinase contacts recruit PLCγ1. This is distinct from juxtamembrane FRS2 association.');this.rod(this.root,V(-1.15,-.48,.1),V(-3.5,-.6,.1),'cofactor');this.rod(this.root,V(1.5,-2.7,.1),V(3.5,-3,.1),'cofactor');}
+      };
+      TeachingScene.prototype.draw_kinase=function(step){
+        this.sphere(this.root,-1.2,1.7,0,1.45,'molecule',[1.35,.8,.85]);this.sphere(this.root,.65,-.9,0,2.1,'protein',[1,1,.7]);
+        this.label(this.root,'N-lobe · β-rich',-3.1,2.8,1);this.label(this.root,'C-lobe · α-rich',2.6,-2.8,1);
+        const loop=[V(-1,-1,.6),V(-2,.1,1.1),V(-.5,1.1,1.4),V(.2,.6,1.2),V(1.3,-.2,.8)];this.curve(this.root,loop,'cofactor',.11);this.label(this.root,'Activation loop · Y653 / Y654',0,-4,.8);
+        this.sphere(this.root,0,.8,1.4,.23,'rna');this.label(this.root,'ATP cleft',2.8,1.5,1.4,'ATP binding and productive phosphotransfer are distinct. N546 is a regulatory residue, not the extracellular ligand-binding site.');
+        if(step>=1){for(const [name,x,y] of [['N546',-.8,1.2],['E562',.15,1.45],['K638',.55,.3]]){this.sphere(this.root,x,y,2,.14,'phosphate');this.label(this.root,name,x-1.2,y+.4,2.2);}this.rod(this.root,V(-.8,1.2,2),V(.15,1.45,2),'phosphate',.025);this.rod(this.root,V(.15,1.45,2),V(.55,.3,2),'phosphate',.025);}
+        if(step>=2){
+          const g=this.group(this.root,4.4,0,0);this.label(g,'Asn · neutral amide',.4,3,1);
+          const atoms=[['Cα',0,2.1,'stage-muted'],['Cβ',0,1.2,'stage-muted'],['Cγ',.65,.45,'stage-muted'],['Oδ1',1.5,.75,'atom-o'],['Nδ2',.5,-.55,'atom-n']];
+          atoms.forEach(([name,x,y,key])=>{this.sphere(g,x,y,0,.15,key);this.label(g,name,x+.42,y,.5);});
+          for(const [a,b]of [[0,1],[1,2],[2,4]])this.rod(g,V(atoms[a][1],atoms[a][2]),V(atoms[b][1],atoms[b][2]),'stage-muted',.045);
+          for(const z of [-.065,.065])this.rod(g,V(.65,.45,z),V(1.5,.75,z),'stage-muted',.025);
+          const lys=this.group(this.root,-5.2,0,0);this.label(lys,'Lys · terminal NH₃⁺',0,3,1);const names=['Cα','Cβ','Cγ','Cδ','Cε','Nζ+'];
+          for(let i=0;i<6;i++){const x=(i%2)*.4,y=2.1-i*.65;this.sphere(lys,x,y,0,.15,i===5?'atom-n':'stage-muted');this.label(lys,names[i],x-.48,y,.5);if(i)this.rod(lys,V(((i-1)%2)*.4,2.1-(i-1)*.65),V(x,y),'stage-muted',.045);}
+          this.label(this.root,'Side-chain topology · H atoms omitted · no fitted rotamers',0,4.3,1);
+        }
+        if(step===3)this.label(this.root,'~25× initial auto-P in a purified assay ≠ 25× tumor growth',0,-4.8,1);
+        if(step===4)this.label(this.root,'Inspect 1FGK / 3GQI in the experimental lab →',0,4.5,1);
+      };
+      TeachingScene.prototype.draw_network=function(step){
+        const expanded=this.options.branch==='pi3k';
+        const n=(...args)=>this.node(...args);const e=(...args)=>this.edge(...args);
+        n('fgfr','FGFR1',0,4.8,'molecule','Receptor tyrosine kinase: ligand/cofactor assembly and trans-autophosphorylation.');
+        n('frs','FRS2 · GRB2',0,2.8,'cofactor','FRS2 is a receptor-associated phosphorylated docking platform. GRB2 is an adaptor; SHP2 supports RAS output.');e('fgfr','frs','molecule');
+        if(expanded){
+          n('gab','GAB1 / PI3K',-3.2,.65,'rna','GAB1 recruitment supports class IA PI3K localization; PI3K phosphorylates lipid.');n('pip','PIP₂ → PIP₃',-3.2,-1.4,'rna','Lipid phosphorylation in the inner plasma-membrane leaflet. PTEN reverses the 3-phosphate.');n('akt','AKT1',0,-2.9,'rna','PDK1 T308 and mTORC2 S473 contribute to AKT1 activation.');n('pdk','PDK1',-.1,-.3,'cofactor','A protein kinase, distinct from PI3K.');n('c2','mTORC2',2.6,-.3,'cofactor','Distinct from mTORC1: contributes AKT hydrophobic-motif phosphorylation.');
+          n('tsc','TSC complex',3.4,-3,'protein','TSC2-containing complex is a GAP for RHEB. AKT-dependent phosphorylation can reduce this restraint.');n('rheb','RHEB–GTP',3.4,-5.2,'protein','TSC promotes GTP hydrolysis, reducing RHEB-GTP. RHEB-GTP activates mTORC1.');n('c1','mTORC1',0,-6.9,'protein','Lysosome-associated nutrient and growth-factor integration.');n('out','S6K / 4E-BP',-3.4,-6.9,'protein','4E-BP phosphorylation releases eIF4E; S6K and other outputs promote anabolic functions.');
+          e('frs','gab','rna');e('gab','pip','rna');e('pip','akt','rna');e('pdk','akt','cofactor');e('c2','akt','cofactor');e('akt','tsc','rna','inhibit');e('tsc','rheb','protein','inhibit');e('rheb','c1','protein');e('c1','out','protein');this.label(this.root,'Stop bars indicate inhibition · nutrient input also required',0,6.2,.5);
+        }else{
+          n('sos','SOS / RAS',-4.5,.6,'molecule','SOS promotes GDP release; GTP loading activates RAS. RAS is not activated by phosphorylation.');n('raf','RAF',-4.5,-1.5,'molecule','RAS-GTP organizes RAF recruitment/activation and context-dependent RAF dimerization.');n('mek','MEK1/2',-4.5,-3.6,'molecule','RAF phosphorylates MEK; MEK phosphorylates ERK.');n('erk','ERK1/2',-4.5,-5.7,'molecule','ERK regulates cytosolic and nuclear substrates, with output depending on duration and context.');
+          n('gab','GAB1 / PI3K',0,.6,'rna','PI3K lipid kinase is recruited through adaptor complexes.');n('pip','PIP₃ / AKT',0,-1.5,'rna','PIP3-dependent localization, PDK1 and mTORC2 support AKT activation.');n('mtor','mTORC1',0,-3.6,'rna','AKT–TSC/RHEB and nutrient inputs control this anabolic complex. mTORC2 is distinct.');n('s6','S6K / 4E-BP',0,-5.7,'rna','S6K is not ribosomal S6. Phosphorylated 4E-BP releases eIF4E.');
+          n('plc','PLCγ1',4.5,.6,'cofactor','pY766 plus additional interfaces support docking; phosphorylation activates the lipase.');n('ip','IP₃ + DAG',4.5,-1.5,'cofactor','PLCγ cleaves PIP2. IP3 moves in cytosol; DAG stays in membrane.');n('ca','Ca²⁺ / PKC',4.5,-3.6,'cofactor','IP3 releases ER calcium; conventional PKCs require DAG and calcium.');n('output','Transcription / survival / biomass',0,-8.1,'protein','Multiple outputs influence cell state. None is equivalent to proof of cytokinesis.');
+          for(const [a,b,key]of[['frs','sos','molecule'],['sos','raf','molecule'],['raf','mek','molecule'],['mek','erk','molecule'],['frs','gab','rna'],['gab','pip','rna'],['pip','mtor','rna'],['mtor','s6','rna'],['fgfr','plc','cofactor'],['plc','ip','cofactor'],['ip','ca','cofactor'],['erk','output','molecule'],['s6','output','rna'],['ca','output','cofactor']])e(a,b,key);
+          if(step>=4){n('dusp','DUSP',-6.8,-3.4,'dna','Dual-specificity phosphatases can remove activating ERK phosphates. This is not PTEN lipid chemistry.');n('pten','PTEN',2.3,-5.7,'dna','PTEN removes the 3-phosphate from PIP3, opposing the PI3K lipid signal.');e('dusp','erk','dna','inhibit');e('pten','pip','dna','inhibit');e('erk','frs','dna','dashed-inhibit');}
+          const selected=this.options.branch==='all'?(step===1?'mapk':step===2?'pi3k':step===3?'plc':'all'):this.options.branch;
+          if(selected!=='all'){const allowed=new Set(['fgfr','frs','output',...(selected==='mapk'?['sos','raf','mek','erk']:selected==='pi3k'?['gab','pip','mtor','s6']:['plc','ip','ca'])]);for(const [id,node]of this.nodes){if(!allowed.has(id)){node.mesh.material.opacity=.25;node.mesh.material.transparent=true;node.mesh.material.depthWrite=false;node.label.style.opacity='.55';}}}
+        }
+      };
+      TeachingScene.prototype.draw_nmyc=function(step){
+        const dna=this.dna(this.root,8,30);dna.position.set(0,-.8,0);this.label(this.root,'E-box DNA · 5′-CACGTG-3′',0,-2.2,.7,'The E-box is a preferred sequence, not a guarantee of occupancy or activation.');
+        for(const sign of [-1,1]){
+          const points=[V(sign*1.35,-.35,.4),V(sign*1.0,.5,.2),V(sign*.65,1.2,0),V(sign*.9,1.8,-.1),V(sign*.4,2.15,0)];
+          for(let i=0;i<55;i++){const t=i/54;points.push(V(sign*.28+.08*Math.cos(i*.5),2.2+t*2.2,-.08*Math.sin(i*.5)));}
+          this.curve(this.root,points,sign<0?'molecule':'cofactor',.12);
+        }
+        this.label(this.root,'N-Myc',-2.1,3.6,.5);this.label(this.root,'MAX',2.1,3.6,.5);
+        this.label(this.root,'C-terminal zipper interface',0,4.85,.5);this.label(this.root,'Basic DNA-contact regions',0,.2,1);
+        this.label(this.root,'HLH region',2.6,1.8,.5);
+        const tail=[V(-1.35,-.35,.4)];for(let i=0;i<55;i++)tail.push(V(-1.6-i*.065,-.1+i*.048+Math.sin(i*.33)*.25,.4+Math.sin(i*.4)*.2));this.curve(this.root,tail,'protein',.055);this.label(this.root,'N-terminal regulatory region',-3.7,3.1,.5);
+        if(step>=1)this.label(this.root,'Transcription programs ≠ DNA amplification event',0,5,.5);
+        if(step===2){const g=this.group(this.root,0,-4.2,0);for(let i=0;i<4;i++){const a=i*Math.PI/2;this.sphere(g,Math.cos(a)*2,Math.sin(a)*.8,0,.38,'protein');this.label(g,['G1','S · DNA synthesis','G2','M · segregation'][i],Math.cos(a)*3,Math.sin(a)*1.7,0);}this.ring(g,1.6,'protein',V(),[Math.PI/2.8,0,0]);}
+        if(step===3){this.sphere(this.root,4.8,2.4,0,.8,'dna');this.label(this.root,'Aurora-A binding',4.8,3.8,.5);this.label(this.root,'Synthesis ↔ turnover · ubiquitin / proteasome',0,-3.5,.6);}
+        if(step===4){for(const [x,key]of[[-2,'cofactor'],[2,'molecule']])this.sphere(this.root,x,-4,.2,.65,key);this.label(this.root,'More divisions',-2,-5.2,.5);this.label(this.root,'Fewer losses',2,-5.2,.5);this.label(this.root,'Net accumulation = division − cell loss',0,-6.3,.5);}
+      };
+
+      /** Established molecular renderer: no hand-invented atom bonds or cartoons. */
+      class StructureLab {
+        constructor(){this.viewer=null;this.cache=new Map();this.generation=0;this.request=null;this.id='';this.atomA=null;this.measurements=0;this.disposed=false;}
+        async load(id){
+          if(!STRUCTURES[id])return;
+          const generation=++this.generation;this.request?.abort();const request=this.request=new AbortController();const timeout=setTimeout(()=>request.abort(),18000);
+          this.id=id;this.ready=false;this.atomA=null;this.measurements=0;$('atomInfo').textContent='Loading deposited coordinates…';message(`Loading ${id} from the public Protein Data Bank…`);
+          try{
+            if(!window.$3Dmol)throw new Error('The molecular rendering library could not load. Allow cdn.jsdelivr.net.');
+            if(!this.viewer){this.viewer=$3Dmol.createViewer($('molecule'),{backgroundColor:COLORS.stage,antialias:true});if(!this.viewer)throw new Error('WebGL could not initialize the molecular viewer.');this.viewer.setProjection('orthographic');}
+            let text=this.cache.get(id);
+            if(!text){const response=await fetch(`https://files.rcsb.org/download/${id}.pdb`,{signal:request.signal,credentials:'omit',referrerPolicy:'no-referrer'});if(!response.ok)throw new Error(`PDB returned HTTP ${response.status}.`);text=await response.text();if(!/^ATOM  /m.test(text))throw new Error('The response contained no PDB atomic coordinates.');this.cache.set(id,text);}
+            if(generation!==this.generation||this.disposed)return;
+            const def=STRUCTURES[id];this.viewer.clear();this.viewer.addModel(text,'pdb',{keepH:false});
+            this.ready=true;this.style();this.viewer.setClickable({},true,atom=>this.inspect(atom));this.viewer.zoomTo(this.displaySelection());this.viewer.render();this.viewer.resize();
+            this.initialView=this.viewer.getView().slice();$('sceneMessage').hidden=true;$('molecule').dataset.loaded=id;
+            const atoms=this.viewer.selectedAtoms(this.displaySelection()).length;
+            $('atomInfo').textContent=`${atoms.toLocaleString()} selected deposited atoms (hydrogens omitted). Click sticks or space-filling atoms; author residue numbering is preserved.`;
+            const seqadv=text.split('\n').filter(line=>line.startsWith('SEQADV')&&!/EXPRESSION TAG|INITIATING METHIONINE|CLONING ARTIFACT/.test(line));
+            $('structureMetadata').textContent=`${def.resolution}. Coordinates retrieved from RCSB PDB. ${seqadv.length} deposited sequence-difference annotation lines (including symmetry copies where present). A coordinate is an experimental model estimate, not a direct film.`;
+            this.legend();this.syncFeatures();
+          }catch(error){if(generation!==this.generation||this.disposed)return;this.ready=false;delete $('molecule').dataset.loaded;message(`Structure unavailable: ${error.name==='AbortError'?'request timed out or was interrupted':error.message} Select another entry or return to the schematic chapters.`,false);$('atomInfo').textContent='No experimental structure is being displayed.';}
+          finally{clearTimeout(timeout);}
+        }
+        displaySelection(){const id=this.id;return id==='1FGK'?{chain:'A'}:id==='1NKP'?{chain:['A','B','F','G']}:{not:{resn:['HOH','WAT']}};}
+        style(){
+          if(!this.ready)return;const def=STRUCTURES[this.id],representation=$('representation').value;this.viewer.setStyle({},{});
+          const colorFunc=atom=>atom.elem==='N'?COLORS['atom-n']:atom.elem==='O'?COLORS['atom-o']:atom.elem==='S'?COLORS['atom-s']:atom.elem==='P'?COLORS.phosphate:COLORS['stage-muted'];
+          if(representation==='stick')this.viewer.setStyle(this.displaySelection(),{stick:{radius:.13,colorfunc:colorFunc}});
+          else if(representation==='sphere')this.viewer.setStyle(this.displaySelection(),{sphere:{scale:1,colorfunc:colorFunc}});
+          else {
+            for(const [chain,info]of Object.entries(def.chains)){const isDNA=info[0]==='DNA',isSugar=['Heparin','HS'].includes(info[0]);this.viewer.setStyle({chain},isSugar||isDNA?{stick:{radius:isDNA?.16:.2,color:COLORS[info[1]]}}:{cartoon:{color:COLORS[info[1]],arrows:true}});}
+            if(['3GQI','5G1X','7YSH'].includes(this.id))this.viewer.addStyle({hetflag:true,not:{resn:['HOH','WAT']}},{stick:{radius:.14,colorfunc:colorFunc}});
+            if(['1FGK','3GQI'].includes(this.id))this.viewer.addStyle({chain:'A',resi:[546,562,638,653,654]},{stick:{radius:.22,colorfunc:colorFunc}});
+            if(this.id==='5G1X')this.viewer.addStyle({chain:'B'},{stick:{radius:.14,color:COLORS.molecule}});
+          }
+          this.viewer.render();this.legend();
+        }
+        syncFeatures(){const features=STRUCTURES[this.id].focus;for(const option of $('feature').options)option.disabled=option.value!=='whole'&&!features[option.value];if($('feature').selectedOptions[0]?.disabled)$('feature').value='whole';$('residue').value=this.id==='5G1X'?'B:77':this.id==='1NKP'?'A:920':this.id==='1FQ9'?'C:178':this.id==='7YSH'?'D:178':'A:546';}
+        legend(){$('chainLegend').replaceChildren();const data=$('representation').value==='cartoon'?Object.entries(STRUCTURES[this.id].chains):[['C/other',['Element','stage-muted']],['N',['Element','atom-n']],['O',['Element','atom-o']],['S',['Element','atom-s']],['P',['Element','phosphate']]];for(const [chain,[name,color]]of data){const item=document.createElement('span');item.className='chain-key';const dot=document.createElement('i');dot.className='dot';dot.style.backgroundColor=`var(--cp-${color})`;item.append(dot,document.createTextNode(`${chain}: ${name}`));$('chainLegend').append(item);}}
+        focus(){if(!this.ready)return;const key=$('feature').value;const selection=key==='whole'?this.displaySelection():STRUCTURES[this.id].focus[key];if(!selection)return;const atoms=this.viewer.selectedAtoms(selection);if(!atoms.length){$('atomInfo').textContent='This feature is not resolved in this deposited structure.';return;}this.viewer.zoomTo(selection);if(key!=='whole')this.viewer.zoom(.7);this.viewer.render();const represented=new Set(atoms.map(atom=>atom.resi));const missing=Array.isArray(selection.resi)?selection.resi.filter(resi=>!represented.has(resi)):[];$('atomInfo').textContent=`Focused ${key}; coordinates and construct unchanged.${missing.length?' PARTIAL coverage: no coordinates for '+missing.join(', ')+'.':''} Atomic sticks show inferred connectivity; bond orders and hydrogen bonds are not experimentally established by this view.`;}
+        locate(){if(!this.ready)return;const match=$('residue').value.trim().match(/^([A-Za-z0-9]):(-?\d+)$/);if(!match){$('atomInfo').textContent='Use a chain and PDB author residue number, for example A:546.';return;}const selection={chain:match[1].toUpperCase(),resi:Number(match[2])};const atoms=this.viewer.selectedAtoms(selection);if(!atoms.length){$('atomInfo').textContent='No deposited coordinates for that chain/residue. Missing residues are not reconstructed.';return;}this.style();this.viewer.addStyle(selection,{stick:{radius:.27,color:COLORS.phosphate},sphere:{scale:.22,color:COLORS.phosphate}});this.viewer.zoomTo(selection);this.viewer.zoom(.45);this.viewer.render();this.inspect(atoms.find(a=>a.atom==='CA')||atoms[0]);}
+        inspect(atom){
+          if(!this.ready)return;
+          $('atomInfo').textContent=`${this.id} · chain ${atom.chain} · ${atom.resn} ${atom.resi} · ${atom.atom} (${atom.elem}) · x ${atom.x.toFixed(3)}, y ${atom.y.toFixed(3)}, z ${atom.z.toFixed(3)} Å. Author numbering, not automatically reference numbering.`;
+          if($('measure').checked){if(!this.atomA){this.atomA={x:atom.x,y:atom.y,z:atom.z};$('atomInfo').textContent+=' Select a second atom.';}else{if(this.measurements>=8)this.clearMeasurements();if(!this.atomA){this.atomA={x:atom.x,y:atom.y,z:atom.z};return;}const a=this.atomA,b={x:atom.x,y:atom.y,z:atom.z},distance=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);this.viewer.addLine({start:a,end:b,color:COLORS.phosphate,dashed:true});this.viewer.addLabel(`${distance.toFixed(2)} Å`,{position:{x:(a.x+b.x)/2,y:(a.y+b.y)/2,z:(a.z+b.z)/2},fontSize:13,fontColor:COLORS['stage-text'],backgroundColor:COLORS.stage,backgroundOpacity:.85});this.atomA=null;this.measurements++;this.viewer.render();$('atomInfo').textContent+=` Distance ${distance.toFixed(2)} Å; proximity alone is not proof of a hydrogen bond.`;}}
+        }
+        clearMeasurements(){this.atomA=null;this.measurements=0;this.viewer?.removeAllShapes();this.viewer?.removeAllLabels();this.viewer?.render();}
+        reset(){if(this.ready){this.viewer.setView(this.initialView);this.viewer.render();}}
+        resize(){if(this.viewer&&!$('molecule').hidden)this.viewer.resize();}
+        leave(){++this.generation;this.request?.abort();this.viewer?.spin(false);this.viewer?.stopAnimate();}
+        dispose(){this.disposed=true;this.leave();this.viewer?.clear();this.cache.clear();}
+      }
+
+      class Atlas {
+        constructor(){this.index=0;this.step=0;this.playing=false;this.elapsed=0;this.last=0;this.frameId=0;this.destroyed=false;this.motion=matchMedia('(prefers-reduced-motion: reduce)');this.options={architecture:'ecdna',branch:'all',motion:!this.motion.matches};this.abort=new AbortController();this.lab=new StructureLab();this.frame=this.frame.bind(this);}
+        init(){
+          this.engine=new TeachingScene($('scene'),$('stageWrap'));
+          $('chapters').innerHTML=CHAPTERS.map((ch,i)=>`<button type="button" class="chapter" data-chapter="${i}"><span class="number">${String(i+1).padStart(2,'0')}</span><span><strong>${ch.title}</strong><small>${ch.subtitle}</small></span></button>`).join('');
+          this.bind();this.observer=new ResizeObserver(()=>{this.engine.resize();if(this.index!==7)this.engine.fit();this.lab.resize();});this.observer.observe($('stageWrap'));
+          this.select(0);this.start();
+        }
+        on(target,event,handler){target.addEventListener(event,handler,{signal:this.abort.signal});}
+        bind(){
+          this.on($('chapters'),'click',event=>{const button=event.target.closest('[data-chapter]');if(button)this.select(Number(button.dataset.chapter));});
+          this.on($('previous'),'click',()=>this.go(this.step-1));this.on($('next'),'click',()=>this.go(this.step+1));
+          this.on($('play'),'click',()=>this.setPlaying(!this.playing));this.on($('progress'),'input',()=>{this.setPlaying(false);this.go(Number($('progress').value));});
+          this.on($('fit'),'click',()=>this.index===7?this.lab.reset():this.engine.fit());
+          this.on($('sceneOptions'),'change',event=>{const target=event.target;if(target.id==='architecture')this.options.architecture=target.value;if(target.id==='branch')this.options.branch=target.value;if(target.id==='motion')this.options.motion=target.checked;this.engine.show(CHAPTERS[this.index],this.step,this.options);});
+          this.on($('structureSelect'),'change',()=>this.openStructure($('structureSelect').value));this.on($('representation'),'change',()=>this.lab.style());this.on($('focusFeature'),'click',()=>this.lab.focus());this.on($('wholeStructure'),'click',()=>{if(this.lab.ready){this.lab.viewer.zoomTo(this.lab.displaySelection());this.lab.viewer.render();}});
+          this.on($('inspectResidue'),'click',()=>this.lab.locate());this.on($('residue'),'keydown',event=>{if(event.key==='Enter')this.lab.locate();});this.on($('clearMeasures'),'click',()=>this.lab.clearMeasurements());this.on($('measure'),'change',()=>{this.lab.atomA=null;});
+          for(const element of [$('scene'),$('molecule')])this.on(element,'keydown',event=>this.key(event));
+          this.on(document,'visibilitychange',()=>document.hidden?this.stop():this.start());this.on(window,'pagehide',event=>event.persisted?this.stop():this.dispose());this.on(window,'pageshow',()=>this.start());
+          this.on(this.motion,'change',event=>{if(event.matches){this.options.motion=false;this.setPlaying(false);if($('motion'))$('motion').checked=false;}});
+          this.on($('scene'),'webglcontextlost',event=>{event.preventDefault();this.setPlaying(false);this.stop();message('Graphics context interrupted. Reload to rebuild the atlas; written lessons and sources remain available.',true);});
+        }
+        select(index){if(!Number.isInteger(index)||index<0||index>=CHAPTERS.length)return;this.setPlaying(false);this.lab.leave();this.index=index;this.step=0;
+          document.querySelectorAll('[data-chapter]').forEach((button,i)=>{if(i===index)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
+          $('lesson').scrollTop=0;$('inspector').hidden=true;$('scene').hidden=index===7;$('labels').hidden=index===7;$('molecule').hidden=index!==7;$('labControls').hidden=index!==7;$('transport').hidden=index===7;$('sceneOptions').hidden=index===7;
+          if(index===7){this.engine.reset();this.openStructure($('structureSelect').value);}
+          else{this.renderStep();$('sceneMessage').hidden=true;}
+          document.body.dataset.chapter=CHAPTERS[index].id;
+        }
+        go(step){const chapter=CHAPTERS[this.index];if(!chapter.steps.length)return;this.step=Math.max(0,Math.min(chapter.steps.length-1,step));this.elapsed=0;this.renderStep();}
+        renderStep(){
+          const chapter=CHAPTERS[this.index],content=chapter.steps[this.step];
+          $('sceneTitle').textContent=chapter.title;$('sceneBadge').textContent=`Chapter ${String(this.index+1).padStart(2,'0')} · Schematic / not to scale`;
+          $('lessonContent').innerHTML=`<p class="eyebrow">${this.step+1} / ${chapter.steps.length} · Mechanism</p><h2>${esc(content[0])}</h2><p class="lead">${esc(content[1])}</p><h3>Molecular detail</h3><p class="detail">${esc(content[2])}</p><h3>Evidence boundary</h3><p class="evidence">${esc(content[3])}</p>${citations(content[4])}${this.index===6&&this.step===4?'<div class="equation">dN/dt = (division − loss) × N<br>Conceptual balance, not a fitted model.</div>':''}${['folding','activation','kinase','nmyc'].includes(chapter.id)?'<button class="research-action" type="button" id="openLab">Inspect an experimental structure ↗</button>':''}`;
+          $('openLab')?.addEventListener('click',()=>{const id=chapter.id==='nmyc'?'5G1X':chapter.id==='activation'?'1FQ9':'1FGK';$('structureSelect').value=id;this.select(7);});
+          $('previous').disabled=this.step===0;$('next').disabled=this.step===chapter.steps.length-1;$('progress').max=String(chapter.steps.length-1);$('progress').value=String(this.step);$('stepLabel').textContent=`${this.step+1} / ${chapter.steps.length} · ${content[0]}`;
+          $('sceneOptions').innerHTML=`${chapter.id==='genome'?'<label>Architecture <select id="architecture"><option value="baseline">Baseline topology</option><option value="ecdna">ecDNA example</option><option value="hsr">HSR example</option></select></label>':''}${chapter.id==='network'?'<label>Focus <select id="branch"><option value="all">All branches</option><option value="mapk">MAPK focus</option><option value="pi3k">PI3K detail</option><option value="plc">PLCγ focus</option></select></label>':''}<label><input id="motion" type="checkbox" ${this.options.motion?'checked':''}> Animate reaction indicators</label><span>Indicators ≠ measured molecular flux</span>`;
+          if($('architecture')){$('architecture').value=this.step===0?'baseline':this.step===2?'ecdna':this.step===3?'hsr':this.options.architecture;$('architecture').disabled=this.step===0||this.step===2||this.step===3;}
+          if($('branch'))$('branch').value=this.options.branch;
+          $('canvasHelp').textContent='Drag to orbit · right-drag to pan · wheel/pinch or +/− to zoom · arrows orbit · labeled molecules are inspectable';
+          this.engine.show(chapter,this.step,this.options);document.body.dataset.step=String(this.step);
+        }
+        openStructure(id){
+          const def=STRUCTURES[id];if(!def)return;$('structureSelect').value=id;$('sceneTitle').textContent=def.title;$('sceneBadge').textContent=`Experimental coordinates · ${id} · ${def.resolution}`;
+          $('lessonContent').innerHTML=`<p class="eyebrow">Structural evidence / not a folding movie</p><h2>${esc(def.title)}</h2><p class="lead">${esc(def.resolution)} · PDB ${id}</p><h3>Construct and interpretation</h3><p class="evidence">${esc(def.note)}</p>${citations([def.ref])}<p class="small"><a href="https://www.rcsb.org/structure/${id}" target="_blank" rel="noopener noreferrer">PDB entry, validation &amp; sequence annotations ↗</a></p><h3>Inspect the deposited model</h3>`;
+          $('canvasHelp').textContent='Drag to rotate · right-drag to zoom · Ctrl-drag to pan · wheel/pinch or +/− to zoom · arrows rotate';
+          void this.lab.load(id);
+        }
+        setPlaying(value){this.playing=Boolean(value)&&this.index!==7;this.elapsed=0;$('play').textContent=this.playing?'Pause steps':'Play steps';$('play').setAttribute('aria-pressed',String(this.playing));if(this.playing&&this.step===CHAPTERS[this.index].steps.length-1)this.go(0);}
+        key(event){const key=event.key;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','_',' '].includes(key))return;event.preventDefault();if(key===' '){if(!event.repeat)this.setPlaying(!this.playing);return;}
+          const zoom=['+','=','-','_'].includes(key),positive=['ArrowRight','ArrowUp','+','='].includes(key);
+          if(this.index===7){if(!this.lab.ready)return;if(zoom)this.lab.viewer.zoom(positive?1.1:.9);else this.lab.viewer.rotate(positive?8:-8,key.includes('Up')||key.includes('Down')?'x':'y');this.lab.viewer.render();}
+          else{const engine=this.engine;engine.temp.subVectors(engine.camera.position,engine.controls.target);if(zoom)engine.temp.setLength(THREE.MathUtils.clamp(engine.temp.length()*(positive?.9:1.1),4,120));else engine.temp.applyAxisAngle(key.includes('Up')||key.includes('Down')?V(1,0,0):UP,positive?.1:-.1);engine.camera.position.copy(engine.controls.target).add(engine.temp);engine.controls.update();engine.dirty=true;}
+        }
+        frame(now){if(this.destroyed||document.hidden){this.frameId=0;return;}this.frameId=requestAnimationFrame(this.frame);const dt=Math.max(0,Math.min(.06,(now-this.last)/1000));this.last=now;if(this.index!==7){this.engine.update(dt,this.options.motion&&!document.querySelector('dialog[open]'));if(this.playing){this.elapsed+=dt;if(this.elapsed>=12){if(this.step<CHAPTERS[this.index].steps.length-1)this.go(this.step+1);else this.setPlaying(false);}}}}
+        start(){if(this.frameId||this.destroyed||document.hidden)return;this.last=performance.now();this.frameId=requestAnimationFrame(this.frame);}
+        stop(){cancelAnimationFrame(this.frameId);this.frameId=0;}
+        dispose(){if(this.destroyed)return;this.destroyed=true;this.stop();this.abort.abort();this.observer?.disconnect();this.lab.dispose();this.engine?.dispose();}
+      }
+      app=new Atlas();
+      try{app.init();}catch(error){app.dispose();console.error('Atlas initialization failed:',error);message('The atlas could not initialize WebGL. Use a current browser with graphics acceleration. The companion dossier remains readable.',true);}
+    },{once:true});
+  </script>
+</body>
+</html>

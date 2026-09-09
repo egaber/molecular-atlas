@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive, educational 3D comparison of stylized CAR-T and CAR-NK engagement with a GD2-positive neuroblastoma model.">
+  <title>Next-Gen Immunotherapy: CAR-T vs CAR-NK</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    /* Scientific encoding is independent of the dashboard's light/dark theme. */
+    :root {
+      --cp-scene-bg: #070a13;
+      --cp-scene-text: #e2e8f0;
+      --cp-scene-muted: #a6b3c9;
+      --cp-scene-panel: rgba(7, 10, 19, 0.82);
+      --cp-scene-line: rgba(166, 179, 201, 0.18);
+      --cp-tumor: #dc2626;
+      --cp-gd2: #f59e0b;
+      --cp-car-t: #7c3aed;
+      --cp-car-nk: #0ea5e9;
+      --cp-payload: #22c55e;
+      --cp-mhc: #94a3b8;
+      --cp-transparent: transparent;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 14px/1.5 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; color: var(--cp-text); background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 10px; padding: 8px 12px; min-height: 44px; }
+    button:hover:not(:disabled) { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    button:disabled { cursor: wait; opacity: .5; }
+    button:focus-visible, input:focus-visible, summary:focus-visible, canvas:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 3px; }
+    h1, h2, p { margin: 0; }
+    .app { position: relative; height: 100vh; height: 100dvh; min-height: 420px; overflow: hidden; background: var(--cp-scene-bg); }
+    .panel { position: absolute; z-index: 3; inset: 20px auto 20px 20px; width: 348px; padding: 24px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; background: var(--cp-panel); border: 1px solid var(--cp-border); border-radius: 16px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .eyebrow { font: 11px/1.4 Consolas, "Courier New", Courier, monospace; letter-spacing: .12em; text-transform: uppercase; }
+    .panel .eyebrow { color: var(--cp-accent); }
+    .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 16px; }
+    .theme-button { font-size: 11px; padding: 4px 8px; min-height: 32px; }
+    h1 { font-size: 27px; font-weight: 650; letter-spacing: -.035em; line-height: 1.16; }
+    .intro { color: var(--cp-text-soft); font-size: 13px; margin-top: 12px; }
+    .section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--cp-border); }
+    .section-title { display: block; margin-bottom: 12px; font-size: 11px; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; color: var(--cp-text-muted); }
+    fieldset { margin: 24px 0 0; padding: 0; border: 0; min-width: 0; }
+    legend { padding: 0; }
+    .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mode-button { text-align: left; padding: 12px; background: var(--cp-surface-soft); }
+    .mode-button[aria-pressed="true"] { border-color: var(--cp-accent); box-shadow: inset 0 0 0 1px var(--cp-accent); background: var(--cp-accent-soft); }
+    .mode-button strong { display: block; margin: 8px 0 6px; font-size: 13px; line-height: 1.35; }
+    .mode-button small { display: block; font-size: 11px; color: var(--cp-text-soft); line-height: 1.5; }
+    .swatch { display: inline-block; width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; background: var(--cp-mhc); }
+    .tumor { background: var(--cp-tumor); } .gd2 { background: var(--cp-gd2); }
+    .car-t { background: var(--cp-car-t); } .car-nk { background: var(--cp-car-nk); } .payload { background: var(--cp-payload); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    caption { text-align: left; }
+    th, td { padding: 10px 0; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+    th { width: 48%; text-align: left; font-weight: 400; color: var(--cp-text-soft); }
+    td { text-align: right; font-weight: 600; }
+    .risk-high { color: var(--cp-danger); } .risk-low { color: var(--cp-success); }
+    .note { margin-top: 10px; color: var(--cp-text-soft); font-size: 11px; line-height: 1.6; }
+    .switch-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; }
+    input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--cp-accent); }
+    .status { min-height: 80px; border-left: 2px solid var(--cp-accent); padding: 12px; background: var(--cp-accent-soft); border-radius: 0 10px 10px 0; font-size: 12px; }
+    .speed-label { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; margin: 16px 0 8px; }
+    input[type="range"] { width: 100%; height: 24px; accent-color: var(--cp-accent); }
+    details { color: var(--cp-text-soft); font-size: 12px; }
+    summary { color: var(--cp-text); cursor: pointer; min-height: 32px; }
+    details p + p { margin-top: 10px; }
+    .viewport { position: absolute; inset: 0 0 0 384px; overflow: hidden; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    .scene-top { position: absolute; z-index: 1; top: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; pointer-events: none; }
+    .scene-top .eyebrow { color: var(--cp-scene-muted); }
+    h2 { color: var(--cp-scene-text); font-size: 22px; font-weight: 500; letter-spacing: -.025em; margin-top: 6px; }
+    .scene-tools { display: flex; gap: 6px; pointer-events: auto; flex-shrink: 0; }
+    .scene-tools button { font-size: 12px; background: var(--cp-panel-strong); }
+    .scene-bottom { position: absolute; z-index: 1; bottom: 24px; left: 24px; right: 24px; pointer-events: none; }
+    .stats { display: flex; gap: 24px; margin-bottom: 16px; }
+    .stat strong { display: block; color: var(--cp-scene-text); font: 28px/1.2 Consolas, "Courier New", Courier, monospace; font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--cp-scene-muted); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 12px 0; border-top: 1px solid var(--cp-scene-line); }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; color: var(--cp-scene-text); font-size: 11px; }
+    .help { color: var(--cp-scene-muted); font-size: 11px; max-width: 620px; }
+    .loading, .error { position: absolute; z-index: 5; inset: 0; display: grid; place-content: center; gap: 16px; padding: 24px; text-align: center; background: var(--cp-scene-panel); color: var(--cp-scene-text); }
+    .error p { max-width: 420px; }
+    .error button { justify-self: center; }
+    .disclaimer { color: var(--cp-scene-muted); margin-top: 8px; font-size: 10px; }
+    @media (max-width: 1100px) { .scene-top { flex-direction: column; gap: 12px; } .panel { width: 320px; padding: 20px; } .viewport { left: 352px; } }
+    @media (max-width: 760px) {
+      .app { display: flex; flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
+      .viewport { position: relative; inset: auto; order: 0; height: 62vh; height: 62svh; min-height: 420px; width: 100%; }
+      .panel { position: relative; inset: auto; order: 1; margin: 0 12px 12px; width: auto; overflow: visible; padding: 20px; }
+      .scene-top { top: 16px; left: 16px; right: 16px; gap: 10px; }
+      .scene-bottom { bottom: 16px; left: 16px; right: 16px; }
+      .stats { gap: 20px; margin-bottom: 8px; } .stat strong { font-size: 22px; }
+      .legend { gap: 6px 12px; padding: 8px 0; } .help { font-size: 10px; }
+      h2 { font-size: 19px; } h1 { font-size: 26px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="panel" aria-label="Immunotherapy simulation controls">
+      <div class="title-row"><p class="eyebrow">Cellular systems / 01</p><button id="theme" class="theme-button" type="button">Theme</button></div>
+      <h1>Next-Gen Immunotherapy: CAR-T vs CAR-NK</h1>
+      <p class="intro">Two engineered immune-cell behaviors. One GD2-positive neuroblastoma model.</p>
+      <fieldset id="therapyControls" disabled>
+        <legend class="section-title">01 / Select a therapy</legend>
+        <div class="segmented" role="group" aria-label="Therapy mode">
+          <button class="mode-button" type="button" data-mode="t" aria-pressed="true"><span class="swatch car-t" aria-hidden="true"></span><strong>Simulate CAR-T Therapy</strong><small>Deliberate approach<br>Sustained engagement</small></button>
+          <button class="mode-button" type="button" data-mode="nk" aria-pressed="false"><span class="swatch car-nk" aria-hidden="true"></span><strong>Simulate CAR-NK Therapy</strong><small>Agile approach<br>Burst &amp; retreat</small></button>
+        </div>
+      </fieldset>
+      <section class="section" aria-label="Illustrative comparison metrics">
+        <table>
+          <caption class="section-title">02 / Illustrative comparison*</caption>
+          <tbody>
+            <tr><th scope="row">Cell source</th><td id="source">Patient autologous</td></tr>
+            <tr><th scope="row">Manufacturing time</th><td id="manufacturing">Weeks*</td></tr>
+            <tr><th scope="row">CRS risk level</th><td id="crs" class="risk-high">High (assumed)*</td></tr>
+            <tr><th scope="row">GvHD risk</th><td id="gvhd">Low (assumed)*</td></tr>
+          </tbody>
+        </table>
+        <p class="note">*Scenario labels, not clinical rates. “Immediate” assumes a released, banked dose; “none” is not a safety guarantee.</p>
+      </section>
+      <section class="section" aria-label="Tumor immune evasion">
+        <span class="section-title">03 / Tumor phenotype</span>
+        <label class="switch-row"><input id="mhc" type="checkbox" checked disabled data-sim-control><span>Hide MHC-I markers <strong id="mhcState">· hidden</strong></span></label>
+        <p class="note">Both CARs recognize GD2 without MHC-I. Native TCR recognition needs peptide–MHC. This switch changes markers, not CAR targeting.</p>
+      </section>
+      <section class="section" aria-label="Simulation status">
+        <span class="section-title">04 / Live activity</span>
+        <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Status: Loading the cellular environment…</p>
+        <label class="speed-label" for="speed"><span>Animation speed</span><output id="speedValue" for="speed">1.00×</output></label>
+        <input id="speed" type="range" min="0.5" max="2" step="0.25" value="1" disabled data-sim-control>
+      </section>
+      <details class="section">
+        <summary>Model limits &amp; safety context</summary>
+        <p>This is an educational animation, not a biological simulator, treatment recommendation, or efficacy comparison. Motion, contact duration, risk categories, and particle counts are illustrative. Both T and NK cells can disengage and kill serially; their behavior is not a strict slow-versus-fast dichotomy.</p>
+        <p>CAR-NK approaches for neuroblastoma are investigational. Donor-derived does not mean a product is immediately available. Manufacturing, access, CRS, and other risks vary by product and patient; CRS can occur with either approach.</p>
+        <p>Autologous CAR-T generally does not cause conventional allogeneic GvHD. “None modeled” for CAR-NK refers to this simplified NK-intrinsic model, not zero clinical risk or a guarantee about a donor product.</p>
+        <p>Reduced MHC-I can contribute to NK “missing-self” recognition, but NK activity also depends on activating and inhibitory signals. That balance, tumor resistance, normal-tissue GD2, trafficking, and clinical outcomes are not simulated. Green beads symbolize perforin/granzyme delivery, not measured molecules; surface flashes do not establish tumor death.</p>
+      </details>
+    </aside>
+    <section id="viewport" class="viewport" aria-label="Interactive 3D cellular environment">
+      <canvas id="scene" tabindex="0" role="img" aria-label="Interactive 3D CAR-T and neuroblastoma model" aria-describedby="orbitHelp">A WebGL-capable browser is needed to display the 3D model.</canvas>
+      <div class="scene-top">
+        <div><p class="eyebrow">GD2+ neuroblastoma / in-silico illustration</p><h2 id="behavior">CAR-T · Sustained engagement</h2></div>
+        <div class="scene-tools" role="group" aria-label="Playback and camera">
+          <button id="pause" type="button" disabled data-sim-control aria-pressed="false">Pause</button>
+          <button id="restart" type="button" disabled data-sim-control aria-label="Restart the selected simulation">Restart</button>
+          <button id="view" type="button" disabled data-sim-control aria-label="Reset the camera view">Reset view</button>
+        </div>
+      </div>
+      <div class="scene-bottom">
+        <div class="stats" aria-label="Live animation counters">
+          <div class="stat"><strong id="cellCount">6</strong><span>Effectors</span></div>
+          <div class="stat"><strong id="engagedCount">0</strong><span>Engaged</span></div>
+          <div class="stat"><strong id="retreatCount">0</strong><span>Retreating</span></div>
+          <div class="stat"><strong id="impactCount">0</strong><span>Visual impacts</span></div>
+        </div>
+        <div class="legend" aria-label="Cell and marker color legend">
+          <span><i class="swatch tumor"></i>Tumor</span><span><i class="swatch gd2"></i>GD2</span><span><i class="swatch car-t"></i>CAR-T</span><span><i class="swatch car-nk"></i>CAR-NK</span><span><i class="swatch payload"></i>Perforin / granzymes</span>
+        </div>
+        <p id="orbitHelp" class="help">Drag to orbit · right-drag to pan · wheel/pinch to zoom. Keyboard on canvas: arrows pan, +/− zoom, Space pauses.</p>
+        <p class="disclaimer">Illustrative motion and risk labels · not a clinical prediction · not to scale</p>
+      </div>
+      <div id="loading" class="loading" role="status">Preparing the cellular environment…</div>
+      <div id="error" class="error" role="alert" hidden><p id="errorMessage"></p><button id="retry" type="button">Reload visualization</button></div>
+      <noscript><div class="error">Enable JavaScript to run this interactive visualization.</div></noscript>
+    </section>
+  </main>
+
+  <!-- Exactly pinned, integrity-checked dependencies. No build step or other assets. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" crossorigin="anonymous"></script>
+  <script>
+    /**
+     * Architecture: Resources → Tumor / CellModels → ParticlePool → Hunter → Simulation.
+     * Units are arbitrary scene units. A fixed timestep decouples biology-inspired
+     * choreography from frame rate. No meshes, vectors, or arrays are created in
+     * simulation update loops; particle storage and instance matrices are reused.
+     */
+    document.addEventListener("DOMContentLoaded", () => {
+      "use strict";
+      const $ = id => document.getElementById(id);
+      const fail = message => {
+        $("loading").hidden = true;
+        $("errorMessage").textContent = message;
+        $("error").hidden = false;
+        $("status").textContent = "Status: Visualization unavailable. See the message beside the controls.";
+        $("therapyControls").disabled = true;
+        document.querySelectorAll("[data-sim-control]").forEach(element => { element.disabled = true; });
+      };
+      $("retry").addEventListener("click", () => window.location.reload());
+      const updateThemeLabel = () => {
+        const dark = document.documentElement.dataset.theme === "dark";
+        $("theme").textContent = dark ? "Light UI" : "Dark UI";
+        $("theme").setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} dashboard theme`);
+      };
+      $("theme").addEventListener("click", () => {
+        document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        updateThemeLabel();
+      });
+      updateThemeLabel();
+      if (!window.THREE || !THREE.OrbitControls) {
+        fail("The Three.js libraries could not load. Internet access to cdn.jsdelivr.net is required. Check the connection and reload.");
+        return;
+      }
+
+      const CONFIG = Object.freeze({ count: 6, capacity: 384, step: 1 / 60, seed: 4287, radius: .54 });
+      const UP = new THREE.Vector3(0, 1, 0);
+      const css = getComputedStyle(document.documentElement);
+      const color = name => css.getPropertyValue(`--cp-${name}`).trim();
+      const palette = Object.freeze({
+        background: color("scene-bg"), ink: color("scene-text"), muted: color("scene-muted"),
+        tumor: color("tumor"), gd2: color("gd2"), t: color("car-t"), nk: color("car-nk"),
+        payload: color("payload"), mhc: color("mhc")
+      });
+      // r128 requires explicit sRGB → linear conversion for lit material colors.
+      // Scene.background remains an unconverted display-space clear color.
+      const linearColor = value => new THREE.Color(value).convertSRGBToLinear();
+
+      /** Deterministic PRNG: restarting a mode reproduces its initial conditions. */
+      class Random {
+        constructor(seed) { this.state = seed >>> 0; }
+        next() {
+          let t = this.state = (this.state + 0x6D2B79F5) | 0;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        }
+        range(min, max) { return min + (max - min) * this.next(); }
+      }
+
+      /** Shared GPU resources are disposed exactly once on permanent teardown. */
+      class Resources {
+        constructor() { this.items = new Set(); }
+        keep(item) { this.items.add(item); return item; }
+        dispose() { this.items.forEach(item => item.dispose()); this.items.clear(); }
+      }
+
+      function fibonacci(out, index, count, offset = 0) {
+        const y = 1 - 2 * (index + .5) / count;
+        const r = Math.sqrt(1 - y * y);
+        const angle = index * Math.PI * (3 - Math.sqrt(5)) + offset;
+        return out.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
+      }
+
+      /** Continuous position-based distortion avoids seams at duplicated vertices. */
+      function organicGeometry(radius, detail) {
+        const geometry = new THREE.IcosahedronGeometry(radius, detail);
+        const p = geometry.attributes.position;
+        for (let i = 0; i < p.count; i++) {
+          const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+          const s = 1 + .055 * Math.sin(x * 3.1 + y * 2.2) * Math.cos(z * 3.7 - y);
+          p.setXYZ(i, x * s, y * s, z * s);
+        }
+        geometry.computeVertexNormals();
+        geometry.computeBoundingSphere();
+        return geometry;
+      }
+
+      /** Irregular, stationary tumor. All target points lie on its actual meshes. */
+      class Tumor {
+        constructor(scene, resources) {
+          this.group = new THREE.Group();
+          this.group.name = "GD2-positive neuroblastoma";
+          this.meshes = [];
+          this.flash = 0; this.flashCooldown = 0;
+          this.base = linearColor(palette.tumor);
+          this.gold = linearColor(palette.gd2);
+          this.material = resources.keep(new THREE.MeshStandardMaterial({ color: this.base, emissive: this.base, emissiveIntensity: .13, flatShading: true, roughness: .78, metalness: .04 }));
+          const core = new THREE.Mesh(resources.keep(organicGeometry(2.25, 2)), this.material);
+          this.group.add(core); this.meshes.push(core);
+          const noduleGeometry = resources.keep(new THREE.DodecahedronGeometry(1, 1));
+          const direction = new THREE.Vector3();
+          for (let i = 0; i < 8; i++) {
+            const mesh = new THREE.Mesh(noduleGeometry, this.material);
+            fibonacci(direction, i, 8, .5);
+            mesh.position.copy(direction).multiplyScalar(1.75);
+            mesh.scale.setScalar(.84 + (i % 3) * .09);
+            mesh.rotation.set(i * .6, i * .3, .2);
+            this.group.add(mesh); this.meshes.push(mesh);
+          }
+          scene.add(this.group);
+          this.group.updateMatrixWorld(true);
+          // Raycasts run only during construction, never during the animation.
+          this.ray = new THREE.Raycaster();
+          this.castOrigin = new THREE.Vector3();
+          this.castDirection = new THREE.Vector3();
+          this.sites = [];
+          for (let i = 0; i < 128; i++) this.sites.push(this.surface(fibonacci(direction, i, 128)));
+          this.antigens = this.markers(40, resources.keep(new THREE.ConeGeometry(.07, .25, 5)),
+            resources.keep(new THREE.MeshStandardMaterial({ color: this.gold, emissive: this.gold, emissiveIntensity: .35, roughness: .45, flatShading: true })), .125, .2);
+          this.antigens.name = "40 outward-facing GD2 antigens";
+          this.mhc = this.markers(16, resources.keep(new THREE.BoxGeometry(.13, .2, .07)),
+            resources.keep(new THREE.MeshStandardMaterial({ color: linearColor(palette.mhc), roughness: .7 })), .12, 1.7);
+          this.mhc.name = "Optional MHC-I markers";
+          this.mhc.visible = false;
+        }
+        surface(direction) {
+          this.castOrigin.copy(direction).multiplyScalar(12);
+          this.castDirection.copy(direction).negate();
+          this.ray.set(this.castOrigin, this.castDirection);
+          const hit = this.ray.intersectObjects(this.meshes, false)[0];
+          if (!hit) throw new Error("Unable to sample the tumor surface.");
+          return { point: hit.point.clone(), normal: hit.face.normal.clone().transformDirection(hit.object.matrixWorld), radial: direction.clone() };
+        }
+        markers(count, geometry, material, lift, offset) {
+          const mesh = new THREE.InstancedMesh(geometry, material, count);
+          const dummy = new THREE.Object3D();
+          const direction = new THREE.Vector3();
+          for (let i = 0; i < count; i++) {
+            const site = this.surface(fibonacci(direction, i, count, offset));
+            dummy.position.copy(site.point).addScaledVector(site.normal, lift);
+            dummy.quaternion.setFromUnitVectors(UP, site.normal);
+            dummy.updateMatrix(); mesh.setMatrixAt(i, dummy.matrix);
+          }
+          mesh.instanceMatrix.needsUpdate = true;
+          mesh.frustumCulled = false; // r128 does not infer per-instance bounds.
+          this.group.add(mesh);
+          return mesh;
+        }
+        nearest(direction) {
+          let best = this.sites[0], score = -Infinity;
+          for (let i = 0; i < this.sites.length; i++) {
+            const dot = direction.dot(this.sites[i].radial);
+            if (dot > score) { score = dot; best = this.sites[i]; }
+          }
+          return best;
+        }
+        hit() {
+          // Coalesce simultaneous hits: short, subtle pulses, at most 2.5/second.
+          // Sustained fire must not leave the crimson tumor permanently green.
+          if (this.flashCooldown <= 0) { this.flash = 1; this.flashCooldown = .4; }
+        }
+        update(dt) {
+          this.flashCooldown = Math.max(0, this.flashCooldown - dt);
+          this.flash = Math.max(0, this.flash - dt * 8);
+          this.material.color.copy(this.base).lerp(this.gold, this.flash * .08);
+          this.material.emissive.copy(this.base);
+          this.material.emissiveIntensity = .13 + this.flash * .3;
+        }
+      }
+
+      /** Build shared organic bodies, short native TCRs, and longer Y-shaped CARs. */
+      class CellModels {
+        constructor(resources) {
+          this.resources = resources;
+          this.body = resources.keep(organicGeometry(CONFIG.radius, 2));
+          this.nucleus = resources.keep(new THREE.IcosahedronGeometry(.24, 1));
+          this.rod = resources.keep(new THREE.CylinderGeometry(1, 1, 1, 5));
+          this.materials = {};
+          for (const kind of ["t", "nk"]) {
+            const base = linearColor(palette[kind]);
+            this.materials[kind] = {
+              body: resources.keep(new THREE.MeshStandardMaterial({ color: base, emissive: base, emissiveIntensity: .22, roughness: .56, flatShading: true })),
+              car: resources.keep(new THREE.MeshStandardMaterial({ color: base.clone().lerp(linearColor(palette.ink), .1), emissive: base, emissiveIntensity: .35, roughness: .45 })),
+              nucleus: resources.keep(new THREE.MeshStandardMaterial({ color: base.clone().multiplyScalar(.55), roughness: .8, flatShading: true }))
+            };
+          }
+        }
+        receptors(count, branched, material) {
+          const mesh = new THREE.InstancedMesh(this.rod, material, count * (branched ? 3 : 1));
+          const dummy = new THREE.Object3D(), normal = new THREE.Vector3();
+          const start = new THREE.Vector3(), end = new THREE.Vector3(), axis = new THREE.Vector3();
+          const orientation = new THREE.Quaternion();
+          let index = 0;
+          const rod = (a, b, width) => {
+            axis.subVectors(b, a);
+            const length = axis.length();
+            dummy.position.copy(a).add(b).multiplyScalar(.5);
+            dummy.quaternion.setFromUnitVectors(UP, axis.multiplyScalar(1 / length));
+            dummy.scale.set(width, length, width);
+            dummy.updateMatrix(); mesh.setMatrixAt(index++, dummy.matrix);
+          };
+          for (let i = 0; i < count; i++) {
+            fibonacci(normal, i, count, branched ? .35 : 1.4);
+            const length = branched ? .23 : .14;
+            start.copy(normal).multiplyScalar(CONFIG.radius * .96);
+            end.copy(normal).multiplyScalar(CONFIG.radius + length);
+            rod(start, end, branched ? .022 : .013);
+            if (branched) {
+              orientation.setFromUnitVectors(UP, normal);
+              start.copy(end);
+              for (const sign of [-1, 1]) {
+                end.set(sign * .095, .11, 0).applyQuaternion(orientation).add(start);
+                rod(start, end, .019);
+              }
+            }
+          }
+          mesh.instanceMatrix.needsUpdate = true;
+          mesh.frustumCulled = false;
+          return mesh;
+        }
+        create(kind) {
+          const group = new THREE.Group(), materials = this.materials[kind];
+          group.add(new THREE.Mesh(this.body, materials.body));
+          const nucleus = new THREE.Mesh(this.nucleus, materials.nucleus);
+          nucleus.position.set(.12, .13, .31); group.add(nucleus);
+          group.add(this.receptors(kind === "t" ? 14 : 20, true, materials.car));
+          if (kind === "t") group.add(this.receptors(18, false, materials.body));
+          return group;
+        }
+      }
+
+      /**
+       * O(1) free-list allocation/removal; O(active) updates; one instanced draw.
+       * An inactive slot has a zero-scale matrix. Saturation drops an emission
+       * rather than growing memory. Arrival at a sampled surface point is a hit.
+       */
+      class ParticlePool {
+        constructor(scene, resources, onImpact) {
+          this.onImpact = onImpact;
+          this.matrix = new THREE.Matrix4();
+          this.hiddenMatrix = new THREE.Matrix4().makeScale(0, 0, 0);
+          this.mesh = new THREE.InstancedMesh(resources.keep(new THREE.SphereGeometry(.055, 6, 5)),
+            resources.keep(new THREE.MeshStandardMaterial({ color: linearColor(palette.payload), emissive: linearColor(palette.payload), emissiveIntensity: 2, roughness: .3 })), CONFIG.capacity);
+          this.mesh.name = "Pooled perforin and granzyme symbols";
+          this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+          this.mesh.frustumCulled = false;
+          this.items = Array.from({ length: CONFIG.capacity }, () => ({ position: new THREE.Vector3(), direction: new THREE.Vector3(), remaining: 0, speed: 0 }));
+          this.active = new Uint16Array(CONFIG.capacity);
+          this.free = new Uint16Array(CONFIG.capacity);
+          scene.add(this.mesh);
+          this.clear();
+        }
+        clear() {
+          this.count = 0; this.freeCount = CONFIG.capacity;
+          this.random = new Random(CONFIG.seed);
+          for (let i = 0; i < CONFIG.capacity; i++) { this.free[i] = i; this.mesh.setMatrixAt(i, this.hiddenMatrix); }
+          this.mesh.instanceMatrix.needsUpdate = true;
+          this.mesh.visible = false;
+        }
+        emit(origin, target, tangent, bitangent) {
+          if (!this.freeCount) return;
+          const id = this.free[--this.freeCount], p = this.items[id];
+          p.position.copy(origin).addScaledVector(tangent, this.random.range(-.15, .15)).addScaledVector(bitangent, this.random.range(-.15, .15));
+          p.direction.subVectors(target, p.position);
+          p.remaining = p.direction.length();
+          p.direction.multiplyScalar(1 / Math.max(p.remaining, .00001));
+          p.speed = this.random.range(3.4, 4.6);
+          this.active[this.count++] = id;
+          this.matrix.makeTranslation(p.position.x, p.position.y, p.position.z);
+          this.mesh.setMatrixAt(id, this.matrix);
+          this.mesh.instanceMatrix.needsUpdate = true;
+          this.mesh.visible = true;
+        }
+        update(dt) {
+          if (!this.count) return;
+          for (let i = this.count - 1; i >= 0; i--) {
+            const id = this.active[i], p = this.items[id], distance = p.speed * dt;
+            if (distance >= p.remaining) {
+              this.onImpact();
+              this.mesh.setMatrixAt(id, this.hiddenMatrix);
+              this.active[i] = this.active[--this.count];
+              this.free[this.freeCount++] = id;
+            } else {
+              p.position.addScaledVector(p.direction, distance); p.remaining -= distance;
+              this.matrix.makeTranslation(p.position.x, p.position.y, p.position.z);
+              this.mesh.setMatrixAt(id, this.matrix);
+            }
+          }
+          this.mesh.instanceMatrix.needsUpdate = true;
+          this.mesh.visible = this.count > 0;
+        }
+      }
+
+      /**
+       * T: hunt → attached (continuous delivery until reset).
+       * NK: hunt → burst (brief synapse) → retreat → hunt.
+       * Vectors are owned scratch storage; no transient objects in update().
+       */
+      class Hunter {
+        constructor(kind, index, model, tumor, particles) {
+          this.kind = kind; this.index = index; this.model = model;
+          this.tumor = tumor; this.particles = particles;
+          this.position = model.position;
+          this.velocity = new THREE.Vector3(); this.desired = new THREE.Vector3();
+          this.direction = new THREE.Vector3(); this.contact = new THREE.Vector3();
+          this.tangent = new THREE.Vector3(); this.bitangent = new THREE.Vector3();
+          this.origin = new THREE.Vector3();
+          this.seed = index * 2.399 + (kind === "t" ? 1.2 : 2.4);
+          this.speed = kind === "t" ? .66 : 2.3;
+          this.reset();
+        }
+        target(direction) {
+          this.site = this.tumor.nearest(direction);
+          this.contact.copy(this.site.point).addScaledVector(this.site.normal, CONFIG.radius + .43);
+          this.tangent.crossVectors(this.site.radial, UP);
+          if (this.tangent.lengthSq() < .001) this.tangent.set(1, 0, 0);
+          this.tangent.normalize();
+          this.bitangent.crossVectors(this.site.radial, this.tangent).normalize();
+        }
+        reset() {
+          fibonacci(this.direction, this.index, CONFIG.count, .45);
+          this.target(this.direction);
+          this.position.copy(this.site.radial).multiplyScalar(6.6 + (this.index % 3) * .35);
+          this.velocity.set(0, 0, 0); this.model.rotation.set(0, this.seed, 0);
+          this.phase = "hunt"; this.elapsed = 0; this.shotClock = 0; this.shots = 0;
+        }
+        fire(count) {
+          this.direction.subVectors(this.site.point, this.position).normalize();
+          this.origin.copy(this.position).addScaledVector(this.direction, CONFIG.radius * .8);
+          for (let i = 0; i < count; i++) this.particles.emit(this.origin, this.site.point, this.tangent, this.bitangent);
+        }
+        update(dt, time) {
+          this.elapsed += dt;
+          if (this.phase === "hunt") {
+            this.desired.subVectors(this.contact, this.position);
+            const distance = this.desired.length();
+            if (distance < .09) {
+              this.position.copy(this.contact); this.velocity.set(0, 0, 0);
+              this.phase = this.kind === "t" ? "attached" : "burst";
+              this.elapsed = 0; this.shotClock = 0; this.shots = 0;
+              this.fire(this.kind === "t" ? 2 : 4);
+              return;
+            }
+            const wobble = Math.min(1, distance / 1.5) * (this.kind === "t" ? .22 : .4);
+            const frequency = this.kind === "t" ? 1.1 : 2.8;
+            this.desired.multiplyScalar(1 / distance)
+              .addScaledVector(this.tangent, Math.sin(time * frequency + this.seed) * wobble)
+              .addScaledVector(this.bitangent, Math.cos(time * frequency * .73 + this.seed) * wobble * .7)
+              .normalize().multiplyScalar(Math.min(this.speed, distance / dt));
+            this.velocity.lerp(this.desired, 1 - Math.exp(-dt * 6));
+            if (this.velocity.length() * dt >= distance) this.position.copy(this.contact);
+            else this.position.addScaledVector(this.velocity, dt);
+            this.model.rotation.y += dt * (this.kind === "t" ? .12 : .42);
+            this.model.rotation.x += dt * .08;
+          } else if (this.phase === "attached") {
+            this.shotClock += dt;
+            while (this.shotClock >= .2) { this.shotClock -= .2; this.fire(2); }
+          } else if (this.phase === "burst") {
+            this.shotClock += dt;
+            while (this.shots < 4 && this.shotClock >= .065) { this.shotClock -= .065; this.fire(3); this.shots++; }
+            if (this.elapsed >= .48) {
+              this.phase = "retreat"; this.elapsed = 0;
+              // A genuine outward + tangential velocity change, not teleportation.
+              this.velocity.copy(this.site.radial).multiplyScalar(1.2)
+                .addScaledVector(this.tangent, this.index % 2 ? .72 : -.72)
+                .normalize().multiplyScalar(this.speed * 1.55);
+            }
+          } else if (this.phase === "retreat") {
+            this.position.addScaledVector(this.velocity, dt);
+            this.model.rotation.y += dt * .9;
+            if (this.position.length() >= 7.2) {
+              this.direction.copy(this.position).normalize();
+              this.target(this.direction);
+              this.phase = "hunt"; this.elapsed = 0;
+              // Preserve a small amount of momentum for a curved re-entry.
+              this.velocity.multiplyScalar(.25);
+            }
+          }
+        }
+      }
+
+      /** Owns rendering, state transitions, responsive sizing, UI, and lifecycle. */
+      class Simulation {
+        constructor() {
+          this.resources = new Resources();
+          this.abort = new AbortController();
+          this.canvas = $("scene"); this.viewport = $("viewport");
+          this.motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+          this.paused = this.motion.matches;
+          this.mode = "t"; this.time = 0; this.accumulator = 0; this.impacts = 0;
+          this.timeScale = 1; this.frameId = 0; this.lastFrame = 0; this.lastUI = -Infinity;
+          this.lastAnnouncement = -Infinity; this.destroyed = false; this.contextLost = false;
+          this.needsRender = true; this.fitDistance = 0;
+          this.offset = new THREE.Vector3();
+          this.frame = this.frame.bind(this);
+        }
+        init() {
+          this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+          this.renderer.outputEncoding = THREE.sRGBEncoding;
+          this.renderer.toneMapping = THREE.NoToneMapping; // Preserve categorical color saturation.
+          this.scene = new THREE.Scene();
+          this.scene.background = new THREE.Color(palette.background);
+          this.scene.fog = new THREE.FogExp2(palette.background, .018);
+          this.camera = new THREE.PerspectiveCamera(44, 1, .1, 120);
+          this.camera.position.set(10, 7, 13);
+          this.controls = new THREE.OrbitControls(this.camera, this.canvas);
+          this.controls.enableDamping = true; this.controls.dampingFactor = .07;
+          this.controls.minDistance = 5; this.controls.maxDistance = 65;
+          this.controls.enablePan = true;
+          this.controls.listenToKeyEvents(this.canvas);
+          this.environment();
+          this.tumor = new Tumor(this.scene, this.resources);
+          this.particles = new ParticlePool(this.scene, this.resources, () => { this.impacts++; this.tumor.hit(); });
+          const models = new CellModels(this.resources);
+          this.groups = {}; this.hunters = {};
+          for (const kind of ["t", "nk"]) {
+            const group = new THREE.Group(); group.name = kind === "t" ? "CAR-T cohort" : "CAR-NK cohort";
+            this.groups[kind] = group; this.hunters[kind] = []; this.scene.add(group);
+            for (let i = 0; i < CONFIG.count; i++) {
+              const model = models.create(kind); group.add(model);
+              this.hunters[kind].push(new Hunter(kind, i, model, this.tumor, this.particles));
+            }
+          }
+          this.bindEvents(); this.resize(); this.selectMode("t");
+          $("therapyControls").disabled = false;
+          document.querySelectorAll("[data-sim-control]").forEach(element => { element.disabled = false; });
+          $("loading").hidden = true;
+          if (this.motion.matches) this.announce("Status: Reduced-motion preference detected. Select Play to start.", true);
+          this.start();
+        }
+        environment() {
+          this.scene.add(new THREE.HemisphereLight(palette.ink, palette.background, .85));
+          const key = new THREE.DirectionalLight(palette.ink, 1.45); key.position.set(4, 8, 6); this.scene.add(key);
+          const rim = new THREE.DirectionalLight(palette.nk, .7); rim.position.set(-6, 3, -4); this.scene.add(rim);
+          const grid = new THREE.GridHelper(32, 32, palette.muted, palette.muted);
+          this.resources.keep(grid.geometry); this.resources.keep(grid.material);
+          grid.position.y = -3.5; grid.material.transparent = true; grid.material.opacity = .1; grid.material.depthWrite = false;
+          this.scene.add(grid);
+          const ringMaterial = this.resources.keep(new THREE.MeshBasicMaterial({ color: palette.muted, transparent: true, opacity: .19, depthWrite: false }));
+          for (const radius of [3.6, 6.9]) {
+            const ring = new THREE.Mesh(this.resources.keep(new THREE.TorusGeometry(radius, .012, 4, 120)), ringMaterial);
+            ring.rotation.x = -Math.PI / 2; ring.position.y = -3.48; this.scene.add(ring);
+          }
+          const rng = new Random(CONFIG.seed), positions = new Float32Array(150 * 3);
+          for (let i = 0; i < positions.length; i++) positions[i] = rng.range(-19, 19);
+          const geometry = this.resources.keep(new THREE.BufferGeometry());
+          geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+          this.scene.add(new THREE.Points(geometry, this.resources.keep(new THREE.PointsMaterial({ color: palette.muted, size: .035, transparent: true, opacity: .35, depthWrite: false }))));
+        }
+        listen(target, event, callback) { target.addEventListener(event, callback, { signal: this.abort.signal }); }
+        bindEvents() {
+          document.querySelectorAll("[data-mode]").forEach(button => this.listen(button, "click", () => this.selectMode(button.dataset.mode)));
+          this.listen($("pause"), "click", () => this.setPaused(!this.paused));
+          this.listen($("restart"), "click", () => this.selectMode(this.mode));
+          this.listen($("view"), "click", () => this.resetView());
+          this.listen($("mhc"), "change", () => {
+            this.tumor.mhc.visible = !$("mhc").checked;
+            $("mhcState").textContent = this.tumor.mhc.visible ? "· visible" : "· hidden";
+            this.needsRender = true;
+          });
+          this.listen($("speed"), "input", () => {
+            this.timeScale = Number($("speed").value);
+            $("speedValue").value = `${this.timeScale.toFixed(2)}×`;
+          });
+          this.listen(this.canvas, "keydown", event => {
+            if (event.code === "Space") { event.preventDefault(); if (!event.repeat) this.setPaused(!this.paused); }
+            if (["+", "=", "-", "_"].includes(event.key)) {
+              event.preventDefault();
+              this.offset.subVectors(this.camera.position, this.controls.target);
+              const zoom = event.key === "+" || event.key === "=" ? .9 : 1.1;
+              this.offset.setLength(THREE.MathUtils.clamp(this.offset.length() * zoom, this.controls.minDistance, this.controls.maxDistance));
+              this.camera.position.copy(this.controls.target).add(this.offset); this.controls.update(); this.needsRender = true;
+            }
+          });
+          this.listen(window, "resize", () => this.resize());
+          if (window.ResizeObserver) { this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(this.viewport); }
+          this.listen(document, "visibilitychange", () => { if (document.hidden) this.stop(); else this.start(); });
+          this.listen(window, "pagehide", event => { if (event.persisted) this.stop(); else this.dispose(); });
+          this.listen(window, "pageshow", () => this.start());
+          this.listen(this.motion, "change", event => { if (event.matches) this.setPaused(true); });
+          this.listen(this.canvas, "webglcontextlost", event => {
+            event.preventDefault(); this.contextLost = true; this.stop();
+            fail("The graphics context was interrupted. Reload to rebuild the visualization. No clinical or personal data is stored.");
+          });
+        }
+        selectMode(mode) {
+          if (mode !== "t" && mode !== "nk") return;
+          this.mode = mode; this.time = 0; this.accumulator = 0; this.impacts = 0;
+          this.particles.clear(); this.tumor.flash = 0; this.tumor.flashCooldown = 0; this.tumor.update(0);
+          for (const kind of ["t", "nk"]) {
+            this.groups[kind].visible = kind === mode;
+            for (const hunter of this.hunters[kind]) hunter.reset();
+          }
+          const nk = mode === "nk";
+          $("source").textContent = nk ? "Off-the-shelf donor*" : "Patient autologous";
+          $("manufacturing").textContent = nk ? "Immediate*" : "Weeks*";
+          $("crs").textContent = nk ? "Low (assumed)*" : "High (assumed)*";
+          $("crs").className = nk ? "risk-low" : "risk-high";
+          $("gvhd").textContent = nk ? "None modeled*" : "Low (assumed)*";
+          $("behavior").textContent = nk ? "CAR-NK · Kiss, release, return" : "CAR-T · Sustained engagement";
+          this.canvas.setAttribute("aria-label", `Interactive 3D ${nk ? "CAR-NK" : "CAR-T"} and neuroblastoma model`);
+          document.querySelectorAll("[data-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
+          this.viewport.dataset.mode = mode;
+          this.needsRender = true;
+          this.updatePauseButton(); this.updateUI(performance.now(), true);
+          this.announce(this.paused ? "Status: Paused. Orbit the model or select Play." : `Status: ${nk ? "CAR-NK" : "CAR-T"} hunting tumor cells…`, true);
+        }
+        setPaused(paused) {
+          this.paused = paused; this.accumulator = 0; this.lastFrame = performance.now();
+          this.updatePauseButton();
+          this.announce(paused ? "Status: Paused. Camera controls remain available." : `Status: ${this.mode === "t" ? "CAR-T" : "CAR-NK"} simulation resumed.`, true);
+        }
+        updatePauseButton() { $("pause").textContent = this.paused ? "Play" : "Pause"; $("pause").setAttribute("aria-pressed", String(this.paused)); }
+        announce(text, force = false) {
+          const now = performance.now();
+          if (force || (now - this.lastAnnouncement >= 1800 && $("status").textContent !== text)) {
+            $("status").textContent = text; this.lastAnnouncement = now;
+          }
+        }
+        updateUI(now, force = false) {
+          if (!force && now - this.lastUI < 200) return;
+          this.lastUI = now;
+          let engaged = 0, retreating = 0;
+          for (const hunter of this.hunters[this.mode]) {
+            if (hunter.phase === "attached" || hunter.phase === "burst") engaged++;
+            if (hunter.phase === "retreat") retreating++;
+          }
+          $("cellCount").textContent = String(CONFIG.count);
+          $("engagedCount").textContent = String(engaged);
+          $("retreatCount").textContent = String(retreating);
+          $("impactCount").textContent = String(this.impacts);
+          this.viewport.dataset.activeParticles = String(this.particles.count);
+          if (this.paused) return;
+          const cycle = Math.floor(this.time / 3) % 3;
+          if (this.impacts > 0 && cycle === 0) this.announce("Status: Toxic payload delivered! Tumor-surface impacts are flashing.");
+          else if (this.mode === "t" && engaged) this.announce("Status: CAR-T attached. Continuous cytotoxic payload delivery.");
+          else if (this.mode === "nk" && retreating) this.announce("Status: CAR-NK disengaging and returning to circulation.");
+          else if (this.mode === "nk" && engaged) this.announce("Status: CAR-NK burst delivery — a brief “Kiss of Death.”");
+          else this.announce(`Status: ${this.mode === "t" ? "CAR-T" : "CAR-NK"} hunting tumor cells…`);
+        }
+        resize() {
+          if (!this.renderer || this.destroyed) return;
+          const width = this.viewport.clientWidth, height = this.viewport.clientHeight;
+          if (!width || !height) return;
+          this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(3500000 / (width * height))));
+          this.renderer.setSize(width, height, false);
+          this.camera.aspect = width / height; this.camera.updateProjectionMatrix();
+          const halfFov = Math.atan(Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.min(1, this.camera.aspect));
+          const previousFit = this.fitDistance;
+          this.fitDistance = 8.1 / Math.sin(halfFov);
+          this.controls.maxDistance = Math.max(65, this.fitDistance * 2);
+          if (!previousFit) this.resetView();
+          else {
+            this.offset.subVectors(this.camera.position, this.controls.target);
+            this.offset.setLength(THREE.MathUtils.clamp(this.offset.length() * this.fitDistance / previousFit, this.controls.minDistance, this.controls.maxDistance));
+            this.camera.position.copy(this.controls.target).add(this.offset);
+            this.controls.update();
+          }
+          this.needsRender = true;
+        }
+        resetView() {
+          // Flush damping deltas before applying an exact canonical view.
+          this.controls.enableDamping = false; this.controls.update();
+          this.controls.target.set(0, 0, 0);
+          this.camera.position.set(10, 7, 13).normalize().multiplyScalar(this.fitDistance || 22);
+          this.controls.update(); this.controls.enableDamping = true; this.needsRender = true;
+        }
+        step(dt) {
+          this.time += dt;
+          this.tumor.update(dt);
+          for (const hunter of this.hunters[this.mode]) hunter.update(dt, this.time);
+          this.particles.update(dt);
+        }
+        frame(now) {
+          if (this.destroyed || this.contextLost || document.hidden) { this.frameId = 0; return; }
+          this.frameId = requestAnimationFrame(this.frame);
+          // Clamp stalls, cap substeps, and discard backlog rather than spiral.
+          const elapsed = Math.min(Math.max((now - this.lastFrame) / 1000, 0), .1);
+          this.lastFrame = now;
+          if (!this.paused) {
+            this.accumulator = Math.min(this.accumulator + elapsed * this.timeScale, CONFIG.step * 12);
+            while (this.accumulator >= CONFIG.step) { this.step(CONFIG.step); this.accumulator -= CONFIG.step; }
+          }
+          const cameraChanged = this.controls.update();
+          if (!this.paused || cameraChanged || this.needsRender) {
+            this.renderer.render(this.scene, this.camera); this.needsRender = false;
+          }
+          this.updateUI(now);
+        }
+        start() {
+          if (this.frameId || this.destroyed || this.contextLost || document.hidden) return;
+          this.lastFrame = performance.now(); this.accumulator = 0;
+          this.frameId = requestAnimationFrame(this.frame);
+        }
+        stop() { cancelAnimationFrame(this.frameId); this.frameId = 0; this.accumulator = 0; }
+        dispose() {
+          if (this.destroyed) return;
+          this.destroyed = true; this.stop(); this.abort.abort();
+          this.observer?.disconnect(); this.controls?.dispose();
+          this.resources.dispose(); this.renderer?.dispose();
+        }
+      }
+
+      const app = new Simulation();
+      try { app.init(); }
+      catch (error) {
+        app.dispose();
+        console.error("Immunotherapy visualization initialization failed:", error);
+        fail("The 3D environment could not start. Use a current WebGL-capable browser with hardware acceleration enabled, then reload.");
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>

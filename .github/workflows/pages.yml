@@ -1,0 +1,71 @@
+name: Deploy educational site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out public site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify publication allowlist
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import subprocess
+
+          allowed = {
+              '.gitignore',
+              '.github/README.md',
+              '.github/workflows/pages.yml',
+              'molecular-atlas.html',
+              'immunotherapy-simulation.html',
+          }
+          tracked = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+          unexpected = set(filter(None, tracked)) - allowed
+          if unexpected:
+              raise SystemExit('Refusing to deploy: repository contains files outside the public-site allowlist.')
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Assemble reviewed public pages only
+        shell: bash
+        run: |
+          mkdir -p _site
+          cp molecular-atlas.html _site/index.html
+          cp molecular-atlas.html immunotherapy-simulation.html _site/
+          touch _site/.nojekyll
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
