@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="An offline, source-linked 3D guide to the five-patient Cytotherapy study of quadruple immunotherapy for recurrent neuroblastoma. Educational, not clinical advice.">
+  <title>Inside the Paper — Quadruple Immunotherapy in 3D</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="cytotherapy/styles.css">
+</head>
+<body>
+  <a class="skip" href="#lessonTitle">Skip to the lesson</a>
+  <header class="site-header">
+    <a class="site-brand" href="molecular-atlas.html" data-site-link><span class="site-brand-mark" aria-hidden="true">↬</span><span><strong>Molecular Teaching Atlas</strong><small>Understand the biology. Read the evidence.</small></span></a>
+    <nav class="site-nav" aria-label="Site navigation"><a href="molecular-atlas.html" data-site-link>Molecular atlas</a><a href="drug-atlas.html" data-site-link>Drugs &amp; targets</a><a href="immunotherapy-simulation.html" data-site-link>Immunotherapy</a><a href="cytotherapy-atlas.html" data-site-link aria-current="page">Inside the Paper</a><button id="theme" type="button">Theme</button></nav>
+  </header>
+  <div class="app">
+    <header class="header">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">◎</span><div><div class="eyebrow">INSIDE THE PAPER / A SOURCE-LINKED 3D ATLAS</div><h1>Quadruple immunotherapy</h1><p>Recurrent neuroblastoma · Wong et al., <i>Cytotherapy</i> 2026</p></div></div>
+      <div class="header-actions"><span class="local-pill">PUBLIC STUDY GUIDE · DOI LINKED</span><button id="sourceToggle" aria-expanded="true" aria-controls="sourcePanel">Hide source guide</button></div>
+    </header>
+    <div class="medical-banner"><strong>5 patients. 26 courses. A hypothesis—not a cure claim.</strong><span>Educational schematic · no individual predictions · not clinician-approved</span></div>
+    <div class="layout" id="layout">
+      <nav class="navigation" aria-label="Teaching chapters">
+        <label class="search-label" for="chapterSearch">Explore the paper</label><input id="chapterSearch" type="search" placeholder="Find a chapter…" autocomplete="off">
+        <div id="chapterList"></div><p id="noChapters" hidden>No matching chapters.</p>
+        <div class="nav-footer"><strong>Macro → micro → evidence</strong><p>18 chapters · 72 explained steps<br>All 6 figures · all 5 tables</p><button id="openOverview">Start with Figure 6 ↗</button></div>
+      </nav>
+      <main class="main" id="main">
+        <section class="scene-card" aria-labelledby="sceneTitle">
+          <div class="scene-header"><div><div id="scale" class="eyebrow"></div><h2 id="sceneTitle"></h2></div><span id="evidenceBadge" class="badge"></span></div>
+          <div id="stage" class="stage">
+            <canvas id="scene" tabindex="0" aria-label="Interactive schematic 3D scene. Drag to rotate, scroll to zoom, or use the camera buttons. The same information is explained in the lesson below."></canvas>
+            <div id="labels" class="labels" aria-hidden="true"></div>
+            <div class="stage-topline"><span>SCHEMATIC · NOT TO SCALE</span><button id="labelsToggle" aria-pressed="true">Labels on</button></div>
+            <div id="fallback" class="fallback" hidden><strong>3D is unavailable in this browser.</strong><p>The complete lesson, source figures, study data and step controls still work. Enable WebGL to view the model.</p></div>
+            <div class="camera-tools" aria-label="Camera controls"><button id="rotateLeft" title="Rotate left" aria-label="Rotate left">↶</button><button id="rotateRight" title="Rotate right" aria-label="Rotate right">↷</button><button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button><button id="resetCamera">Reset view</button></div>
+            <div class="scene-legend"><span><i class="swatch tumor"></i>Target / tissue</span><span><i class="swatch nk"></i>NK cell</span><span><i class="swatch antibody"></i>Antibody / GD2</span><span><i class="swatch ligand"></i>Stress-ligand route</span></div>
+          </div>
+          <div class="playback"><button id="play" class="primary" aria-pressed="false">▶ Play step</button><label class="scrubber">Animation phase<input id="phase" type="range" min="0" max="1000" value="0" aria-label="Animation phase within this teaching step"></label><label class="motion-label"><input id="motion" type="checkbox" checked> Motion</label><button id="restart" title="Restart animation">↺</button></div>
+          <p class="animation-note" id="animationNote">Illustrative movement only; not a kinetic, dosing or efficacy model.</p>
+          <div id="layerControls" class="layer-controls" hidden><span>Reveal drawing layers, not treatment effects:</span><label><input type="checkbox" data-layer="nk" checked> NK cells</label><label><input type="checkbox" data-layer="antibody" checked> Antibody</label><label><input type="checkbox" data-layer="ligands" checked> Stress ligands</label><label><input type="checkbox" data-layer="phagocyte" checked> Phagocyte</label></div>
+        </section>
+        <section class="learning-card">
+          <div class="tabs" role="tablist" aria-label="Learning views"><button role="tab" id="tab-explain" aria-selected="true" aria-controls="panel-explain" data-tab="explain">Explain</button><button role="tab" id="tab-data" aria-selected="false" aria-controls="panel-data" data-tab="data" tabindex="-1">Study data</button><button role="tab" id="tab-glossary" aria-selected="false" aria-controls="panel-glossary" data-tab="glossary" tabindex="-1">Glossary</button><button role="tab" id="tab-review" aria-selected="false" aria-controls="panel-review" data-tab="review" tabindex="-1">Accuracy review</button></div>
+          <div id="panel-explain" role="tabpanel" aria-labelledby="tab-explain">
+            <div class="lesson-head"><div class="eyebrow" id="chapterPosition"></div><h2 id="lessonTitle" tabindex="-1"></h2><p id="lead" class="lead"></p></div>
+            <div id="steps" class="steps" aria-label="Teaching steps"></div>
+            <article class="step-explanation"><div class="eyebrow" id="stepNumber"></div><h3 id="stepTitle"></h3><p id="stepText"></p><button id="stepSource" class="source-jump"></button></article>
+            <aside class="caution"><strong>Keep this distinction</strong><p id="caveat"></p></aside>
+            <div id="details" class="details"></div><details class="knowledge-check"><summary>Check your understanding</summary><p id="question"></p><button id="revealAnswer">Reveal explanation</button><p id="answer" hidden></p></details>
+            <div class="chapter-pager"><button id="previous">← Previous chapter</button><button id="next" class="primary">Next chapter →</button></div>
+          </div>
+          <div id="panel-data" role="tabpanel" aria-labelledby="tab-data" hidden></div>
+          <div id="panel-glossary" role="tabpanel" aria-labelledby="tab-glossary" hidden><h2>A language for the paper</h2><label for="glossarySearch">Search a term or definition</label><input id="glossarySearch" type="search" placeholder="e.g. NKG2D, Curie, marrow…"><dl id="glossary"></dl></div>
+          <div id="panel-review" role="tabpanel" aria-labelledby="tab-review" hidden></div>
+        </section>
+        <footer class="main-footer"><p id="citation"></p><p>Original explanatory models based on the published article. Geometry, cell numbers and motion are illustrative. Article facsimiles are not redistributed here. <a href="https://doi.org/10.1016/j.jcyt.2026.102885" target="_blank" rel="noopener noreferrer">Article DOI ↗</a></p></footer>
+      </main>
+      <aside id="sourcePanel" class="source-panel" aria-label="Article reading guide">
+        <div class="source-header"><div><div class="eyebrow">THE PUBLISHED PAPER</div><h2>Source reading guide</h2></div><span class="page-count">10 pages mapped</span></div>
+        <div class="source-settings"><label><input id="syncSource" type="checkbox" checked> Follow lesson</label><a id="openPdf" href="https://doi.org/10.1016/j.jcyt.2026.102885" target="_blank" rel="noopener noreferrer">Open publisher page ↗</a></div>
+        <div class="source-toolbar"><button id="pagePrev" aria-label="Previous article page guide">‹</button><label for="pageSelect" class="sr-only">Article page guide</label><select id="pageSelect"></select><button id="pageNext" aria-label="Next article page guide">›</button></div>
+        <div class="source-location" id="sourceLocation" aria-live="polite"></div>
+        <details class="source-index" open><summary>Jump to a figure or table</summary><div id="sourceIndex"></div></details>
+        <details class="source-transcript" open><summary>Verified accessible reading guide</summary><p>Original explanatory summary and selected factual transcription—not a facsimile or verbatim full-page copy. Use the publisher link to inspect the article itself. Full reported patient/event tables are also organized in Study data.</p><pre id="pageTranscript"></pre></details>
+        <p class="source-rights">Article facsimiles and the supplied PDF are not redistributed by this website. Study facts remain subject to the limitations of a five-person, single-arm report.</p>
+      </aside>
+    </div>
+  </div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+  <noscript><p>This interactive atlas needs JavaScript. <a href="https://doi.org/10.1016/j.jcyt.2026.102885">Open the published article</a>.</p></noscript>
+  <script src="cytotherapy/vendor/three.min.js"></script>
+  <script src="cytotherapy/vendor/OrbitControls.js"></script>
+  <script src="cytotherapy/source-notes.js"></script>
+  <script src="cytotherapy/content.js"></script>
+  <script src="cytotherapy/scene.js"></script>
+  <script src="cytotherapy/app.js"></script>
+</body>
+</html>

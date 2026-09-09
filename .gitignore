@@ -7,6 +7,17 @@
 !/drug-atlas.html
 !/assets/
 !/assets/alteration-frequency-supplied.png
+!/cytotherapy-atlas.html
+!/cytotherapy/
+!/cytotherapy/app.js
+!/cytotherapy/content.js
+!/cytotherapy/scene.js
+!/cytotherapy/source-notes.js
+!/cytotherapy/styles.css
+!/cytotherapy/vendor/
+!/cytotherapy/vendor/OrbitControls.js
+!/cytotherapy/vendor/three.min.js
+!/cytotherapy/vendor/THREE-LICENSE.txt
 !/.github/
 !/.github/README.md
 !/.github/workflows/

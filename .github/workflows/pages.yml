@@ -35,6 +35,15 @@ jobs:
               'immunotherapy-simulation.html',
               'drug-atlas.html',
               'assets/alteration-frequency-supplied.png',
+              'cytotherapy-atlas.html',
+              'cytotherapy/app.js',
+              'cytotherapy/content.js',
+              'cytotherapy/scene.js',
+              'cytotherapy/source-notes.js',
+              'cytotherapy/styles.css',
+              'cytotherapy/vendor/OrbitControls.js',
+              'cytotherapy/vendor/three.min.js',
+              'cytotherapy/vendor/THREE-LICENSE.txt',
           }
           tracked = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
           unexpected = set(filter(None, tracked)) - allowed
@@ -48,10 +57,12 @@ jobs:
       - name: Assemble reviewed public pages only
         shell: bash
         run: |
-          mkdir -p _site/assets
+          mkdir -p _site/assets _site/cytotherapy/vendor
           cp molecular-atlas.html _site/index.html
-          cp molecular-atlas.html immunotherapy-simulation.html drug-atlas.html _site/
+          cp molecular-atlas.html immunotherapy-simulation.html drug-atlas.html cytotherapy-atlas.html _site/
           cp assets/alteration-frequency-supplied.png _site/assets/
+          cp cytotherapy/app.js cytotherapy/content.js cytotherapy/scene.js cytotherapy/source-notes.js cytotherapy/styles.css _site/cytotherapy/
+          cp cytotherapy/vendor/OrbitControls.js cytotherapy/vendor/three.min.js cytotherapy/vendor/THREE-LICENSE.txt _site/cytotherapy/vendor/
           touch _site/.nojekyll
 
       - name: Upload site artifact
