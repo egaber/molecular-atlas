@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="An interactive, educational 3D comparison of stylized CAR-T and CAR-NK engagement with a GD2-positive neuroblastoma model.">
-  <title>Next-Gen Immunotherapy: CAR-T vs CAR-NK</title>
+  <meta name="referrer" content="no-referrer">
+  <title>CAR-T &amp; CAR-NK — Cells, Receptors &amp; Manufacturing</title>
   <script>
     (() => {
       const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
@@ -79,6 +80,8 @@
       --cp-car-nk: #0ea5e9;
       --cp-payload: #22c55e;
       --cp-mhc: #94a3b8;
+      --cp-dna: #c2a9de;
+      --cp-granzyme: #f2cf77;
       --cp-transparent: transparent;
     }
     * { box-sizing: border-box; }
@@ -168,6 +171,50 @@
       h2 { font-size: 19px; } h1 { font-size: 26px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+    /* Detail-first explorer: labels stay on the model, explanations below it. */
+    .app { min-height:780px; }
+    .viewport { display:flex; flex-direction:column; overflow-y:auto; }
+    .scene-top { position:static; padding:20px 24px 10px; flex-shrink:0; }
+    .view-nav { display:flex; gap:6px; flex-wrap:wrap; padding:0 24px 12px; }
+    .view-nav button { min-height:38px; padding:7px 10px; font-size:12px; }
+    .view-nav button[aria-pressed="true"] { border-color:var(--cp-accent); background:var(--cp-accent-soft); }
+    .stage { position:relative; flex:1; min-height:300px; overflow:hidden; }
+    .stage canvas { position:absolute; inset:0; }
+    .detail-labels { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .detail-label { position:absolute; transform:translate(-50%,-50%); pointer-events:auto; border:1px solid var(--cp-scene-line); background:var(--cp-scene-panel); color:var(--cp-scene-text); padding:4px 7px; font-size:11px; min-height:28px; max-width:180px; line-height:1.35; }
+    .detail-label:hover { background:var(--cp-scene-panel)!important; border-color:var(--cp-gd2)!important; }
+    .detail-label.is-selected { border-color:var(--cp-gd2); }
+    .zoom-tools { position:absolute; right:14px; bottom:12px; display:flex; gap:6px; align-items:center; }
+    .zoom-tools button { min-height:36px; min-width:36px; font-size:14px; }
+    .zoom-tools output { color:var(--cp-scene-muted); font:11px Consolas,monospace; padding:6px; }
+    .scale-note { position:absolute; top:8px; left:24px; right:24px; color:var(--cp-scene-muted); font:10px/1.5 Consolas,monospace; pointer-events:none; }
+    .scene-bottom { position:static; padding:10px 24px 18px; flex-shrink:0; }
+    .detail-panel { padding:16px 24px 20px; border-top:1px solid var(--cp-scene-line); color:var(--cp-scene-text); background:var(--cp-scene-panel); flex-shrink:0; }
+    .detail-panel h3 { margin:0 0 7px; font-size:17px; font-weight:600; }
+    .detail-panel p { font-size:13px; max-width:90ch; }
+    .detail-panel .evidence-note { font-size:11px; color:var(--cp-scene-muted); margin-top:8px; }
+    .detail-steps { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+    .detail-steps button { padding:6px 9px; font-size:11px; min-height:34px; }
+    .detail-steps button[aria-current="step"] { background:var(--cp-accent-soft); border-color:var(--cp-accent); }
+    .detail-controls { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .detail-controls label { flex:1; font-size:10px; color:var(--cp-scene-muted); }
+    .detail-controls button { font-size:11px; min-height:34px; }
+    .detail-controls input { margin:0; display:block; }
+    .picked { margin-top:10px; padding:10px 12px; border-left:2px solid var(--cp-gd2); color:var(--cp-scene-text); background:var(--cp-scene-panel); font-size:12px; }
+    .picked strong { color:var(--cp-granzyme); }
+    .picked button { float:right; min-height:24px; padding:2px 7px; font-size:10px; }
+    .sources-links { display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:10px; }
+    .sources-links a { color:var(--cp-link); font-size:11px; text-underline-offset:3px; }
+    .learn-button { width:100%; text-align:left; margin-top:10px; font-size:12px; }
+    .compare { margin-top:18px; padding:14px; border:1px solid var(--cp-border); border-radius:10px; background:var(--cp-surface-soft); font-size:12px; }
+    .compare strong { color:var(--cp-accent); }
+    .compare p+p { margin-top:8px; }
+    .platform { display:grid; gap:6px; font-size:12px; margin:12px 0; }
+    .platform select { width:100%; padding:8px; border:1px solid var(--cp-border); border-radius:10px; color:var(--cp-text); background:var(--cp-surface); font:inherit; }
+    .cell-picker { width:100%; margin:8px 0; font:inherit; border-radius:10px; border:1px solid var(--cp-border); padding:8px; color:var(--cp-text); background:var(--cp-surface); }
+    .panel .note a { color:var(--cp-link); }
+    @media(max-width:1100px) { .scene-top { flex-direction:row; } .scene-tools { flex-wrap:wrap; justify-content:flex-end; } .view-nav { padding:0 18px 12px; } }
+    @media(max-width:760px) { .app { min-height:0; } .viewport { height:auto; min-height:0; overflow:visible; } .stage { flex:0 0 420px; min-height:420px; } .scene-top { padding:16px; flex-direction:column; } .view-nav { padding:0 16px 12px; } .scene-bottom,.detail-panel { padding:14px 16px; } .detail-label { font-size:10px; max-width:135px; } .scene-tools { justify-content:flex-start; } }
   </style>
 </head>
 <body>
@@ -178,31 +225,36 @@
   <main class="app">
     <aside class="panel" aria-label="Immunotherapy simulation controls">
       <div class="title-row"><p class="eyebrow">Cellular systems / 01</p></div>
-      <h1>Next-Gen Immunotherapy: CAR-T vs CAR-NK</h1>
-      <p class="intro">Two engineered immune-cell behaviors. One GD2-positive neuroblastoma model.</p>
+      <h1>CAR-T &amp; CAR-NK<br>From cell to contact</h1>
+      <p class="intro">Two immune-cell types. An added recognition receptor. Explore what changes—and what does not.</p>
+      <div class="compare"><p><strong>T cells:</strong> adaptive lymphocytes; conventional TCRs recognize peptide–HLA/MHC.</p><p><strong>NK cells:</strong> innate lymphocytes; activating and inhibitory receptors integrate signs of stress and “self.”</p><p><strong>A CAR:</strong> an engineered receptor added to either cell. It does not turn a T cell into an NK cell.</p></div>
+      <button class="learn-button" id="learnMaking" type="button" data-sim-control disabled>How are CAR cells manufactured? →</button>
       <fieldset id="therapyControls" disabled>
-        <legend class="section-title">01 / Select a therapy</legend>
+        <legend class="section-title">01 / Choose the cell carrying the CAR</legend>
         <div class="segmented" role="group" aria-label="Therapy mode">
-          <button class="mode-button" type="button" data-mode="t" aria-pressed="true"><span class="swatch car-t" aria-hidden="true"></span><strong>Simulate CAR-T Therapy</strong><small>Deliberate approach<br>Sustained engagement</small></button>
-          <button class="mode-button" type="button" data-mode="nk" aria-pressed="false"><span class="swatch car-nk" aria-hidden="true"></span><strong>Simulate CAR-NK Therapy</strong><small>Agile approach<br>Burst &amp; retreat</small></button>
+          <button class="mode-button" type="button" data-mode="t" aria-pressed="true"><span class="swatch car-t" aria-hidden="true"></span><strong>CAR-T cells</strong><small>Adaptive lineage<br>CAR + native T-cell biology</small></button>
+          <button class="mode-button" type="button" data-mode="nk" aria-pressed="false"><span class="swatch car-nk" aria-hidden="true"></span><strong>CAR-NK cells</strong><small>Innate lineage<br>CAR + native NK biology</small></button>
         </div>
       </fieldset>
-      <section class="section" aria-label="Illustrative comparison metrics">
+      <section class="section" aria-label="Cell product context">
         <table>
-          <caption class="section-title">02 / Illustrative comparison*</caption>
+          <caption class="section-title">02 / Product context—not a ranking</caption>
           <tbody>
-            <tr><th scope="row">Cell source</th><td id="source">Patient autologous</td></tr>
-            <tr><th scope="row">Manufacturing time</th><td id="manufacturing">Weeks*</td></tr>
-            <tr><th scope="row">CRS risk level</th><td id="crs" class="risk-high">High (assumed)*</td></tr>
-            <tr><th scope="row">GvHD risk</th><td id="gvhd">Low (assumed)*</td></tr>
+            <tr><th scope="row">Common starting source</th><td id="source">Patient T cells</td></tr>
+            <tr><th scope="row">Production / access</th><td id="manufacturing">Product-dependent</td></tr>
+            <tr><th scope="row">CRS / neurotoxicity</th><td id="crs">Possible; trial-specific</td></tr>
+            <tr><th scope="row">Allogeneic GvHD</th><td id="gvhd">Source / product-dependent</td></tr>
           </tbody>
         </table>
-        <p class="note">*Scenario labels, not clinical rates. “Immediate” assumes a released, banked dose; “none” is not a safety guarantee.</p>
+        <p class="note">No head-to-head outcome comparison is modeled. Donor-derived does not mean immediately available. GD2-targeted cell therapies require indication- and product-specific evidence.</p>
       </section>
       <section class="section" aria-label="Tumor immune evasion">
         <span class="section-title">03 / Tumor phenotype</span>
         <label class="switch-row"><input id="mhc" type="checkbox" checked disabled data-sim-control><span>Hide MHC-I markers <strong id="mhcState">· hidden</strong></span></label>
         <p class="note">Both CARs recognize GD2 without MHC-I. Native TCR recognition needs peptide–MHC. This switch changes markers, not CAR targeting.</p>
+        <label class="platform" id="nkPlatformWrap" hidden>CAR-NK starting platform<select id="nkPlatform"><option value="blood">Donor peripheral blood</option><option value="cord">Umbilical cord blood</option><option value="ipsc">iPSC-derived NK cells</option><option value="nk92">NK-92 cell line</option></select></label>
+        <label class="platform">Overview camera target<select id="focusCell" class="cell-picker" disabled data-sim-control><option value="all">Whole environment</option><option value="tumor">Tumor surface</option><option value="0">Effector 1</option><option value="1">Effector 2</option><option value="2">Effector 3</option><option value="3">Effector 4</option><option value="4">Effector 5</option><option value="5">Effector 6</option></select></label>
+        <p class="note">Click a cell in the overview to pause and focus it. Use the detail views for new geometry, not just enlarged overview symbols.</p>
       </section>
       <section class="section" aria-label="Simulation status">
         <span class="section-title">04 / Live activity</span>
@@ -214,21 +266,22 @@
         <summary>Model limits &amp; safety context</summary>
         <p>This is an educational animation, not a biological simulator, treatment recommendation, or efficacy comparison. Motion, contact duration, risk categories, and particle counts are illustrative. Both T and NK cells can disengage and kill serially; their behavior is not a strict slow-versus-fast dichotomy.</p>
         <p>CAR-NK approaches for neuroblastoma are investigational. Donor-derived does not mean a product is immediately available. Manufacturing, access, CRS, and other risks vary by product and patient; CRS can occur with either approach.</p>
-        <p>Autologous CAR-T generally does not cause conventional allogeneic GvHD. “None modeled” for CAR-NK refers to this simplified NK-intrinsic model, not zero clinical risk or a guarantee about a donor product.</p>
+        <p>Autologous CAR-T does not ordinarily cause conventional donor-derived GvHD. Allogeneic T-cell products need separate safeguards. NK cells do not share conventional TCR-mediated alloreactivity, but zero events in a small study does not guarantee zero risk from a cell product.</p>
         <p>Reduced MHC-I can contribute to NK “missing-self” recognition, but NK activity also depends on activating and inhibitory signals. That balance, tumor resistance, normal-tissue GD2, trafficking, and clinical outcomes are not simulated. Green beads symbolize perforin/granzyme delivery, not measured molecules; surface flashes do not establish tumor death.</p>
       </details>
     </aside>
     <section id="viewport" class="viewport" aria-label="Interactive 3D cellular environment">
-      <canvas id="scene" tabindex="0" role="img" aria-label="Interactive 3D CAR-T and neuroblastoma model" aria-describedby="orbitHelp">A WebGL-capable browser is needed to display the 3D model.</canvas>
       <div class="scene-top">
-        <div><p class="eyebrow">GD2+ neuroblastoma / in-silico illustration</p><h2 id="behavior">CAR-T · Sustained engagement</h2></div>
+        <div><p class="eyebrow">GD2 recognition / educational models</p><h2 id="behavior">CAR-T · Overview</h2></div>
         <div class="scene-tools" role="group" aria-label="Playback and camera">
           <button id="pause" type="button" disabled data-sim-control aria-pressed="false">Pause</button>
           <button id="restart" type="button" disabled data-sim-control aria-label="Restart the selected simulation">Restart</button>
           <button id="view" type="button" disabled data-sim-control aria-label="Reset the camera view">Reset view</button>
         </div>
       </div>
-      <div class="scene-bottom">
+      <nav class="view-nav" aria-label="Immunotherapy detail views"><button type="button" data-view="overview" aria-pressed="true" disabled data-sim-control>01 Overview</button><button type="button" data-view="cell" aria-pressed="false" disabled data-sim-control>02 Inside a cell</button><button type="button" data-view="car" aria-pressed="false" disabled data-sim-control>03 CAR &amp; GD2</button><button type="button" data-view="synapse" aria-pressed="false" disabled data-sim-control>04 Immune synapse</button><button type="button" data-view="making" aria-pressed="false" disabled data-sim-control>05 Making CAR cells</button></nav>
+      <div id="stage" class="stage"><canvas id="scene" tabindex="0" role="img" aria-label="Interactive 3D CAR-T and neuroblastoma model" aria-describedby="orbitHelp">A WebGL-capable browser is needed to display the 3D model.</canvas><div id="detailLabels" class="detail-labels"></div><p id="scaleNote" class="scale-note">Cell / tissue cartoon · not to scale · motion is illustrative</p><div class="zoom-tools" aria-label="Zoom controls"><button id="zoomOut" type="button" aria-label="Zoom out" disabled data-sim-control>−</button><output id="zoomValue">1.0× view</output><button id="zoomIn" type="button" aria-label="Zoom in" disabled data-sim-control>+</button><button id="fullView" type="button" disabled data-sim-control>Fit</button></div></div>
+      <div class="scene-bottom" id="overviewFooter">
         <div class="stats" aria-label="Live animation counters">
           <div class="stat"><strong id="cellCount">6</strong><span>Effectors</span></div>
           <div class="stat"><strong id="engagedCount">0</strong><span>Engaged</span></div>
@@ -236,11 +289,13 @@
           <div class="stat"><strong id="impactCount">0</strong><span>Visual impacts</span></div>
         </div>
         <div class="legend" aria-label="Cell and marker color legend">
-          <span><i class="swatch tumor"></i>Tumor</span><span><i class="swatch gd2"></i>GD2</span><span><i class="swatch car-t"></i>CAR-T</span><span><i class="swatch car-nk"></i>CAR-NK</span><span><i class="swatch payload"></i>Perforin / granzymes</span>
+          <span><i class="swatch tumor"></i>Tumor region</span><span><i class="swatch gd2"></i>GD2 markers</span><span><i class="swatch car-t"></i>CAR-T</span><span><i class="swatch car-nk"></i>CAR-NK</span><span><i class="swatch payload"></i>Granule-content symbols</span>
         </div>
         <p id="orbitHelp" class="help">Drag to orbit · right-drag to pan · wheel/pinch to zoom. Keyboard on canvas: arrows pan, +/− zoom, Space pauses.</p>
         <p class="disclaimer">Illustrative motion and risk labels · not a clinical prediction · not to scale</p>
       </div>
+      <section id="detailPanel" class="detail-panel" aria-label="Explanation of the selected view" hidden><div id="detailSteps" class="detail-steps"></div><div class="detail-controls" id="detailControls"><button id="detailPlay" type="button" aria-pressed="false">Play step</button><label>Illustrative progress<input id="detailProgress" type="range" min="0" max="1000" step="1" value="0" aria-label="Detail animation progress"></label><button id="detailReplay" type="button">Replay</button></div><h3 id="detailTitle"></h3><p id="detailText" role="status" aria-live="polite"></p><p id="detailBoundary" class="evidence-note"></p><div id="detailSources" class="sources-links"></div></section>
+      <aside id="picked" class="picked" aria-label="Selected structure" hidden><button id="closePicked" type="button" aria-label="Close structure explanation">×</button><strong id="pickedTitle"></strong><p id="pickedText"></p></aside>
       <div id="loading" class="loading" role="status">Preparing the cellular environment…</div>
       <div id="error" class="error" role="alert" hidden><p id="errorMessage"></p><button id="retry" type="button">Reload visualization</button></div>
       <noscript><div class="error">Enable JavaScript to run this interactive visualization.</div></noscript>
@@ -284,6 +339,51 @@
         updateThemeLabel();
       });
       updateThemeLabel();
+      const REFERENCES={
+        nci:['NCI · CAR-cell engineering overview','https://www.cancer.gov/about-cancer/treatment/research/car-t-cells'],
+        nk:['Abel et al. · NK recognition and cytotoxicity','https://europepmc.org/articles/PMC6099181'],
+        platforms:['Sabbah et al. · CAR-NK designs and cell sources','https://europepmc.org/articles/PMC9367380'],
+        car:['Sterner & Sterner · CAR architecture','https://europepmc.org/articles/PMC8024391'],
+        manufacture:['Abou-El-Enein et al. · CAR-T manufacturing','https://europepmc.org/articles/PMC8462122'],
+        synapse:['Davenport et al. · CAR-T synapses and serial killing','https://europepmc.org/articles/PMC5834689'],
+        damage:['Weigelin et al. · Cumulative cytotoxic damage','https://europepmc.org/articles/PMC8410835'],
+        trialnk:['Liu et al. · CD19 CAR-NK trial, not neuroblastoma','https://doi.org/10.1056/NEJMoa1910607'],
+        trialt:['Del Bufalo et al. · GD2-CART01 neuroblastoma trial','https://doi.org/10.1056/NEJMoa2210859']
+      };
+      const LESSONS={
+        cell:[
+          ['Two lymphocyte lineages','T and NK cells are both white blood cells from lymphoid developmental pathways. Conventional T cells mature through the thymus and can develop antigen-specific memory. NK cells are innate lymphocytes; some NK populations can also show memory-like responses.','This cutaway is a generic lymphocyte, not microscopy. Shape alone does not identify T versus NK or reveal the receptor repertoire.',['nk','car']],
+          ['How the unmodified cell recognizes a target','Conventional αβ TCRs recognize peptide–HLA/MHC. CD8 T cells typically recognize MHC-I and CD4 T cells MHC-II; not all T cells are killers. NK cells integrate activating receptors with inhibitory KIR/HLA-I and NKG2A/HLA-E interactions. NKG2D recognizes stress-associated ligands—not GD2.','“Missing self” reduces an inhibitory input; it is not an automatic kill command. This view does not calculate a native-receptor signaling balance.',['nk','platforms']],
+          ['What the CAR adds','The engineered cell expresses a new surface receptor with chosen target specificity. An anti-GD2 CAR recognizes a carbohydrate-containing surface glycolipid directly, without needing peptide presentation by HLA/MHC. The cell retains its T- or NK-lineage biology.','CAR expression does not erase every native receptor. Some allogeneic T-cell designs separately modify the native TCR; that is product-specific.',['car','platforms']],
+          ['Shared cytotoxic machinery','Activated cytotoxic T cells and NK cells can direct granules toward a contact. Granules contain perforin and granzymes. Other mechanisms—including death-receptor signaling—also exist. Both cell types can detach and attack additional targets.','The granules, nucleus and membrane are magnified symbols. Their number and arrangement do not measure potency, readiness or cell viability.',['nk','synapse','damage']]
+        ],
+        car:[
+          ['One receptor crosses the membrane','A typical CAR has an extracellular binding domain, a hinge/spacer, a transmembrane segment, and intracellular signaling domains. Here an scFv is represented by two connected variable-domain lobes—not a whole Y-shaped antibody.','CAR designs vary. This domain topology is not a solved anti-GD2 CAR structure or a choice of clinical construct.',['car','nci']],
+          ['GD2 is a glycolipid, not a protein','GD2 has a ceramide anchor in the outer leaflet of the target membrane and an extracellular carbohydrate headgroup. It is often abundant in neuroblastoma but is not exclusive to tumor cells. The amber symbol is not an electrical receptor or a kinase.','The overview cones are location markers only. This close-up represents glycan/anchor topology; it does not reconstruct bonds, glycosidic stereochemistry or an antigen-binding interface.',['trialt','platforms']],
+          ['Binding and signaling are different events','The CAR binding domain can engage accessible surface GD2. Productive organization then couples recognition to signaling inside the effector. Conventional designs often use CD3ζ plus costimulatory domains; NK-specific designs can use other components.','A drawn contact is not proof of receptor activation, killing or clinical response. Affinity, antigen density, spatial accessibility and cell state matter.',['car','platforms']],
+          ['CAR recognition is not antibody–CD16 recognition','An infused anti-GD2 antibody can coat a target, and an NK cell’s CD16 can recognize the antibody Fc in ADCC. A CAR instead supplies a cell-encoded binding and signaling receptor. NKG2D is yet another receptor with different ligands.','The two routes can coexist, but are not the same treatment or the same molecular interaction. The NK-cell infusion in a paper is not automatically a CAR-NK product.',['nk','platforms']]
+        ],
+        synapse:[
+          ['1 · Recognition and contact','A productive immune-cell–target contact organizes receptors, adhesion proteins, the cytoskeleton and signaling machinery. CAR synapses can differ from textbook conventional TCR synapses.','The enlarged gap is for visibility; there is no universal perfectly concentric “bullseye” or fixed synapse duration.',['synapse','nk']],
+          ['2 · Granules move toward the contact','Cytotoxic granules can polarize toward the contact using cytoskeletal transport. Their membrane subsequently fuses with the effector-cell membrane, releasing contents outward into the synaptic cleft.','The granule vesicle does not travel intact through both cell membranes. Movement is a slowed choreography, not a measured trafficking trajectory.',['synapse','nk']],
+          ['3 · Release, then target-cell entry','Perforin facilitates access of granzymes to the target-cell cytosol. Granzymes are proteases that can engage cell-death pathways. The green and gold symbols represent different cargo types; they are not fluorescent clinical measurements.','Perforin action and entry routes are simplified; no atomic pore structure is claimed. Plasma-membrane damage, membrane repair and endocytic routes can contribute depending on conditions.',['damage','nk']],
+          ['4 · Outcomes are not guaranteed','Cytotoxic damage can trigger apoptosis, accumulate across contacts, or be repaired. The effector may detach and engage another target. Fewer cells in a clinical tumor cannot be inferred by counting animation particles.','Both cytotoxic T cells and NK cells can kill serially. The original overview uses different motion settings for teaching—not a universal speed, persistence or efficacy ranking.',['synapse','damage']]
+        ],
+        making:[
+          ['1 · Choose and obtain the starting cells','A common autologous CAR-T route starts with the patient’s blood cells collected by leukapheresis, then selects/enriches T cells. CAR-NK can start from donor peripheral blood, cord blood, NK-92 or iPSC-derived NK cells. Select an NK platform at left to compare the starting material.','Autologous means from the same person; allogeneic means from another donor. This is a manufacturing overview, not a collection or culture protocol.',['nci','manufacture','platforms']],
+          ['2 · Establish the right cell population','T cells are selected and activated so they can be engineered and expanded. NK workflows require platform-specific isolation, activation or differentiation. iPSCs are differentiated into an NK product; they are not infused as undifferentiated stem cells in this example.','Selection, differentiation and activation are different processes. Their ordering overlaps and varies between manufacturing platforms.',['manufacture','platforms']],
+          ['3 · Introduce instructions for the CAR','Manufacturers introduce genetic information encoding the receptor, commonly with a viral vector; nonviral approaches and transient RNA expression also exist. The engineered cell makes the receptor and places it in its membrane.','A vector is a delivery tool, not the CAR itself. Do not assume every method inserts DNA at a chosen site, integrates permanently, or gives identical expression. Some NK platforms engineer a precursor or master bank before differentiation.',['car','manufacture','platforms']],
+          ['4 · Expand and characterize the cells','The engineered cells are grown under controlled manufacturing conditions. Developers characterize identity, receptor expression, viability and function; the product is more than a bag of cells with a new label.','Bubbles multiplying here symbolize expansion, not an actual growth rate, recipe, dose or guarantee of a successful manufacturing run.',['manufacture','platforms']],
+          ['5 · Quality testing and release','The product must meet predefined quality requirements before release, including identity, purity, viability, sterility and potency, with additional tests appropriate to the gene-delivery platform. Formulation, freezing and shipping vary by product.','A banked product still needs release, availability and clinical suitability. Clinical NK-92-derived products require irradiation because NK-92 is a tumor-derived cell line; this does not apply to all NK platforms.',['manufacture','platforms']],
+          ['6 · Clinical preparation, infusion and monitoring','The clinical team assesses eligibility and the treatment plan. Lymphodepletion is patient preparation used in many protocols, not a manufacturing step. After infusion, persistence, toxicity and response are monitored.','Manufacturing a receptor-positive cell is not proof of benefit. Donor T-cell alloreactivity, target expression on healthy tissue, CRS, infections and neurotoxicity require product-specific assessment.',['nci','trialt','trialnk']]
+        ]
+      };
+      const PLATFORM_TEXT={
+        blood:'Peripheral-blood route: isolate donor NK cells, then use a platform-specific engineering/expansion workflow. Remaining T-cell contamination is a product-quality concern; it is not modeled here.',
+        cord:'Cord-blood route: start with banked cord-blood material and isolate/expand NK cells. Liu et al. studied a specific cord-blood CD19 CAR-NK construct in lymphoma/CLL—not GD2 neuroblastoma.',
+        ipsc:'iPSC route: a defined precursor/master-bank platform is engineered and differentiated into NK cells. Engineering may occur before NK differentiation. This does not manufacture NK cells from T cells.',
+        nk92:'NK-92 route: an established tumor-derived NK cell line is engineered and expanded. Clinical NK-92 products require irradiation before infusion to prevent proliferation; persistence is constrained. This is not a rule for primary NK cells.'
+      };
       if (!window.THREE || !THREE.OrbitControls) {
         fail("The Three.js libraries could not load. Internet access to cdn.jsdelivr.net is required. Check the connection and reload.");
         return;
@@ -296,7 +396,7 @@
       const palette = Object.freeze({
         background: color("scene-bg"), ink: color("scene-text"), muted: color("scene-muted"),
         tumor: color("tumor"), gd2: color("gd2"), t: color("car-t"), nk: color("car-nk"),
-        payload: color("payload"), mhc: color("mhc")
+        payload: color("payload"), mhc: color("mhc"), dna:color('dna'), granzyme:color('granzyme')
       });
       // r128 requires explicit sRGB → linear conversion for lit material colors.
       // Scene.background remains an unconverted display-space clear color.
@@ -478,10 +578,10 @@
         create(kind) {
           const group = new THREE.Group(), materials = this.materials[kind];
           group.add(new THREE.Mesh(this.body, materials.body));
-          const nucleus = new THREE.Mesh(this.nucleus, materials.nucleus);
-          nucleus.position.set(.12, .13, .31); group.add(nucleus);
-          group.add(this.receptors(kind === "t" ? 14 : 20, true, materials.car));
-          if (kind === "t") group.add(this.receptors(18, false, materials.body));
+          // Overview ticks are markers, not Y-shaped whole antibodies. The
+          // dedicated CAR view explains the extracellular and signaling domains.
+          group.add(this.receptors(14, false, materials.car));
+          group.add(this.receptors(18, false, materials.body));
           return group;
         }
       }
@@ -636,18 +736,127 @@
         }
       }
 
+      /** Original teaching geometry, never called an experimental structure. */
+      class DetailModel {
+        constructor(scene,onInspect){this.scene=scene;this.onInspect=onInspect;this.root=new THREE.Group();this.scene.add(this.root);this.resources=new Resources();this.labels=[];this.selectable=[];this.dynamic=null;this.bounds=new THREE.Box3();this.size=new THREE.Vector3();this.center=new THREE.Vector3();this.projected=new THREE.Vector3();}
+        clear(){this.root.clear();this.resources.dispose();this.resources=new Resources();this.labels=[];this.selectable=[];this.dynamic=null;$('detailLabels').replaceChildren();}
+        group(parent=this.root,x=0,y=0,z=0){const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);return g;}
+        material(key,opacity=1){return this.resources.keep(new THREE.MeshStandardMaterial({color:linearColor(palette[key]||key),emissive:linearColor(palette[key]||key),emissiveIntensity:.10,roughness:.56,transparent:opacity<1,opacity,depthWrite:opacity===1,side:THREE.DoubleSide}));}
+        sphere(parent,x,y,z,r,key,scale=null,opacity=1){const m=new THREE.Mesh(this.resources.keep(new THREE.SphereGeometry(r,20,14)),this.material(key,opacity));m.position.set(x,y,z);if(scale)m.scale.set(...scale);parent.add(m);return m;}
+        rod(parent,a,b,key,r=.045){const d=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(this.resources.keep(new THREE.CylinderGeometry(r,r,d.length(),8)),this.material(key));m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(UP,d.normalize());parent.add(m);return m;}
+        line(parent,points,key,r=.04){const path=new THREE.CatmullRomCurve3(points),m=new THREE.Mesh(this.resources.keep(new THREE.TubeGeometry(path,Math.max(30,points.length*4),r,7,false)),this.material(key));parent.add(m);return m;}
+        ring(parent,x,y,z,r,key){const m=new THREE.Mesh(this.resources.keep(new THREE.TorusGeometry(r,.055,8,60)),this.material(key));m.position.set(x,y,z);parent.add(m);return m;}
+        label(parent,title,x,y,z,text,objects=[]){const anchor=this.group(parent,x,y,z),element=document.createElement('button');element.type='button';element.className='detail-label';element.textContent=title;element.addEventListener('click',()=>this.inspect(title,text,element));$('detailLabels').append(element);this.labels.push({anchor,element});for(const object of objects){object.userData.detail={title,text};this.selectable.push(object);}return element;}
+        inspect(title,text,element){document.querySelectorAll('.detail-label.is-selected').forEach(e=>e.classList.remove('is-selected'));element?.classList.add('is-selected');this.onInspect(title,text);}
+        membrane(parent,y,key,width=10){
+          const g=this.group(parent,0,y,0),geometry=this.resources.keep(new THREE.SphereGeometry(.11,8,6)),material=this.material('mhc',.7),positions=[];
+          for(let x=-width/2;x<=width/2;x+=.4)for(let z=-1.2;z<=1.2;z+=.45)for(const side of [-1,1])positions.push([x,side*.22,z]);
+          const heads=new THREE.InstancedMesh(geometry,material,positions.length),dummy=new THREE.Object3D();positions.forEach((p,i)=>{dummy.position.set(...p);dummy.updateMatrix();heads.setMatrixAt(i,dummy.matrix);});heads.instanceMatrix.needsUpdate=true;g.add(heads);
+          const middle=new THREE.Mesh(this.resources.keep(new THREE.BoxGeometry(width,.32,2.7)),this.material(key,.11));g.add(middle);return g;
+        }
+        receptor(parent,x=0,y=1.6){
+          const g=this.group(parent,x,y,0),v=(x,y,z=0)=>new THREE.Vector3(x,y,z);
+          this.rod(g,v(0,-.28),v(0,.35),'mhc',.12);this.line(g,[v(0,-.28),v(.08,-1),v(0,-1.65)],this.kind,.07);
+          const binding=this.group(g,0,-1.95,0);this.sphere(binding,-.17,0,0,.24,this.kind,[.85,1.25,.75]);this.sphere(binding,.17,0,0,.24,this.kind,[.85,1.25,.75]);
+          const tail=this.line(g,[v(0,.35),v(.24,.68),v(-.1,.98),v(.15,1.28)],'dna',.065);
+          return {group:g,binding,tail};
+        }
+        gd2(parent,x=0,y=-1.6){
+          const g=this.group(parent,x,y,0),v=(x,y,z=0)=>new THREE.Vector3(x,y,z);
+          for(const sign of [-1,1])this.line(g,[v(sign*.05,.1),v(sign*.12,-.15),v(sign*.2,-.27)],'gd2',.04);
+          const points=[v(0,.27),v(.05,.55),v(0,.84),v(-.26,.72),v(-.46,.97)];
+          for(const p of points)this.sphere(g,p.x,p.y,p.z,.11,'gd2');
+          for(const [a,b]of [[0,1],[1,2],[1,3],[3,4]])this.rod(g,points[a],points[b],'gd2',.03);
+          return g;
+        }
+        build(view,step,kind){this.clear();this.view=view;this.step=step;this.kind=kind;this.root.visible=true;this[`build_${view}`](step);this.root.updateMatrixWorld(true);this.bounds.setFromObject(this.root);for(const item of this.labels){item.anchor.getWorldPosition(this.projected);this.bounds.expandByPoint(this.projected);}this.bounds.getCenter(this.center);this.bounds.getSize(this.size);this.update(0);}
+        build_cell(step){
+          const e=this,v=(x,y,z=0)=>new THREE.Vector3(x,y,z),g=this.root;
+          const shell=new THREE.Mesh(this.resources.keep(new THREE.SphereGeometry(2.8,36,24,0,Math.PI*1.6)),this.material(this.kind,.16));shell.rotation.y=Math.PI*.2;g.add(shell);
+          const nucleus=this.sphere(g,-.48,.2,-.2,1.38,'dna',[1,.9,.8],.65);
+          this.label(g,'Nucleus · genetic information',-1,1.95,.5,'Contains chromosomes. CAR-encoding information is introduced during manufacturing; delivery and genomic integration depend on the platform.',[nucleus]);
+          this.label(g,'Cell membrane',-2.8,-1.1,.6,'The lipid bilayer encloses the cell. A CAR spans this membrane; only its binding region faces outside.',[shell]);
+          const granules=[];for(let i=0;i<9;i++){const a=i*.71,x=1.1+Math.sin(a)*.55,y=-1.1+Math.cos(a)*.65,granule=this.sphere(g,x,y,.7,.18,'payload');granules.push(granule);}
+          this.label(g,'Cytotoxic granules',2,-2.2,.8,'Secretory compartments can contain perforin and granzymes. They polarize and fuse with the effector membrane; they are not entire mini-cells or drug doses.',granules);
+          for(let j=0;j<3;j++)this.line(g,[v(-2,-.5-j*.3),v(-1.5,-.3-j*.3),v(-.7,-.5-j*.3)],'mhc',.045);
+          this.label(g,'ER / ribosome region',-2.4,-2.1,.5,'Ribosomes make proteins, including the engineered receptor; membrane proteins pass through ER/Golgi processing. Positions and sizes are schematic.');
+          const car=this.receptor(g,0,0);car.group.scale.setScalar(.5);car.group.rotation.z=Math.PI/2;car.group.position.set(2.6,.6,.3);
+          this.label(car.group,'Added CAR',1.8,-1,.8,'The CAR is an added targeting receptor. CAR-T remains a T cell; CAR-NK remains an NK cell.',[...car.binding.children]);
+          this.label(g,this.kind==='t'?'Native TCR + other receptors':'Native activating / inhibitory receptors',0,3.6,.5,this.kind==='t'?'Conventional αβ TCRs recognize peptide–HLA/MHC. CAR targeting is a separate recognition route.':'KIR and NKG2A can sense HLA ligands; activating receptors detect other target features. NKG2D does not bind GD2.');
+          const tick=[];for(let i=0;i<7;i++){const a=Math.PI*.7+i*.25;tick.push(this.rod(g,v(Math.cos(a)*2.75,Math.sin(a)*2.75),v(Math.cos(a)*3.04,Math.sin(a)*3.04),'mhc',.06));}
+          this.dynamic=p=>{for(const granule of granules)granule.material.emissiveIntensity=step===3?.1+.2*p:.1;car.group.visible=step>=2;};
+        }
+        build_car(step){
+          const g=this.root,v=(x,y,z=0)=>new THREE.Vector3(x,y,z);this.membrane(g,1.6,this.kind);this.membrane(g,-1.6,'tumor');
+          this.label(g,'Effector cytoplasm',-3.2,3.4,.4,'Inside the T or NK cell. The signaling tail is intracellular; the antigen-binding domain is outside.');
+          this.label(g,'Target cytoplasm',-3.2,-2.9,.4,'Inside the target cell. GD2 is anchored in its outer membrane leaflet, with carbohydrate facing the extracellular gap.');
+          const car=this.receptor(g,0,1.6),gd2=this.gd2(g,.05,-1.6);
+          this.label(g,'Binding domain · scFv',2,-.3,.6,'A common CAR uses linked antibody variable domains, not an entire antibody with an Fc region.',[...car.binding.children]);
+          this.label(g,'Spacer + membrane anchor',-2.5,1.1,.6,'The hinge/spacer and transmembrane region connect the outside binding domain to inside signaling domains. The lengths vary by construct.');
+          this.label(g,'Intracellular signaling domains',1.4,3.35,.6,'CD3ζ and one or more costimulatory modules are common examples. NK-oriented CARs may use different signaling components.',[car.tail]);
+          this.label(g,'GD2 · glycan + ceramide anchor',2.7,-1.2,.8,'A disialoganglioside with an extracellular carbohydrate headgroup and membrane lipid anchor. This branched symbol is topology, not a chemically resolved glycan.',gd2.children.filter(o=>o.isMesh));
+          this.label(g,'Extracellular space',-3.3,0,.5,'The receptor binding region and GD2 carbohydrate can meet outside both cells. They do not need to enter the target nucleus.');
+          const pulse=this.sphere(g,0,-.35,.4,.09,'granzyme');
+          this.dynamic=p=>{car.group.position.x=step===2?-.8+.8*THREE.MathUtils.smoothstep(p,0,.55):0;pulse.visible=step===2&&p>.55;pulse.position.y=-.35+3.15*THREE.MathUtils.smoothstep(p,.55,1);};
+          if(step===2)this.label(g,'Gold dot = signaling indicator, not transported cargo',0,-3.9,.5,'The moving point links recognition to intracellular signaling. It is not a molecule passing physically through the CAR or membrane.');
+          if(step===3)this.label(g,'ADCC is a separate antibody–Fc/CD16 route',0,-3.9,.5,'CD16 can bind the Fc region of target-bound antibody. A typical scFv CAR does not need that antibody bridge.');
+        }
+        build_synapse(step){
+          const g=this.root,v=(x,y,z=0)=>new THREE.Vector3(x,y,z);this.membrane(g,1.6,this.kind,11);this.membrane(g,-1.6,'tumor',11);
+          const car=this.receptor(g,-3.3,1.6);this.gd2(g,-3.25,-1.6);
+          this.label(g,'Effector cytoplasm',-3.7,3.5,.5,'Cytotoxic granules begin inside the immune effector cell.');this.label(g,'Target cytoplasm',-3.7,-3.4,.5,'Granzyme entry into this cytosol can engage cell-death pathways. It is not guaranteed to kill this target.');
+          this.label(g,'CAR / antigen contact',-3.5,0,.6,'Recognition and signaling can organize the synapse. Adhesion and cytoskeletal proteins also matter; this view selects only some components.',[...car.binding.children]);
+          const granule=this.group(g,1,3.25,0),vesicle=this.sphere(granule,0,0,0,.46,this.kind,null,.24);
+          for(let i=0;i<7;i++)this.sphere(granule,Math.sin(i*2.4)*.22,Math.cos(i*2.4)*.22,.15,.07,i%2?'payload':'granzyme');
+          const granuleLabel=this.label(g,'Granule → effector membrane',2.8,3.4,.8,'Granule membrane fuses with the effector-cell membrane. Contents—not an intact vesicle—are released into the cleft.',[vesicle]);
+          const cargo=[];for(let i=0;i<12;i++){const bead=this.sphere(g,1,1.2,.2,.075,i%2?'payload':'granzyme');cargo.push(bead);}
+          const fusion=this.ring(g,1,1.6,.15,.42,this.kind);fusion.rotation.x=Math.PI/2;
+          const pore=this.ring(g,1,-1.6,.15,.34,'payload');pore.rotation.x=Math.PI/2;
+          const poreLabel=this.label(g,'Perforin action · simplified',3,-1.9,.8,'Perforin facilitates granzyme access. This ring is a functional symbol—not a pore with a claimed stoichiometry, atomic structure or exclusive entry route.',[pore]);
+          this.label(g,'Green: perforin · gold: granzymes',2,-4.25,.8,'Granzymes are proteases. Their delivery can initiate death programs, but targets may survive or repair damage.');
+          const signal=this.sphere(g,1,-3.0,0,.4,'granzyme',null,.18);
+          this.dynamic=p=>{
+            granule.visible=step<2&&(step!==1||p<.88);granule.position.y=step===1?3.25-1.18*THREE.MathUtils.smoothstep(p,0,.8):3.25;vesicle.material.opacity=step===1?.24*(1-THREE.MathUtils.smoothstep(p,.75,.88)):.24;
+            fusion.visible=step===1&&p>.75;fusion.scale.setScalar(.6+.4*p);pore.visible=step>=2&&(step>2||p>=.5);poreLabel.dataset.suppressed=pore.visible?'':'true';granuleLabel.dataset.suppressed=step<2?'':'true';signal.visible=step===3;signal.material.opacity=.1+.14*p;
+            for(let i=0;i<cargo.length;i++){const isGranzyme=i%2===0,delay=Math.floor(i/2)*.025,q=THREE.MathUtils.clamp((p-delay)/.5,0,1);cargo[i].visible=step===2&&p>=delay;const y=isGranzyme?1.25-2.6*q-1.65*THREE.MathUtils.smoothstep(p,.62+delay,1):1.25-2.8*q;cargo[i].position.set(1+Math.sin(i*2.4)*.19,y,.15+Math.cos(i)*.14);}
+          };
+        }
+        build_making(step){
+          const g=this.root,v=(x,y,z=0)=>new THREE.Vector3(x,y,z),cells=[];
+          const bag=(x,label)=>{const b=this.group(g,x,0,0),panel=new THREE.Mesh(this.resources.keep(new THREE.BoxGeometry(2.9,3.4,.25)),this.material('mhc',.12));b.add(panel);this.rod(b,v(-1.45,1.7),v(1.45,1.7),'mhc',.04);this.rod(b,v(-1.45,-1.7),v(1.45,-1.7),'mhc',.04);this.rod(b,v(-1.45,1.7),v(-1.45,-1.7),'mhc',.04);this.rod(b,v(1.45,1.7),v(1.45,-1.7),'mhc',.04);this.label(b,label,0,2.25,.5,'Container symbol only. Clinical manufacturing uses a validated platform and controlled facilities, not this illustrative arrangement.');return b;};
+          const left=bag(-3,step===0?'Starting material':'Selected cells'),right=bag(3,step>=4?'Cell product / release':'Controlled processing');
+          const receptors=[];
+          for(let i=0;i<9;i++){const mesh=this.sphere(i<3?left:right,(i%3-1)*.65,Math.floor(i/3)*.55-.55,.35,.22,this.kind);cells.push(mesh);if(i>=3){const car=this.receptor(mesh,0,0);car.group.scale.setScalar(.1);car.group.rotation.z=Math.PI/2;car.group.position.set(.21,0,.05);receptors.push(car.group);}}
+          this.rod(g,v(-1.1,0,.3),v(1.1,0,.3),'mhc',.04);
+          const info=['Obtain','Select / prepare','Engineer','Expand','Test / release','Clinical care'][step];this.label(g,info,0,3,.5,'These are high-level manufacturing and care stages. Their ordering overlaps and varies by product.');
+          const gene=this.group(g,0,0,.5);for(let i=0;i<9;i++){const x=-.7+i*.18,a=i*.9;this.sphere(gene,x,.22*Math.sin(a),0,.05,'dna');this.sphere(gene,x,-.22*Math.sin(a),.15,.05,'dna');this.rod(gene,v(x,.22*Math.sin(a)),v(x,-.22*Math.sin(a),.15),'dna',.018);}
+          const ipsc=this.kind==='nk'&&$('nkPlatform').value==='ipsc';
+          gene.visible=step===2;this.label(g,step===2?'Instructions → expression → surface CAR':ipsc?'iPSC differentiation establishes NK identity':'T stays T · NK stays NK after CAR engineering',0,-2.6,.5,step===2?'CAR-encoding nucleic acid is delivered. The cell then transcribes/translates as appropriate to the platform and processes the membrane receptor.':ipsc?'An iPSC precursor differentiates into an NK cell; it does change identity during differentiation. Once a mature NK cell carries a CAR, it remains an NK cell.':'Engineering adds a receptor; it does not convert an NK cell into a T cell or vice versa.');
+          if(step===4)this.label(g,'Identity · purity · viability · sterility · potency',0,-3.6,.5,'Release specifications and additional gene-delivery tests are predefined for each product. No threshold, assay recipe or release approval is supplied.');
+          if(step===5)this.label(g,'Lymphodepletion belongs to clinical preparation',0,-3.6,.5,'Patient preparation is distinct from manufacturing. Suitability, timing, risks and monitoring are determined by the clinical protocol.');
+          if(this.kind==='nk')this.label(g,$('nkPlatform').selectedOptions[0].textContent,0,-4.35,.5,PLATFORM_TEXT[$('nkPlatform').value]);
+          this.dynamic=p=>{for(let i=3;i<cells.length;i++)cells[i].visible=step===3?i-3<=Math.floor(p*5):step>=4||i<6;for(const receptor of receptors)receptor.visible=step>2||step===2&&p>.65;gene.position.x=step===2?-1+2*THREE.MathUtils.smoothstep(p,0,1):0;};
+        }
+        update(progress){this.dynamic?.(progress);this.root.updateMatrixWorld(true);}
+        isVisible(object){for(let node=object;node;node=node.parent)if(!node.visible)return false;return true;}
+        project(camera,stage){const w=stage.clientWidth,h=stage.clientHeight;for(const item of this.labels){let visible=this.root.visible&&!item.element.dataset.suppressed;for(let node=item.anchor;node;node=node.parent)if(!node.visible)visible=false;item.anchor.getWorldPosition(this.projected);this.projected.project(camera);visible=visible&&this.projected.z>-1&&this.projected.z<1&&Math.abs(this.projected.x)<.97&&Math.abs(this.projected.y)<.85;item.element.hidden=!visible;if(visible){item.element.style.left=`${(this.projected.x*.5+.5)*w}px`;item.element.style.top=`${(-this.projected.y*.5+.5)*h}px`;}}}
+        dispose(){this.clear();this.scene.remove(this.root);}
+      }
+
       /** Owns rendering, state transitions, responsive sizing, UI, and lifecycle. */
       class Simulation {
         constructor() {
           this.resources = new Resources();
           this.abort = new AbortController();
-          this.canvas = $("scene"); this.viewport = $("viewport");
+          this.canvas = $("scene"); this.viewport = $("stage");
           this.motion = window.matchMedia("(prefers-reduced-motion: reduce)");
           this.paused = this.motion.matches;
           this.mode = "t"; this.time = 0; this.accumulator = 0; this.impacts = 0;
           this.timeScale = 1; this.frameId = 0; this.lastFrame = 0; this.lastUI = -Infinity;
           this.lastAnnouncement = -Infinity; this.destroyed = false; this.contextLost = false;
           this.needsRender = true; this.fitDistance = 0;
+          this.view='overview';this.detailStep=0;this.detailTime=0;this.detailPlaying=false;this.cameraMove=null;
+          this.raycaster=new THREE.Raycaster();this.pointer=new THREE.Vector2();this.downPointer=null;
           this.offset = new THREE.Vector3();
           this.frame = this.frame.bind(this);
         }
@@ -662,9 +871,10 @@
           this.camera.position.set(10, 7, 13);
           this.controls = new THREE.OrbitControls(this.camera, this.canvas);
           this.controls.enableDamping = true; this.controls.dampingFactor = .07;
-          this.controls.minDistance = 5; this.controls.maxDistance = 65;
+          this.controls.minDistance = 1.2; this.controls.maxDistance = 65;
           this.controls.enablePan = true;
           this.controls.listenToKeyEvents(this.canvas);
+          this.controls.addEventListener('start',()=>{this.cameraMove=null;});
           this.environment();
           this.tumor = new Tumor(this.scene, this.resources);
           this.particles = new ParticlePool(this.scene, this.resources, () => { this.impacts++; this.tumor.hit(); });
@@ -678,11 +888,14 @@
               this.hunters[kind].push(new Hunter(kind, i, model, this.tumor, this.particles));
             }
           }
+          this.overviewObjects=this.scene.children.filter(object=>!object.isLight);
+          this.detail=new DetailModel(this.scene,(title,text)=>this.inspect(title,text));this.detail.root.visible=false;
           this.bindEvents(); this.resize(); this.selectMode("t");
           $("therapyControls").disabled = false;
           document.querySelectorAll("[data-sim-control]").forEach(element => { element.disabled = false; });
           $("loading").hidden = true;
           if (this.motion.matches) this.announce("Status: Reduced-motion preference detected. Select Play to start.", true);
+          this.setView('cell');
           this.start();
         }
         environment() {
@@ -706,9 +919,21 @@
         }
         listen(target, event, callback) { target.addEventListener(event, callback, { signal: this.abort.signal }); }
         bindEvents() {
-          document.querySelectorAll("[data-mode]").forEach(button => this.listen(button, "click", () => this.selectMode(button.dataset.mode)));
-          this.listen($("pause"), "click", () => this.setPaused(!this.paused));
-          this.listen($("restart"), "click", () => this.selectMode(this.mode));
+          document.querySelectorAll('[data-view]').forEach(button=>this.listen(button,'click',()=>this.setView(button.dataset.view)));
+          this.listen($('learnMaking'),'click',()=>this.setView('making'));
+          this.listen($('zoomIn'),'click',()=>this.zoom(.78));this.listen($('zoomOut'),'click',()=>this.zoom(1.28));this.listen($('fullView'),'click',()=>this.resetView());
+          this.listen($('focusCell'),'change',()=>this.focus($('focusCell').value));
+          this.listen($('nkPlatform'),'change',()=>{if(this.view==='making')this.setDetailStep(this.detailStep);});
+          this.listen($('detailSteps'),'click',event=>{const b=event.target.closest('[data-detail-step]');if(b)this.setDetailStep(Number(b.dataset.detailStep));});
+          this.listen($('detailProgress'),'input',()=>{this.detailPlaying=false;this.detailTime=Number($('detailProgress').value)/1000;this.detail.update(this.detailTime);this.updateDetailButtons();this.needsRender=true;});
+          this.listen($('detailPlay'),'click',()=>{if(this.detailTime>=1)this.detailTime=0;this.detailPlaying=!this.detailPlaying;this.updateDetailButtons();});
+          this.listen($('detailReplay'),'click',()=>{this.detailTime=0;this.detail.update(0);this.detailPlaying=!this.motion.matches;this.updateDetailButtons();this.needsRender=true;});
+          this.listen($('closePicked'),'click',()=>{$('picked').hidden=true;this.resize();});
+          this.listen(this.canvas,'pointerdown',event=>{this.downPointer={x:event.clientX,y:event.clientY};});
+          this.listen(this.canvas,'pointerup',event=>{if(!this.downPointer||Math.hypot(event.clientX-this.downPointer.x,event.clientY-this.downPointer.y)>5)return;const r=this.canvas.getBoundingClientRect();this.pointer.set((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1);this.raycaster.setFromCamera(this.pointer,this.camera);if(this.view==='overview'){const meshes=[...this.tumor.meshes,...this.hunters[this.mode].map(h=>h.model.children[0])],hit=this.raycaster.intersectObjects(meshes,false)[0];if(hit){const index=this.hunters[this.mode].findIndex(h=>h.model.children[0]===hit.object);this.focus(index<0?'tumor':String(index));}}else{const hit=this.raycaster.intersectObjects(this.detail.selectable.filter(object=>this.detail.isVisible(object)),false)[0];if(hit)this.inspect(hit.object.userData.detail.title,hit.object.userData.detail.text);}});
+          document.querySelectorAll("button[data-mode]").forEach(button => this.listen(button, "click", () => this.selectMode(button.dataset.mode)));
+          this.listen($("pause"), "click", () => {if(this.view==='overview')this.setPaused(!this.paused);else $('detailPlay').click();});
+          this.listen($("restart"), "click", () => {if(this.view==='overview')this.selectMode(this.mode);else this.setDetailStep(0);});
           this.listen($("view"), "click", () => this.resetView());
           this.listen($("mhc"), "change", () => {
             this.tumor.mhc.visible = !$("mhc").checked;
@@ -720,7 +945,7 @@
             $("speedValue").value = `${this.timeScale.toFixed(2)}×`;
           });
           this.listen(this.canvas, "keydown", event => {
-            if (event.code === "Space") { event.preventDefault(); if (!event.repeat) this.setPaused(!this.paused); }
+            if (event.code === "Space") { event.preventDefault(); if (!event.repeat){if(this.view==='overview')this.setPaused(!this.paused);else $('detailPlay').click();} }
             if (["+", "=", "-", "_"].includes(event.key)) {
               event.preventDefault();
               this.offset.subVectors(this.camera.position, this.controls.target);
@@ -734,7 +959,7 @@
           this.listen(document, "visibilitychange", () => { if (document.hidden) this.stop(); else this.start(); });
           this.listen(window, "pagehide", event => { if (event.persisted) this.stop(); else this.dispose(); });
           this.listen(window, "pageshow", () => this.start());
-          this.listen(this.motion, "change", event => { if (event.matches) this.setPaused(true); });
+          this.listen(this.motion, "change", event => { if (event.matches){this.setPaused(true);this.detailPlaying=false;this.cameraMove=null;this.updateDetailButtons();} });
           this.listen(this.canvas, "webglcontextlost", event => {
             event.preventDefault(); this.contextLost = true; this.stop();
             fail("The graphics context was interrupted. Reload to rebuild the visualization. No clinical or personal data is stored.");
@@ -749,25 +974,41 @@
             for (const hunter of this.hunters[kind]) hunter.reset();
           }
           const nk = mode === "nk";
-          $("source").textContent = nk ? "Off-the-shelf donor*" : "Patient autologous";
-          $("manufacturing").textContent = nk ? "Immediate*" : "Weeks*";
-          $("crs").textContent = nk ? "Low (assumed)*" : "High (assumed)*";
-          $("crs").className = nk ? "risk-low" : "risk-high";
-          $("gvhd").textContent = nk ? "None modeled*" : "Low (assumed)*";
-          $("behavior").textContent = nk ? "CAR-NK · Kiss, release, return" : "CAR-T · Sustained engagement";
+          $("source").textContent = nk ? "Donor / bank platform" : "Usually patient T cells";
+          $("manufacturing").textContent = nk ? "Bankable; not instant" : "Patient-specific or donor platform";
+          $("crs").textContent = "Possible; product / trial-specific";$("crs").className='';
+          $("gvhd").textContent = nk ? "Not conventional TCR alloreactivity" : "Autologous ≠ donor-derived";
+          $('nkPlatformWrap').hidden=!nk;
+          $("behavior").textContent = `${nk?'CAR-NK':'CAR-T'} · ${this.view==='overview'?'Illustrative overview':this.view==='making'?'Making the product':this.view==='cell'?'Cell identity':this.view==='car'?'CAR and target':'Immune synapse'}`;
           this.canvas.setAttribute("aria-label", `Interactive 3D ${nk ? "CAR-NK" : "CAR-T"} and neuroblastoma model`);
-          document.querySelectorAll("[data-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
+          document.querySelectorAll("button[data-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
           this.viewport.dataset.mode = mode;
           this.needsRender = true;
           this.updatePauseButton(); this.updateUI(performance.now(), true);
           this.announce(this.paused ? "Status: Paused. Orbit the model or select Play." : `Status: ${nk ? "CAR-NK" : "CAR-T"} hunting tumor cells…`, true);
+          if(this.detail&&this.view!=='overview')this.setView(this.view,this.detailStep);
         }
+        inspect(title,text){$('picked').hidden=false;$('pickedTitle').textContent=title;$('pickedText').textContent=text;this.resize();}
+        zoom(factor){this.cameraMove=null;this.offset.subVectors(this.camera.position,this.controls.target);this.offset.setLength(THREE.MathUtils.clamp(this.offset.length()*factor,this.controls.minDistance,this.controls.maxDistance));this.camera.position.copy(this.controls.target).add(this.offset);this.controls.update();this.needsRender=true;}
+        cameraTo(target,distance){this.controls.enableDamping=false;this.controls.update();this.controls.enableDamping=true;const position=target.clone().add(new THREE.Vector3(0,0,distance));if(this.motion.matches){this.controls.target.copy(target);this.camera.position.copy(position);this.cameraMove=null;}else this.cameraMove={start:this.camera.position.clone(),targetStart:this.controls.target.clone(),end:position,target:target.clone(),time:0};this.controls.update();this.needsRender=true;}
+        focus(value){this.setView('overview');this.setPaused(true);$('focusCell').value=value;if(value==='all'){this.resetView();return;}if(value==='tumor'){this.cameraTo(new THREE.Vector3(0,0,0),8);this.inspect('Tumor surface','An irregular multicellular target-region symbol, not a biopsy reconstruction. Amber markers locate GD2; they are not molecular structures. Choose CAR & GD2 to inspect a membrane-level teaching model.');}else{const hunter=this.hunters[this.mode][Number(value)];if(!hunter)return;this.cameraTo(hunter.position,3.2);this.inspect(`${this.mode==='t'?'CAR-T':'CAR-NK'} effector ${Number(value)+1}`,`Paused in the illustrative ${hunter.phase} state. Short surface ticks are receptor markers, not measured receptor counts. Choose Inside a cell to see a cutaway, or Immune synapse to study a contact.`);}}
+        setView(view,step=0){if(!['overview','cell','car','synapse','making'].includes(view))return;this.view=view;this.detailPlaying=false;this.detailTime=0;this.cameraMove=null;$('picked').hidden=true;
+          for(const object of this.overviewObjects)object.visible=view==='overview';this.groups.t.visible=view==='overview'&&this.mode==='t';this.groups.nk.visible=view==='overview'&&this.mode==='nk';this.particles.mesh.visible=view==='overview'&&this.particles.count>0;this.tumor.mhc.visible=!$('mhc').checked;
+          this.scene.fog=view==='overview'?new THREE.FogExp2(palette.background,.018):null;this.detail.root.visible=view!=='overview';$('detailLabels').hidden=view==='overview';$('overviewFooter').hidden=view!=='overview';$('detailPanel').hidden=view==='overview';
+          document.querySelectorAll('button[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));$('viewport').dataset.view=view;
+          $('scaleNote').textContent=view==='overview'?'Cell / tissue cartoon · motion settings are illustrative':view==='making'?'Process diagram in 3D · not a manufacturing protocol':'Enlarged topology / cutaway · not atomic coordinates · not to scale';
+          $('behavior').textContent=`${this.mode==='t'?'CAR-T':'CAR-NK'} · ${{overview:'Illustrative overview',cell:'Inside a cell',car:'CAR & GD2',synapse:'Immune synapse',making:'Making CAR cells'}[view]}`;
+          if(view!=='overview')this.setDetailStep(step);else{$('focusCell').value='all';this.resize();this.resetView();this.updatePauseButton();this.announce(this.paused?'Status: Overview paused. Choose a cell to focus, zoom, or select Play.':'Status: Overview running with illustrative motion, not clinical kinetics.',true);}this.needsRender=true;
+        }
+        setDetailStep(step){const entries=LESSONS[this.view];if(!entries)return;$('picked').hidden=true;this.detailStep=THREE.MathUtils.clamp(step,0,entries.length-1);this.detailTime=0;this.detailPlaying=false;this.detail.build(this.view,this.detailStep,this.mode);this.renderLesson();this.resize();this.resetView();this.updateDetailButtons();this.needsRender=true;this.announce('Status: Detail view paused. Inspect labels, zoom, or play the teaching step.',true);}
+        renderLesson(){const entries=LESSONS[this.view];if(!entries)return;const content=entries[this.detailStep];$('detailSteps').replaceChildren();entries.forEach((row,i)=>{const b=document.createElement('button');b.type='button';b.dataset.detailStep=String(i);b.textContent=`${i+1} · ${this.view==='making'?['Source','Prepare','Engineer','Expand','Release','Care'][i]:['Basics','Recognition','Action','Limits'][i]}`;if(i===this.detailStep)b.setAttribute('aria-current','step');$('detailSteps').append(b);});$('detailTitle').textContent=content[0];$('detailText').textContent=content[1]+(this.view==='making'&&this.mode==='nk'?' '+PLATFORM_TEXT[$('nkPlatform').value]:'');$('detailBoundary').textContent=content[2];$('detailSources').replaceChildren();content[3].forEach(key=>{const [title,url]=REFERENCES[key],a=document.createElement('a');a.textContent=title+' ↗';a.href=url;a.target='_blank';a.rel='noopener noreferrer';$('detailSources').append(a);});$('viewport').dataset.detailStep=String(this.detailStep);}
+        updateDetailButtons(){if(this.view==='overview')return;$('detailPlay').textContent=this.detailPlaying?'Pause step':'Play step';$('detailPlay').setAttribute('aria-pressed',String(this.detailPlaying));$('detailProgress').value=String(Math.round(this.detailTime*1000));$('pause').textContent=this.detailPlaying?'Pause':'Play';$('pause').setAttribute('aria-pressed',String(!this.detailPlaying));}
         setPaused(paused) {
           this.paused = paused; this.accumulator = 0; this.lastFrame = performance.now();
           this.updatePauseButton();
           this.announce(paused ? "Status: Paused. Camera controls remain available." : `Status: ${this.mode === "t" ? "CAR-T" : "CAR-NK"} simulation resumed.`, true);
         }
-        updatePauseButton() { $("pause").textContent = this.paused ? "Play" : "Pause"; $("pause").setAttribute("aria-pressed", String(this.paused)); }
+        updatePauseButton() { if(this.view!=='overview'){this.updateDetailButtons();return;}$("pause").textContent = this.paused ? "Play" : "Pause"; $("pause").setAttribute("aria-pressed", String(this.paused)); }
         announce(text, force = false) {
           const now = performance.now();
           if (force || (now - this.lastAnnouncement >= 1800 && $("status").textContent !== text)) {
@@ -787,12 +1028,13 @@
           $("retreatCount").textContent = String(retreating);
           $("impactCount").textContent = String(this.impacts);
           this.viewport.dataset.activeParticles = String(this.particles.count);
+          if(this.view!=='overview')return;
           if (this.paused) return;
           const cycle = Math.floor(this.time / 3) % 3;
-          if (this.impacts > 0 && cycle === 0) this.announce("Status: Toxic payload delivered! Tumor-surface impacts are flashing.");
-          else if (this.mode === "t" && engaged) this.announce("Status: CAR-T attached. Continuous cytotoxic payload delivery.");
-          else if (this.mode === "nk" && retreating) this.announce("Status: CAR-NK disengaging and returning to circulation.");
-          else if (this.mode === "nk" && engaged) this.announce("Status: CAR-NK burst delivery — a brief “Kiss of Death.”");
+          if (this.impacts > 0 && cycle === 0) this.announce("Status: Cargo symbols reached the target. Visual impacts are not measured cell death.");
+          else if (this.mode === "t" && engaged) this.announce("Status: CAR-T contact held in this illustrative scenario. Real T cells can also detach and kill serially.");
+          else if (this.mode === "nk" && retreating) this.announce("Status: CAR-NK disengaging within this tissue scene—not a return to the bloodstream.");
+          else if (this.mode === "nk" && engaged) this.announce("Status: CAR-NK brief contact in this illustration; no universal contact duration is implied.");
           else this.announce(`Status: ${this.mode === "t" ? "CAR-T" : "CAR-NK"} hunting tumor cells…`);
         }
         resize() {
@@ -802,6 +1044,7 @@
           this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(3500000 / (width * height))));
           this.renderer.setSize(width, height, false);
           this.camera.aspect = width / height; this.camera.updateProjectionMatrix();
+          if(this.view!=='overview'&&this.detail){const previous=this.detailFit||0;this.detailFit=this.computeDetailFit();if(this.cameraMove){this.cameraMove.end.copy(this.detail.center).add(new THREE.Vector3(0,0,this.detailFit));}else if(previous){this.offset.subVectors(this.camera.position,this.controls.target).multiplyScalar(this.detailFit/previous);this.camera.position.copy(this.controls.target).add(this.offset);this.controls.update();}this.needsRender=true;return;}
           const halfFov = Math.atan(Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2)) * Math.min(1, this.camera.aspect));
           const previousFit = this.fitDistance;
           this.fitDistance = 8.1 / Math.sin(halfFov);
@@ -815,8 +1058,11 @@
           }
           this.needsRender = true;
         }
+        computeDetailFit(){const half=Math.tan(THREE.MathUtils.degToRad(this.camera.fov/2)),size=this.detail.size;return Math.max(size.y/(2*half),size.x/(2*half*this.camera.aspect))*1.22+size.z*.25+1;}
         resetView() {
+          if(this.view!=='overview'&&this.detail){this.detailFit=this.computeDetailFit();this.controls.minDistance=.75;this.controls.maxDistance=Math.max(70,this.detailFit*2);this.cameraTo(this.detail.center,this.detailFit);return;}
           // Flush damping deltas before applying an exact canonical view.
+          this.cameraMove=null;this.controls.minDistance=1.2;
           this.controls.enableDamping = false; this.controls.update();
           this.controls.target.set(0, 0, 0);
           this.camera.position.set(10, 7, 13).normalize().multiplyScalar(this.fitDistance || 22);
@@ -834,13 +1080,15 @@
           // Clamp stalls, cap substeps, and discard backlog rather than spiral.
           const elapsed = Math.min(Math.max((now - this.lastFrame) / 1000, 0), .1);
           this.lastFrame = now;
-          if (!this.paused) {
+          if (!this.paused&&this.view==='overview') {
             this.accumulator = Math.min(this.accumulator + elapsed * this.timeScale, CONFIG.step * 12);
             while (this.accumulator >= CONFIG.step) { this.step(CONFIG.step); this.accumulator -= CONFIG.step; }
           }
+          if(this.view!=='overview'&&this.detailPlaying){this.detailTime=Math.min(1,this.detailTime+elapsed*this.timeScale/9);this.detail.update(this.detailTime);if(this.detailTime===1)this.detailPlaying=false;this.updateDetailButtons();this.needsRender=true;}
+          if(this.cameraMove){const move=this.cameraMove;move.time+=elapsed;const t=Math.min(1,move.time/.75),u=t*t*(3-2*t);this.camera.position.lerpVectors(move.start,move.end,u);this.controls.target.lerpVectors(move.targetStart,move.target,u);if(t===1)this.cameraMove=null;this.needsRender=true;}
           const cameraChanged = this.controls.update();
-          if (!this.paused || cameraChanged || this.needsRender) {
-            this.renderer.render(this.scene, this.camera); this.needsRender = false;
+          if ((!this.paused&&this.view==='overview') || cameraChanged || this.needsRender) {
+            this.renderer.render(this.scene, this.camera);if(this.view!=='overview')this.detail.project(this.camera,this.viewport);$('zoomValue').value=`${((this.view==='overview'?this.fitDistance:this.detailFit||20)/this.camera.position.distanceTo(this.controls.target)).toFixed(1)}× view`;this.needsRender = false;
           }
           this.updateUI(now);
         }
@@ -854,6 +1102,7 @@
           if (this.destroyed) return;
           this.destroyed = true; this.stop(); this.abort.abort();
           this.observer?.disconnect(); this.controls?.dispose();
+          this.detail?.dispose();
           this.resources.dispose(); this.renderer?.dispose();
         }
       }
